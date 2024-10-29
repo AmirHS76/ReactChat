@@ -17,7 +17,10 @@ namespace ReactChat.Infrastructure.Repositories
         {
             return await _context.Users.FindAsync(id);
         }
-
+        public async Task<BaseUser?> GetUserByUsernameAsync(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+        }
         public async Task<IEnumerable<BaseUser>> GetAllUsersAsync()
         {
             return await _context.Users.ToListAsync();

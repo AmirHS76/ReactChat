@@ -12,12 +12,9 @@ namespace ReactChat.Application.Services
         }
         public async Task<bool> Authenticate(string username, string password)
         {
-            IEnumerable<BaseUser> user = await _userRepository.GetAllUsersAsync();
-            BaseUser loginedUser = new BaseUser() { Username = username, Password = password };
-            if (user.FirstOrDefault(x => x.Username == loginedUser.Username && x.Password == loginedUser.Password) != null)
-            {
+            BaseUser? user = await _userRepository.GetUserByUsernameAsync(username);
+            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
                 return true;
-            }
             return false;
         }
     }
