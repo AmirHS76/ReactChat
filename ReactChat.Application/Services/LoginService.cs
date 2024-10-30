@@ -1,18 +1,19 @@
 ﻿using ReactChat.Core.Entities.Login;
-using ReactChat.Infrastructure.Repositories;
+using ReactChat.Infrastructure.Data;
+using ReactChat.Infrastructure.Data.Users;
 
 namespace ReactChat.Application.Services
 {
     public class LoginService
     {
-        IUserRepository _userRepository;
-        public LoginService(IUserRepository userRepository)
+        IUserUnitOfWork _userUnitOfWork;
+        public LoginService(IUserUnitOfWork userUnitOfWork)
         {
-            _userRepository = userRepository;
+            _userUnitOfWork = userUnitOfWork;
         }
         public async Task<bool> Authenticate(string username, string password)
         {
-            BaseUser? user = await _userRepository.GetUserByUsernameAsync(username);
+            BaseUser? user = await _userUnitOfWork.FindUserByUsernameAsync(username);
             if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
                 return true;
             return false;

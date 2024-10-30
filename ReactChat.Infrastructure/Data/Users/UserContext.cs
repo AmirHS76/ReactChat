@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReactChat.Core.Entities.Login;
 
-namespace ReactChat.Infrastructure.Data
+namespace ReactChat.Infrastructure.Data.Users
 {
     public class UserContext : DbContext
     {
