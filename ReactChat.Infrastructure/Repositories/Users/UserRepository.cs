@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReactChat.Core.Entities.Login;
-using ReactChat.Infrastructure.Data.Users;
+using ReactChat.Infrastructure.Data;
 
 namespace ReactChat.Infrastructure.Repositories.Users
 {
