@@ -17,5 +17,9 @@ namespace ReactChat.Infrastructure.Repositories.Users
         {
             return await _context.Set<BaseUser>().FirstOrDefaultAsync(u => u.Username == username);
         }
+        public async Task<BaseUser?> GetUserByEmailAsync(string email)
+        {
+            return await _context.Set<BaseUser>().FirstOrDefaultAsync(u => u.Email == email);
+        }
     }
 }

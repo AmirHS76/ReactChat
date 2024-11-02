@@ -17,18 +17,28 @@ namespace ReactChat.Application.Services.Register
         }
         public async Task<bool> Register(string username, string password, string email)
         {
-            if(!await CheckIfUserExist(username))
+            if (await CheckIfUserExist(username, email))
                 return false;
-            var hashedPass  = BCrypt.Net.BCrypt.HashPassword(password);
-            BaseUser newUser = new BaseUser() { Username = username, Password = hashedPass };
+
+            var newUser = CreateUser(username, password, email);
             await _userRepository.AddAsync(newUser);
+
             return true;
         }
-        public async Task<bool> CheckIfUserExist(string username)
+
+        private BaseUser CreateUser(string username, string password, string email)
         {
-            BaseUser? existingUser = await _userRepository.GetUserByUsernameAsync(username);
-            if (existingUser != null) return false;
-            return true;
+            return new BaseUser
+            {
+                Username = username,
+                Password = BCrypt.Net.BCrypt.HashPassword(password),
+                Email = email
+            };
+        }
+        public async Task<bool> CheckIfUserExist(string username,string email)
+        {
+            return await _userRepository.GetUserByUsernameAsync(username) != null
+                || await _userRepository.GetUserByEmailAsync(email) != null;
         }
     }
 }

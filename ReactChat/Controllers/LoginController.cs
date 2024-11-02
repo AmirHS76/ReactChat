@@ -2,7 +2,7 @@
 using ReactChat.Application.Services.Login;
 using ReactChat.Dtos;
 
-[Route("Auth/[controller]")]
+[Route("Login/[controller]")]
 public class LoginController : ControllerBase
 {
     LoginService _loginService;
@@ -17,7 +17,7 @@ public class LoginController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        return await _loginService.Authenticate(request.username, request.password) ? Ok($"Login ok with username : {request.username}") 
-            : Unauthorized("Invalid username or password");
+        var token = await _loginService.Authenticate(request.username, request.password);
+        return token != null ? Ok(new { Token = token }) : Unauthorized("Invalid username or password");
     }
 }

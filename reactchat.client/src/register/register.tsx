@@ -22,7 +22,7 @@ const Register: React.FC = () => {
         }
 
         try {
-            const response = await fetch('https://localhost:7240/auth/register', {
+            const response = await fetch('https://localhost:7240/register/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,7 +31,9 @@ const Register: React.FC = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Registration failed. Please try again.');
+                const errorData = await response.json();
+                const errorString = errorData.join('\n');
+                throw errorString;
             }
 
             const data = await response;
@@ -42,7 +44,7 @@ const Register: React.FC = () => {
                 window.location.href = '/login';
             }, 2000);
         } catch (err) {
-            setError(err.message || 'An error occurred during registration.');
+            setError(err || 'An error occurred during registration.');
             setTimeout(() => setError(null), 3000);
         }
     };
@@ -50,7 +52,13 @@ const Register: React.FC = () => {
     return (
         <div className="register-container">
             {message && <div className="info-message">{message}</div>}
-            {error && <div className="error-message">{error}</div>}
+            {error && (
+                <div className="error-message">
+                    {error.split('\n').map((line, index) => (
+                        <p key={index}>{line}</p>
+                    ))}
+                </div>
+            )}
             <h1 className="register-title">Register</h1>
             <form className="register-form" onSubmit={handleSubmit}>
                 <div className="form-group">

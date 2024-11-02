@@ -1,7 +1,10 @@
-﻿using ReactChat.Core.Entities.Login;
+﻿using Microsoft.IdentityModel.Tokens;
+using ReactChat.Core.Entities.Login;
 using ReactChat.Infrastructure.Data;
-using ReactChat.Infrastructure.Data.Users;
-using ReactChat.Infrastructure.Repositories.Users;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ReactChat.Application.Services.Login
 {
@@ -12,13 +15,36 @@ namespace ReactChat.Application.Services.Login
         {
             _unitOfWork = userUnitOfWork;
         }
-        public async Task<bool> Authenticate(string username, string password)
+        public async Task<string?> Authenticate(string username, string password)
         {
             var userRepository = _unitOfWork.UserRepository;
             BaseUser? user = await userRepository.GetUserByUsernameAsync(username);
             if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
-                return true;
-            return false;
+            {
+                var token = GenerateJwtToken(user);
+                return token;
+            }
+            return null;
+        }
+        private string GenerateJwtToken(BaseUser user)
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("dDgM0xSLiiYjqF+U4TkygUYjaDWdE68RLkilOHTzHrY="));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: "YourIssuer",
+                audience: "YourAudience",
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

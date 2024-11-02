@@ -1,0 +1,32 @@
+.new-chat-section {
+    background-color: #1a1a1a; /* Dark gray background for the section */
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1); /* Subtle white shadow */
+    display: flex;
+    flex-direction: column; /* Stack label and button vertically */
+    align-items: center; /* Center align items */
+}
+
+.chat-label {
+    color: white; /* Label text color */
+    margin-bottom: 10px; /* Space between label and button */
+    font-size: 14px; /* Font size for the label */
+}
+
+.start-chat-button {
+    background-color: #0078d4; /* Button color */
+    color: white; /* Button text color */
+    border: none;
+    padding: 30px 40px; /* Smaller padding for a more compact button */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px; /* Font size for the button text */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition effects */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+    .start-chat-button:hover {
+        background-color: #005a9e; /* Darker blue on hover */
+        transform: scale(1.05); /* Slightly scale up on hover for effect */
+    }

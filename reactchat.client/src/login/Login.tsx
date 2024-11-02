@@ -1,12 +1,15 @@
 // src/login/Login.tsx
 import React, { useState } from 'react';
 import './Login.css';
-
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 const Login: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate(); // Initialize useNavigate
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -14,26 +17,26 @@ const Login: React.FC = () => {
         setMessage(null);
 
         try {
-            const response = await fetch('https://localhost:7240/auth/login', { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
+            const response = await axios.post('https://localhost:7240/login/login', { 
+                username,
+                password
             });
 
-            if (!response.ok) {
+            if (response.status != 200) {
                 throw new Error('Invalid username or password');
             }
 
-            const data = await response;
-            console.log('Login successful:', data);
+            const token = response.data.token;
+            Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'Strict' });
+            console.log('Login successful');
             setMessage('Login successful! Redirecting...');
 
             setTimeout(() => {
-            }, 2000);
+                navigate('/main'); // Use navigate to go to the main page
+            }, 500);
         } catch (err) {
-            setError(err.message || 'An error occurred during login.');
+            setError('Invalid username or password');
+            console.log('Error in login : ' + err);
             setTimeout(() => setError(null), 3000);
         }
     };

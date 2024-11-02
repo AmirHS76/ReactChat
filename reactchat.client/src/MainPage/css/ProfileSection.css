@@ -1,0 +1,6 @@
+.profile-section {
+    background-color: #1a1a1a; /* Dark gray background for the section */
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1); /* Subtle white shadow */
+}
