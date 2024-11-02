@@ -1,4 +1,4 @@
-﻿namespace ReactChat.Application.Interfaces
+﻿namespace ReactChat.Application.Interfaces.Login
 {
     internal interface ILoginService
     {

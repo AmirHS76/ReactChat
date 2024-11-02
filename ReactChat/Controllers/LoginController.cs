@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ReactChat.Application.Services;
+using ReactChat.Application.Services.Login;
 using ReactChat.Dtos;
 
 [Route("Auth/[controller]")]
-public class LoginController : Controller
+public class LoginController : ControllerBase
 {
     LoginService _loginService;
     public LoginController(LoginService loginService)
@@ -17,6 +17,7 @@ public class LoginController : Controller
         {
             return BadRequest(ModelState);
         }
-        return await _loginService.Authenticate(request.username, request.password) ? Ok() : Unauthorized("Invalid username or password");
+        return await _loginService.Authenticate(request.username, request.password) ? Ok($"Login ok with username : {request.username}") 
+            : Unauthorized("Invalid username or password");
     }
 }

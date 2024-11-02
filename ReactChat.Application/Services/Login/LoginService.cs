@@ -3,7 +3,7 @@ using ReactChat.Infrastructure.Data;
 using ReactChat.Infrastructure.Data.Users;
 using ReactChat.Infrastructure.Repositories.Users;
 
-namespace ReactChat.Application.Services
+namespace ReactChat.Application.Services.Login
 {
     public class LoginService
     {

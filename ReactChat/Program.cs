@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using ReactChat.Application.Services;
+using ReactChat.Application.Interfaces.Register;
+using ReactChat.Application.Services.Login;
+using ReactChat.Application.Services.Register;
 using ReactChat.Infrastructure.Data;
 using ReactChat.Infrastructure.Data.Users;
 using ReactChat.Infrastructure.Repositories;
@@ -15,7 +17,7 @@ builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+builder.Services.AddScoped<IRegisterService,RegisterService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
