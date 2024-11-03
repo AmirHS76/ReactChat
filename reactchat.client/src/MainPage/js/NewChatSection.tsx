@@ -1,11 +1,16 @@
-import React from 'react';
+import { useNavigate } from "react-router-dom";
 import '../css/NewChatSection.css';
 
-const NewChatSection = ({ onStartNewChat }) => {
+const NewChatSection = () => {
+    const navigate = useNavigate();
+
+    const handleStartChat = () => {
+        navigate("/chat");
+    };
     return (
         <div className="new-chat-section">
             <label className="chat-label">Click this button to start a new chat:</label>
-            <button className="start-chat-button" onClick={onStartNewChat}>
+            <button className="start-chat-button" onClick={handleStartChat}>
                 Start a new chat
             </button>
         </div>

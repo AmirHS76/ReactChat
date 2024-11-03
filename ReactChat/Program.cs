@@ -6,6 +6,7 @@ using ReactChat.Application.Interfaces.Users;
 using ReactChat.Application.Services.Login;
 using ReactChat.Application.Services.Register;
 using ReactChat.Application.Services.Users;
+using ReactChat.Hubs;
 using ReactChat.Infrastructure.Data;
 using ReactChat.Infrastructure.Data.Users;
 using ReactChat.Infrastructure.Repositories;
@@ -33,6 +34,7 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddEndpointsApiExplorer();
@@ -77,7 +79,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
-
-app.MapGet("/", () => "Hello World!");
+app.MapHub<ChatHub>("/chatHub");
+app.MapGet("/", () => "----REACT CHAT----");
 
 app.Run();
