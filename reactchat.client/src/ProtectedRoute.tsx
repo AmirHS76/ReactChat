@@ -29,6 +29,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
                 });
                 setIsAuthenticated(response.status === 200); // Set authenticated status based on response
             } catch (error) {
+                console.log(error)
                 setIsAuthenticated(false); // If there's an error, set to not authenticated
             } finally {
                 setLoading(false); // Set loading to false after the check is complete

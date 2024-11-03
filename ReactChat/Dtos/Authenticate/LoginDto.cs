@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ReactChat.Dtos
+namespace ReactChat.Dtos.Authenticate
 {
     public class LoginDto
     {

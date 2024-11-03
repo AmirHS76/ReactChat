@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ReactChat.Application.Interfaces.Register;
+using ReactChat.Application.Interfaces.Users;
 using ReactChat.Application.Services.Login;
 using ReactChat.Application.Services.Register;
+using ReactChat.Application.Services.Users;
 using ReactChat.Infrastructure.Data;
 using ReactChat.Infrastructure.Data.Users;
 using ReactChat.Infrastructure.Repositories;
@@ -40,14 +42,17 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRegisterService,RegisterService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         builder =>
         {
-            builder.AllowAnyOrigin()
+            builder.WithOrigins("http://localhost:5173")
                    .AllowAnyMethod()
-                   .AllowAnyHeader();
+                   .AllowAnyHeader()
+                   .AllowCredentials()
+                   .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
         });
 });
 

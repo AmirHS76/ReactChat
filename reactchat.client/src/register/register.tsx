@@ -22,7 +22,7 @@ const Register: React.FC = () => {
         }
 
         try {
-            const response = await fetch('https://localhost:7240/register/register', {
+            const response = await fetch('https://localhost:7240/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,7 +78,6 @@ const Register: React.FC = () => {
                         id="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        required
                     />
                 </div>
                 <div className="form-group">

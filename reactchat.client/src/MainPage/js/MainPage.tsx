@@ -1,4 +1,3 @@
-import React from 'react';
 import '../css/MainPage.css';
 import WelcomeSection from './WelcomeSection';
 import ProfileSection from './ProfileSection';

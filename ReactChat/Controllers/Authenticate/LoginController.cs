@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReactChat.Application.Services.Login;
-using ReactChat.Dtos;
+using ReactChat.Dtos.Authenticate;
 
-[Route("Login/[controller]")]
+[Route("[controller]")]
 public class LoginController : ControllerBase
 {
     LoginService _loginService;
