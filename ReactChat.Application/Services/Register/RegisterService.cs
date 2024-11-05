@@ -1,7 +1,6 @@
 ﻿using ReactChat.Application.Interfaces.Register;
 using ReactChat.Core.Entities.Login;
 using ReactChat.Infrastructure.Data;
-using ReactChat.Infrastructure.Data.Users;
 using ReactChat.Infrastructure.Repositories.Users;
 
 namespace ReactChat.Application.Services.Register
@@ -35,7 +34,7 @@ namespace ReactChat.Application.Services.Register
                 Email = email
             };
         }
-        public async Task<bool> CheckIfUserExist(string username,string email)
+        public async Task<bool> CheckIfUserExist(string username, string email)
         {
             return await _userRepository.GetUserByUsernameAsync(username) != null
                 || await _userRepository.GetUserByEmailAsync(email) != null;

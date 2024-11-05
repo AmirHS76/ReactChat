@@ -1,10 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ReactChat.Core.Entities.Login;
+﻿using ReactChat.Core.Entities.Login;
 using ReactChat.Infrastructure.Repositories;
 using ReactChat.Infrastructure.Repositories.Users;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 namespace ReactChat.Infrastructure.Data.Users
 {
     public class UnitOfWork : IUnitOfWork
@@ -32,7 +28,7 @@ namespace ReactChat.Infrastructure.Data.Users
             {
                 if (_repositories.TryGetValue(typeof(BaseUser), out var repository))
                 {
-                    return (IUserRepository)repository; 
+                    return (IUserRepository)repository;
                 }
 
                 var newUserRepository = new UserRepository(_context);

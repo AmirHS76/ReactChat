@@ -26,7 +26,7 @@ namespace ReactChat.Controllers.Authenticate
         {
             var username = User.FindFirst(ClaimTypes.Name)?.Value;
             BaseUser? baseUser = await _userService.GetUserByUsernameAsync(username);
-            return Ok(new { username, baseUser?.Email});
+            return Ok(new { username, baseUser?.Email });
         }
     }
 }

@@ -1,12 +1,21 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using ReactChat.Helpers.HubHelpers;
 
 namespace ReactChat.Hubs
 {
     public class ChatHub : Hub
     {
+        private readonly IMessageHubHelper _messageHubHelper;
+
+        public ChatHub(IMessageHubHelper messageHubHelper)
+        {
+            _messageHubHelper = messageHubHelper;
+        }
         public async Task JoinPrivateChat(string username)
         {
-            string groupName = GetPrivateGroupName(Context.User.Identity.Name, username);
+            if (Context.User?.Identity?.Name == null)
+                throw new ArgumentNullException("User not found");
+            string groupName = _messageHubHelper.GetPrivateGroupName(Context.User.Identity.Name, username);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
 
@@ -22,9 +31,12 @@ namespace ReactChat.Hubs
 
         public async Task SendPrivateMessage(string recipientUsername, string message)
         {
+            if (Context.User?.Identity?.Name == null)
+                throw new ArgumentNullException("User not found");
             string senderUsername = Context.User.Identity.Name;
-            string groupName = GetPrivateGroupName(senderUsername, recipientUsername);
+            string groupName = _messageHubHelper.GetPrivateGroupName(senderUsername, recipientUsername);
 
+            await _messageHubHelper.SaveMessageAsync(senderUsername, recipientUsername, message);
             await Clients.Caller.SendAsync("ReceiveMessage", senderUsername, message, "sender");
 
             await Clients.GroupExcept(groupName, Context.ConnectionId)

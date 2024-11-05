@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReactChat.Application.Interfaces.Users;
-using ReactChat.Application.Services.Users;
 using ReactChat.Dtos.Users;
 using System.Security.Claims;
 
@@ -30,7 +29,7 @@ namespace ReactChat.Controllers.Users
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return (await _userService.UpdateUserAsync(user.username,user.email)) ? Ok(user) : BadRequest(ModelState);
+            return (await _userService.UpdateUserAsync(user.username, user.email)) ? Ok(user) : BadRequest(ModelState);
         }
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()

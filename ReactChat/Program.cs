@@ -1,11 +1,15 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using ReactChat.Application.Interfaces.MessageHub;
 using ReactChat.Application.Interfaces.Register;
 using ReactChat.Application.Interfaces.Users;
+using ReactChat.Application.Services.BackgroundServices;
 using ReactChat.Application.Services.Login;
+using ReactChat.Application.Services.MessageHub;
 using ReactChat.Application.Services.Register;
 using ReactChat.Application.Services.Users;
+using ReactChat.Helpers.HubHelpers;
 using ReactChat.Hubs;
 using ReactChat.Infrastructure.Data;
 using ReactChat.Infrastructure.Data.Users;
@@ -14,6 +18,7 @@ using ReactChat.Infrastructure.Repositories.Users;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -51,15 +56,20 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 builder.Services.AddDbContext<UserContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    b => b.MigrationsAssembly("ReactChat.Infrastructure"));
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IRegisterService,RegisterService>();
+builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IMessageHubService, MessageHubService>();
+builder.Services.AddScoped<IMessageHubHelper, MessageHubHelper>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -72,7 +82,13 @@ builder.Services.AddCors(options =>
                    .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
         });
 });
-
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConsole();
+});
+builder.Services.AddSingleton<MessageProcessingService>();
+builder.Services.AddHostedService(provider => provider.GetRequiredService<MessageProcessingService>());
 var app = builder.Build();
 
 app.UseDefaultFiles();

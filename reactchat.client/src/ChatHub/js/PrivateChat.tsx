@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { HubConnectionBuilder, HubConnection } from '@microsoft/signalr';
+import { HubConnectionBuilder, HubConnection, HubConnectionState } from '@microsoft/signalr';
 import Cookies from 'js-cookie';
 import '../css/PrivateChat.css';
 
@@ -40,8 +40,13 @@ const PrivateChat: React.FC = () => {
             });
 
             try {
-                await newConnection.start();
-                console.log('Connected to SignalR Hub');
+                try {
+                    await newConnection.start();
+                    console.log('Connected to SignalR Hub');
+                }
+                catch (err) {
+                    console.error("Erorr :", err);
+                }
                 setConnection(newConnection);
 
                 await newConnection.invoke('JoinPrivateChat', username);
@@ -60,7 +65,11 @@ const PrivateChat: React.FC = () => {
     const sendMessage = async () => {
         if (connection && input.trim()) {
             try {
-                await connection.invoke('SendPrivateMessage', username, input);
+                if (connection.state === HubConnectionState.Connected) {
+                    await connection.invoke('SendPrivateMessage', username, input);
+                } else {
+                    console.error("Cannot send message. SignalR connection is not connected.");
+                }
             } catch (error) {
                 console.error('Sending message failed:', error);
             }
