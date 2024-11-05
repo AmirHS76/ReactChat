@@ -22,12 +22,15 @@ namespace ReactChat.Hubs
 
         public async Task SendPrivateMessage(string recipientUsername, string message)
         {
-            string groupName = GetPrivateGroupName(Context.User.Identity.Name, recipientUsername);
+            string senderUsername = Context.User.Identity.Name;
+            string groupName = GetPrivateGroupName(senderUsername, recipientUsername);
 
-            await Clients.Caller.SendAsync("ReceiveMessage", "You", message, "sender");
+            await Clients.Caller.SendAsync("ReceiveMessage", senderUsername, message, "sender");
+
             await Clients.GroupExcept(groupName, Context.ConnectionId)
-                         .SendAsync("ReceiveMessage", Context.User.Identity.Name, message, "recipient");
+                         .SendAsync("ReceiveMessage", senderUsername, message, "recipient");
         }
+
 
     }
 }

@@ -31,7 +31,8 @@ const Login: React.FC = () => {
             if (response.status != 200) {
                 throw new Error('Invalid username or password');
             }
-
+            const usernameToken = username;
+            Cookies.set('username', usernameToken);
             const token = response.data.token;
             Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'Strict' });
             console.log('Login successful');

@@ -17,7 +17,8 @@ const App: React.FC = () => {
                 <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/main" element={<ProtectedRoute element={<MainPage />} />} />
                 <Route path="/privateChat/:username" element={<ProtectedRoute element={<PrivateChat />} />} />
-                <Route path="/users" element={<ProtectedRoute element={<UserList />} /> } />
+                <Route path="/users" element={<ProtectedRoute element={<UserList />} />} />
+                <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </Router>
     );

@@ -12,6 +12,7 @@ interface Message {
 
 const PrivateChat: React.FC = () => {
     const { username } = useParams<{ username: string }>();
+    const currentUser = Cookies.get('username');
     const [connection, setConnection] = useState<HubConnection | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
@@ -29,9 +30,13 @@ const PrivateChat: React.FC = () => {
                 .build();
 
             newConnection.on('ReceiveMessage', (sender: string, content: string, type: string) => {
-                if (type === "recipient" || sender !== "You") {
-                    setMessages((prevMessages) => [...prevMessages, { sender, content, type }]);
-                }
+                const isSender = sender === currentUser;
+                const displaySender = isSender ? 'You' : sender;
+                type = isSender ? 'sender' : 'recipient';
+                setMessages((prevMessages) => [
+                    ...prevMessages,
+                    { sender: displaySender, content, type }
+                ]);
             });
 
             try {
@@ -50,19 +55,12 @@ const PrivateChat: React.FC = () => {
         return () => {
             connection?.stop();
         };
-    }, [username, connection]);
-
+    }, [username, connection, currentUser]);
 
     const sendMessage = async () => {
         if (connection && input.trim()) {
             try {
                 await connection.invoke('SendPrivateMessage', username, input);
-
-                setMessages((prevMessages) => [
-                    ...prevMessages,
-                    { sender: 'You', content: input, type: 'sender' },
-                ]);
-                setInput('');
             } catch (error) {
                 console.error('Sending message failed:', error);
             }
