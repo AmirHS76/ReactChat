@@ -11,5 +11,6 @@ namespace ReactChat.Application.Interfaces.Users
     {
         Task<BaseUser?> GetUserByUsernameAsync(string? username);
         Task<bool> UpdateUserAsync(string username, string email);
+        Task<IEnumerable<BaseUser>> GetAllUsersAsync();
     }
 }

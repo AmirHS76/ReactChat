@@ -5,7 +5,7 @@ const NewChatSection = () => {
     const navigate = useNavigate();
 
     const handleStartChat = () => {
-        navigate("/chat");
+        navigate("/users");
     };
     return (
         <div className="new-chat-section">

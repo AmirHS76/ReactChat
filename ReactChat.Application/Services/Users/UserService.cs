@@ -26,5 +26,10 @@ namespace ReactChat.Application.Services.Users
             await _unitOfWork.Repository<BaseUser>().UpdateAsync(user);
             return true;
         }
+        public async Task<IEnumerable<BaseUser>> GetAllUsersAsync()
+        {
+            IEnumerable<BaseUser> allUsers = await _unitOfWork.Repository<BaseUser>().GetAllAsync();
+            return allUsers;
+        }
     }
 }

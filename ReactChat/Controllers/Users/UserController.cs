@@ -32,5 +32,41 @@ namespace ReactChat.Controllers.Users
                 return BadRequest(ModelState);
             return (await _userService.UpdateUserAsync(user.username,user.email)) ? Ok(user) : BadRequest(ModelState);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userService.GetAllUsersAsync();
+
+            var userDtos = users.Select(user => new UserDto
+            {
+                email = user.Email ?? "",
+                username = user.Username ?? ""
+            }).ToList();
+
+            return Ok(userDtos);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            if (string.IsNullOrEmpty(username))
+            {
+                return Unauthorized("User not found in token.");
+            }
+
+            var user = await _userService.GetUserByUsernameAsync(username);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            return Ok(new
+            {
+                username = user.Username,
+                email = user.Email
+            });
+        }
     }
 }

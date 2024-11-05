@@ -5,9 +5,7 @@ import NewChatSection from './NewChatSection';
 
 const MainPage = () => {
     const handleStartNewChat = () => {
-        // Logic to start a new chat
         console.log('Starting a new chat...');
-        // Here, you can add functionality to open a chat window or navigate to a chat page
     };
 
     return (
@@ -17,7 +15,7 @@ const MainPage = () => {
             </header>
             <div className="container">
                 <WelcomeSection />
-                <NewChatSection onStartNewChat={handleStartNewChat} />
+                <NewChatSection />
                 <ProfileSection />
             </div>
         </div>

@@ -4,9 +4,30 @@ namespace ReactChat.Hubs
 {
     public class ChatHub : Hub
     {
-        public async Task SendMessage(string user, string message)
+        public async Task JoinPrivateChat(string username)
         {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            string groupName = GetPrivateGroupName(Context.User.Identity.Name, username);
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+
+            await Clients.Caller.SendAsync("JoinedGroup", groupName);
         }
+
+        private string GetPrivateGroupName(string user1, string user2)
+        {
+            var sortedUsers = new[] { user1, user2 };
+            Array.Sort(sortedUsers);
+            return $"private_{sortedUsers[0]}_{sortedUsers[1]}";
+        }
+
+        public async Task SendPrivateMessage(string recipientUsername, string message)
+        {
+            string groupName = GetPrivateGroupName(Context.User.Identity.Name, recipientUsername);
+
+            await Clients.Caller.SendAsync("ReceiveMessage", "You", message, "sender");
+            await Clients.GroupExcept(groupName, Context.ConnectionId)
+                         .SendAsync("ReceiveMessage", Context.User.Identity.Name, message, "recipient");
+        }
+
     }
 }

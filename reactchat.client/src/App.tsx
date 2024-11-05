@@ -4,8 +4,9 @@ import Login from './login/Login';
 import Register from "./register/register";
 import MainPage from "./MainPage/js/MainPage"
 import ProtectedRoute from './ProtectedRoute';
-import Chat from './ChatHub/js/Chat';
+import PrivateChat from './ChatHub/js/PrivateChat';
 import Header from './Header/Header'
+import UserList from './ChatHub/js/UsersList'
 const App: React.FC = () => {
     return (
         <Router>
@@ -15,7 +16,8 @@ const App: React.FC = () => {
                 <Route path="/register" element={<Register /> }/>
                 <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/main" element={<ProtectedRoute element={<MainPage />} />} />
-                <Route path="/chat" element={<ProtectedRoute element={<Chat /> } /> } />
+                <Route path="/privateChat/:username" element={<ProtectedRoute element={<PrivateChat />} />} />
+                <Route path="/users" element={<ProtectedRoute element={<UserList />} /> } />
             </Routes>
         </Router>
     );

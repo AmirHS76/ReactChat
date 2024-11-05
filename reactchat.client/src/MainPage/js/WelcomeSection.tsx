@@ -1,4 +1,3 @@
-import React from 'react';
 import '../css/WelcomeSection.css';
 
 const WelcomeSection = () => {

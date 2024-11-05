@@ -1,5 +1,4 @@
-// src/login/Login.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Login.css';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -11,13 +10,20 @@ const Login: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate(); // Initialize useNavigate
 
+    useEffect(() => {
+        const token = Cookies.get('token');
+        if (token) {
+            navigate('/main');
+        }
+    }, [navigate]);
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError(null);
         setMessage(null);
 
         try {
-            const response = await axios.post('https://localhost:7240/login', { 
+            const response = await axios.post('https://localhost:7240/login', {
                 username,
                 password
             });
@@ -32,11 +38,11 @@ const Login: React.FC = () => {
             setMessage('Login successful! Redirecting...');
 
             setTimeout(() => {
-                navigate('/main'); // Use navigate to go to the main page
+                navigate('/main');
             }, 500);
         } catch (err) {
             setError('Invalid username or password');
-            console.log('Error in login : ' + err);
+            console.log('Error in login: ' + err);
             setTimeout(() => setError(null), 3000);
         }
     };
