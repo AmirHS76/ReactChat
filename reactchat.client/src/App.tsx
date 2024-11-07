@@ -7,6 +7,8 @@ import ProtectedRoute from './ProtectedRoute';
 import PrivateChat from './ChatHub/js/PrivateChat';
 import Header from './Header/Header'
 import UserList from './ChatHub/js/UsersList'
+import UserManagementPage from './Sections/AdminSections/js/UserManagement'
+import AddNewUserPage from './Sections/AdminSections/js/AddNewUser'
 const App: React.FC = () => {
     return (
         <Router>
@@ -19,6 +21,8 @@ const App: React.FC = () => {
                 <Route path="/privateChat/:username" element={<ProtectedRoute element={<PrivateChat />} />} />
                 <Route path="/users" element={<ProtectedRoute element={<UserList />} />} />
                 <Route path="*" element={<Navigate to="/" />} />
+                <Route path="/userManagement" element={<ProtectedRoute element={<UserManagementPage />} adminOnly={true} />} />
+                <Route path="/newUser" element={<ProtectedRoute element={<AddNewUserPage />} adminOnly={true} />} />
             </Routes>
         </Router>
     );

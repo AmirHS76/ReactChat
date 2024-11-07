@@ -5,46 +5,57 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 
 interface ProtectedRouteProps {
-    element: React.ReactNode; // The component to render if authenticated
+    element: React.ReactNode;
+    adminOnly?: boolean
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // State to hold authentication status
-    const [loading, setLoading] = useState<boolean>(true); // State to manage loading
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, adminOnly = false }) => {
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
     useEffect(() => {
         const checkAuthentication = async () => {
-            const token = Cookies.get('token'); // Get the token from cookies
+            const token = Cookies.get('token');
 
             if (!token) {
-                setIsAuthenticated(false); // No token means not authenticated
+                setIsAuthenticated(false);
                 setLoading(false);
                 return;
             }
 
             try {
-                // Send a request to the backend to verify the token
                 const response = await axios.get('https://localhost:7240/auth', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                setIsAuthenticated(response.status === 200); // Set authenticated status based on response
+                setIsAuthenticated(response.status === 200);
+                isAdminCheck(token);
             } catch (error) {
                 console.log(error)
-                setIsAuthenticated(false); // If there's an error, set to not authenticated
+                setIsAuthenticated(false);
             } finally {
-                setLoading(false); // Set loading to false after the check is complete
+                setLoading(false);
             }
         };
 
-        checkAuthentication(); // Call the authentication check
-    }, []); // Empty dependency array to run once on mount
-
-    // While loading, you can return a loading indicator or null
-    if (loading) {
-        return <div>Loading...</div>; // Replace with a spinner or loading message as needed
+        checkAuthentication();
+    }, []);
+    const isAdminCheck = async (token) => {
+        const response = await axios.get('https://localhost:7240/user/GetUserRole', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const user = await response.data;
+        if (user.role === "Admin")
+            setIsAdmin(true);
+        else
+            setIsAdmin(false);
     }
-
-    // If authenticated, render the protected element; otherwise, redirect to login
+    if (loading) {
+        return <div>Loading...</div>; 
+    }
+    if (adminOnly && !isAdmin) {
+        return <Navigate to="/main" />;
+    }
     return isAuthenticated ? (
         <>{element}</>
     ) : (

@@ -1,12 +1,29 @@
+import { useEffect, useState } from 'react';
 import '../css/MainPage.css';
-import WelcomeSection from './WelcomeSection';
-import ProfileSection from './ProfileSection';
-import NewChatSection from './NewChatSection';
-
+import WelcomeSection from '../../Sections/RegularUserSections/js/WelcomeSection';
+import AdminSection from '../../Sections/AdminSections/js/AdminSection';
+import ProfileSection from '../../Sections/PublicSections/js/ProfileSection';
+import NewChatSection from '../../Sections/PublicSections/js/NewChatSection';
+import Cookies from 'js-cookie';
 const MainPage = () => {
-    const handleStartNewChat = () => {
-        console.log('Starting a new chat...');
-    };
+    const [userRole, setUserRole] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            const token = Cookies.get('token');
+            const response = await fetch("https://localhost:7240/user/GetUserRole", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await response.json();
+            setUserRole(data.role);
+        };
+
+        fetchUserRole();
+    }, []);
+
+    if (userRole === null) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="main-page">
@@ -14,7 +31,7 @@ const MainPage = () => {
                 <h1>Chat Application</h1>
             </header>
             <div className="container">
-                <WelcomeSection />
+                {userRole == "Admin" ? <AdminSection /> : <WelcomeSection />}
                 <NewChatSection />
                 <ProfileSection />
             </div>

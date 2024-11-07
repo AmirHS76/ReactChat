@@ -1,9 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const token = Cookies.get('token');
 
     const handleLogout = () => {
@@ -11,10 +12,19 @@ const Header: React.FC = () => {
         navigate('/login');
     };
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
+    const isLoginOrMainPage = location.pathname === '/login' || location.pathname === '/main';
+
     return (
         <header>
             {token && (
-                <button onClick={handleLogout}>Logout</button>
+                <div>
+                    {!isLoginOrMainPage && <button onClick={handleBack}>Back</button>}
+                    <button onClick={handleLogout}>Logout</button>
+                </div>
             )}
         </header>
     );

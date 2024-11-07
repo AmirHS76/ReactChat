@@ -11,8 +11,8 @@ using ReactChat.Infrastructure.Data;
 namespace ReactChat.Infrastructure.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20241105125145_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241107081615_AddRoleToUser")]
+    partial class AddRoleToUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,9 @@ namespace ReactChat.Infrastructure.Migrations
 
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
