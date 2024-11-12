@@ -1,7 +1,7 @@
 ﻿using ReactChat.Application.Interfaces.Users;
 using ReactChat.Core.Entities.Login;
 using ReactChat.Core.Enums;
-using ReactChat.Infrastructure.Data;
+using ReactChat.Infrastructure.Data.UnitOfWork;
 using System.Data;
 
 namespace ReactChat.Application.Services.Users

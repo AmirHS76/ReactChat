@@ -25,7 +25,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, adminOnly = fa
             }
 
             try {
-                const response = await axios.get('https://localhost:7240/auth', {
+                const response = await axios.get('https://localhost:7240/authenticate', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setIsAuthenticated(response.status === 200);
@@ -41,7 +41,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, adminOnly = fa
         checkAuthentication();
     }, []);
     const isAdminCheck = async (token) => {
-        const response = await axios.get('https://localhost:7240/user/GetUserRole', {
+        const response = await axios.get('https://localhost:7240/user/GetRole', {
             headers: { Authorization: `Bearer ${token}` }
         });
         const user = await response.data;

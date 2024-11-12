@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-
+import axios from 'axios';
 interface User {
     username: string;
     email: string;
@@ -15,27 +15,33 @@ const UserList: React.FC = () => {
     useEffect(() => {
         const fetchCurrentUser = async () => {
             const token = Cookies.get('token');
-            const response = await fetch("https://localhost:7240/user/getCurrentUser", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (response.ok) {
-                const user = await response.json();
+            try {
+                const response = await axios.get("https://localhost:7240/user", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                const user = await response.data;
                 setCurrentUsername(user.username);
-            } else {
+            }
+            catch {
                 console.error("Failed to fetch current user");
             }
         };
 
         const fetchUsers = async () => {
             const token = Cookies.get('token');
-            const response = await fetch("https://localhost:7240/user/getAllUsers", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            try {
+                const response = await axios.get("https://localhost:7240/user/getAll", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-            if (response.ok) {
-                const userList: User[] = await response.json();
+                const userList: User[] = await response.data;
                 setUsers(userList.filter(user => user.username !== currentUsername));
-            } else {
+            } 
+            catch {
                 console.error("Failed to fetch users");
             }
         };

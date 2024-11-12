@@ -1,7 +1,8 @@
 ﻿using ReactChat.Core.Entities.Login;
+using ReactChat.Infrastructure.Data.Context;
 using ReactChat.Infrastructure.Repositories;
 using ReactChat.Infrastructure.Repositories.Users;
-namespace ReactChat.Infrastructure.Data.Users
+namespace ReactChat.Infrastructure.Data.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {

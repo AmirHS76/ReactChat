@@ -11,7 +11,7 @@ const ProfileSection = () => {
 
     const GetUserData = async () => {
         const token = Cookies.get('token');
-        const response = await Axios.get("https://localhost:7240/GetUserData", {
+        const response = await Axios.get("https://localhost:7240/authenticate/data", {
             headers: { Authorization: `Bearer ${token}` }
         });
         setUsername(response.data.username);
@@ -20,7 +20,7 @@ const ProfileSection = () => {
 
     const updateEmail = async () => {
         const token = Cookies.get('token');
-        await Axios.get("https://localhost:7240/user/updateEmail/"+newEmail,
+        await Axios.patch("https://localhost:7240/user/" + newEmail,
             { headers: { Authorization: `Bearer ${token}` } }
         );
         setEmail(newEmail);

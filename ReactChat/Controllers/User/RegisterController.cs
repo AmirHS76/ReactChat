@@ -5,7 +5,7 @@ using ReactChat.Dtos;
 
 namespace ReactChat.Controllers.Users
 {
-    [Route("[controller]")]
+    [Route("[Controller]")]
     public class RegisterController : ControllerBase
     {
         IRegisterService _registerService;

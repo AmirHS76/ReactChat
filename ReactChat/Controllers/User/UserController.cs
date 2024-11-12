@@ -7,50 +7,13 @@ using System.Security.Claims;
 namespace ReactChat.Controllers.Users
 {
     [Authorize]
-    [Route("User/[Action]")]
+    [Route("[Controller]/")]
     public class UserController : ControllerBase
     {
         IUserService _userService;
         public UserController(IUserService userService)
         {
             _userService = userService;
-        }
-
-        [HttpGet]
-        [Route("{email}")]
-        public async Task<IActionResult> UpdateEmail(string email)
-        {
-            var username = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (username == null)
-                return Unauthorized();
-            var user = await _userService.GetUserByUsernameAsync(username);
-            if (user == null)
-                return NotFound();
-            return await _userService.UpdateUserAsync(user.Id, username, email) ? Ok() : BadRequest();
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromBody] UserDto user)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            return (await _userService.UpdateUserAsync(user.Id ?? 0, user.Username, user.Email)) ? Ok(user) : BadRequest(ModelState);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            var users = await _userService.GetAllUsersAsync();
-            //todo : Automapper
-            var userDtos = users.Select(user => new UserDto
-            {
-                Id = user.Id,
-                Email = user.Email ?? "",
-                Username = user.Username ?? "",
-                Role = user.Role.ToString()
-            }).ToList();
-
-            return Ok(userDtos);
         }
 
         [HttpGet]
@@ -78,6 +41,24 @@ namespace ReactChat.Controllers.Users
         }
 
         [HttpGet]
+        [Route("getAll")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userService.GetAllUsersAsync();
+            //todo : Automapper
+            var userDtos = users.Select(user => new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email ?? "",
+                Username = user.Username ?? "",
+                Role = user.Role.ToString()
+            }).ToList();
+
+            return Ok(userDtos);
+        }
+
+        [HttpGet]
+        [Route("getRole")]
         public async Task<IActionResult> GetUserRole()
         {
             var username = User.FindFirst(ClaimTypes.Name)?.Value;
@@ -91,6 +72,27 @@ namespace ReactChat.Controllers.Users
         public async Task<IActionResult> AddNewUser([FromBody] UserDto user)
         {
             return await _userService.AddNewUserAsync(user.Username, user.Password, user.Email, user.Role) ? Ok(user) : BadRequest();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromBody] UserDto user)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return (await _userService.UpdateUserAsync(user.Id ?? 0, user.Username, user.Email)) ? Ok(user) : BadRequest(ModelState);
+        }
+
+        [HttpPatch]
+        [Route("{email}")]
+        public async Task<IActionResult> UpdateEmail(string email)
+        {
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
+            if (username == null)
+                return Unauthorized();
+            var user = await _userService.GetUserByUsernameAsync(username);
+            if (user == null)
+                return NotFound();
+            return await _userService.UpdateUserAsync(user.Id, username, email) ? Ok() : BadRequest();
         }
     }
 }

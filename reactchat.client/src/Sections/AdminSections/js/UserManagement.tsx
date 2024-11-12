@@ -24,7 +24,7 @@ const UserManagementPage: React.FC = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('https://localhost:7240/user/getAllUsers', {
+                const response = await axios.get('https://localhost:7240/user/getAll', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setUsers(response.data);
@@ -57,7 +57,7 @@ const UserManagementPage: React.FC = () => {
         };
 
         try {
-            await axios.put(`https://localhost:7240/user/updateUser`, updatedUser, {
+            await axios.put(`https://localhost:7240/user`, updatedUser, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUsers((prevUsers) =>

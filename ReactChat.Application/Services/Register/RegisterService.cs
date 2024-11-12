@@ -1,6 +1,6 @@
 ﻿using ReactChat.Application.Interfaces.Register;
 using ReactChat.Core.Entities.Login;
-using ReactChat.Infrastructure.Data;
+using ReactChat.Infrastructure.Data.UnitOfWork;
 using ReactChat.Infrastructure.Repositories.Users;
 
 namespace ReactChat.Application.Services.Register

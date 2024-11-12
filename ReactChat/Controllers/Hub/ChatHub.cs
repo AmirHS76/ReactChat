@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using ReactChat.Helpers.HubHelpers;
 
-namespace ReactChat.Hubs
+namespace ReactChat.Controllers.Hub
 {
-    public class ChatHub : Hub
+    public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
     {
         private readonly IMessageHubHelper _messageHubHelper;
 

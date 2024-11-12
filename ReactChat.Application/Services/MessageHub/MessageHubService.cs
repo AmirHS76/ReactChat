@@ -1,6 +1,6 @@
 ﻿using ReactChat.Application.Interfaces.MessageHub;
 using ReactChat.Core.Entities.Messages;
-using ReactChat.Infrastructure.Data;
+using ReactChat.Infrastructure.Data.UnitOfWork;
 
 namespace ReactChat.Application.Services.MessageHub
 {

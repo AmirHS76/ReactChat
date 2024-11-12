@@ -4,7 +4,7 @@ using ReactChat.Core.Entities.Messages;
 using ReactChat.Core.Entities.User;
 using ReactChat.Core.Enums;
 
-namespace ReactChat.Infrastructure.Data
+namespace ReactChat.Infrastructure.Data.Context
 {
     public class UserContext : DbContext
     {

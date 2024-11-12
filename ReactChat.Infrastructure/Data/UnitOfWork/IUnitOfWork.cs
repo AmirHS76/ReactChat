@@ -1,7 +1,7 @@
 ﻿using ReactChat.Infrastructure.Repositories;
 using ReactChat.Infrastructure.Repositories.Users;
 
-namespace ReactChat.Infrastructure.Data
+namespace ReactChat.Infrastructure.Data.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {

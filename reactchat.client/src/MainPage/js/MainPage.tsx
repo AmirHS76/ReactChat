@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import '../css/MainPage.css';
 import WelcomeSection from '../../Sections/RegularUserSections/js/WelcomeSection';
 import AdminSection from '../../Sections/AdminSections/js/AdminSection';
@@ -11,10 +12,12 @@ const MainPage = () => {
     useEffect(() => {
         const fetchUserRole = async () => {
             const token = Cookies.get('token');
-            const response = await fetch("https://localhost:7240/user/GetUserRole", {
-                headers: { Authorization: `Bearer ${token}` }
+            const response = await axios.get("https://localhost:7240/user/GetRole", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
-            const data = await response.json();
+            const data = await response.data;
             setUserRole(data.role);
         };
 

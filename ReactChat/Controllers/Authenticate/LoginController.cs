@@ -2,7 +2,7 @@
 using ReactChat.Application.Services.Login;
 using ReactChat.Dtos.Authenticate;
 
-[Route("[controller]")]
+[Route("[Controller]")]
 public class LoginController : ControllerBase
 {
     LoginService _loginService;

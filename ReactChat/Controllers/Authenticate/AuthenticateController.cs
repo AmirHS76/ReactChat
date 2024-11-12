@@ -6,11 +6,11 @@ using System.Security.Claims;
 
 namespace ReactChat.Controllers.Authenticate
 {
-    [Route("[action]")]
-    public class AuthController : ControllerBase
+    [Route("[Controller]")]
+    public class AuthenticateController : ControllerBase
     {
         IUserService _userService;
-        public AuthController(IUserService userService)
+        public AuthenticateController(IUserService userService)
         {
             _userService = userService;
         }
@@ -22,6 +22,7 @@ namespace ReactChat.Controllers.Authenticate
         }
         [HttpGet]
         [Authorize]
+        [Route("Data")]
         public async Task<IActionResult> GetUserData()
         {
             var username = User.FindFirst(ClaimTypes.Name)?.Value;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using ReactChat.Core.Entities.Login;
-using ReactChat.Infrastructure.Data;
+using ReactChat.Infrastructure.Data.UnitOfWork;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
