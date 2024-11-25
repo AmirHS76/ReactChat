@@ -13,5 +13,7 @@
     <Folder Include="src\ChatHub\css\" />
     <Folder Include="src\MainPage\css\" />
     <Folder Include="src\Header\" />
+    <Folder Include="src\Repositories\" />
+    <Folder Include="src\Services\" />
   </ItemGroup>
 </Project>

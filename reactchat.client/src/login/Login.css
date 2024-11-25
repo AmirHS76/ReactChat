@@ -104,10 +104,13 @@ body {
 }
 
 .error-message {
-    background-color: #f44336; /* Red */
-    color: white;
-    padding: 10px;
+    background-color: #b3b3b3; /* Red */
+    color: #ffffff; /* White */
+    padding: 1000px;
     margin-bottom: 20px;
     border-radius: 5px;
     text-align: center;
+    opacity: 1;
+    z-index: 1;
+    font-size: 55px;
 }

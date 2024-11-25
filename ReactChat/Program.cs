@@ -75,10 +75,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",
         builder =>
         {
-            builder.WithOrigins("http://localhost:5173")
+            //builder.WithOrigins("http://localhost:5173")
+            builder.AllowAnyOrigin()
                    .AllowAnyMethod()
                    .AllowAnyHeader()
-                   .AllowCredentials()
+                   //.AllowCredentials()
                    .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
         });
 });

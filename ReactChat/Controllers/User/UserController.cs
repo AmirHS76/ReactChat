@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReactChat.Application.Attributes;
 using ReactChat.Application.Interfaces.Users;
 using ReactChat.Dtos.Users;
 using System.Security.Claims;
 
 namespace ReactChat.Controllers.Users
 {
-    [Authorize]
     [Route("[Controller]/")]
     public class UserController : ControllerBase
     {
@@ -15,7 +15,7 @@ namespace ReactChat.Controllers.Users
         {
             _userService = userService;
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetCurrentUser()
         {
@@ -39,7 +39,7 @@ namespace ReactChat.Controllers.Users
                 email = user.Email
             });
         }
-
+        [Authorize]
         [HttpGet]
         [Route("getAll")]
         public async Task<IActionResult> GetAllUsers()
@@ -56,7 +56,7 @@ namespace ReactChat.Controllers.Users
 
             return Ok(userDtos);
         }
-
+        [Authorize]
         [HttpGet]
         [Route("getRole")]
         public async Task<IActionResult> GetUserRole()
@@ -67,13 +67,13 @@ namespace ReactChat.Controllers.Users
                 return NotFound();
             return Ok(new { role = user.Role.ToString() });
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddNewUser([FromBody] UserDto user)
         {
             return await _userService.AddNewUserAsync(user.Username, user.Password, user.Email, user.Role) ? Ok(user) : BadRequest();
         }
-
+        [CustomAuthorize("Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromBody] UserDto user)
         {
@@ -81,7 +81,7 @@ namespace ReactChat.Controllers.Users
                 return BadRequest(ModelState);
             return (await _userService.UpdateUserAsync(user.Id ?? 0, user.Username, user.Email)) ? Ok(user) : BadRequest(ModelState);
         }
-
+        [Authorize]
         [HttpPatch]
         [Route("{email}")]
         public async Task<IActionResult> UpdateEmail(string email)
