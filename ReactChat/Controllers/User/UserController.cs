@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReactChat.Application.Attributes;
 using ReactChat.Application.Interfaces.Users;
+using ReactChat.Core.Entities.Login;
 using ReactChat.Dtos.Users;
 using System.Security.Claims;
 
@@ -10,9 +12,11 @@ namespace ReactChat.Controllers.Users
     [Route("[Controller]/")]
     public class UserController : ControllerBase
     {
+        IMapper _mapper;
         IUserService _userService;
-        public UserController(IUserService userService)
+        public UserController(IUserService userService,IMapper mapper)
         {
+            _mapper = mapper;
             _userService = userService;
         }
         [Authorize]
@@ -44,17 +48,15 @@ namespace ReactChat.Controllers.Users
         [Route("getAll")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userService.GetAllUsersAsync();
+            IEnumerable<BaseUser> result = await _userService.GetAllUsersAsync();
+            List<UserDto> users = new List<UserDto>();
             //todo : Automapper
-            var userDtos = users.Select(user => new UserDto
+            foreach (BaseUser baseUser in result)
             {
-                Id = user.Id,
-                Email = user.Email ?? "",
-                Username = user.Username ?? "",
-                Role = user.Role.ToString()
-            }).ToList();
+                users.Add(_mapper.Map<UserDto>(baseUser));   
+            }
 
-            return Ok(userDtos);
+            return Ok(users);
         }
         [Authorize]
         [HttpGet]

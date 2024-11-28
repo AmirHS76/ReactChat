@@ -4,7 +4,7 @@ import Login from './login/Login';
 import Register from "./register/register";
 import MainPage from "./MainPage/js/MainPage"
 import ProtectedRoute from './ProtectedRoute';
-import PrivateChat from './ChatHub/js/PrivateChat';
+import PrivateChat from './components/privateChat/PrivateChat';
 import Header from './Header/Header'
 import UserList from './ChatHub/js/UsersList'
 import UserManagementPage from './Sections/AdminSections/js/UserManagement'

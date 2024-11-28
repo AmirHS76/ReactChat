@@ -11,8 +11,10 @@
   <ItemGroup>
     <Folder Include="services\" />
     <Folder Include="src\ChatHub\css\" />
+    <Folder Include="src\components\shared\" />
     <Folder Include="src\MainPage\css\" />
     <Folder Include="src\Header\" />
+    <Folder Include="src\utils\" />
     <Folder Include="src\Repositories\" />
     <Folder Include="src\Services\" />
   </ItemGroup>

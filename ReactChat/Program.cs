@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using ReactChat.Application.Interfaces.MessageHub;
 using ReactChat.Application.Interfaces.Register;
 using ReactChat.Application.Interfaces.Users;
+using ReactChat.Application.Mapping;
 using ReactChat.Application.Services.BackgroundServices;
 using ReactChat.Application.Services.Login;
 using ReactChat.Application.Services.MessageHub;
@@ -70,16 +71,17 @@ builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessageHubService, MessageHubService>();
 builder.Services.AddScoped<IMessageHubHelper, MessageHubHelper>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         builder =>
         {
-            //builder.WithOrigins("http://localhost:5173")
-            builder.AllowAnyOrigin()
+            builder.WithOrigins("http://localhost:5173")
+            //builder.AllowAnyOrigin()
                    .AllowAnyMethod()
                    .AllowAnyHeader()
-                   //.AllowCredentials()
+                   .AllowCredentials()
                    .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
         });
 });

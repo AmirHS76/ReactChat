@@ -1,12 +1,11 @@
-// ProtectedRoute.tsx
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import axios from 'axios';
-
+import { checkAuthToken, handleUnauthenticated } from './services/authService';
+import { fetchUserRole } from './services/userService';
 interface ProtectedRouteProps {
     element: React.ReactNode;
-    adminOnly?: boolean
+    adminOnly?: boolean;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, adminOnly = false }) => {
@@ -15,47 +14,44 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, adminOnly = fa
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
     useEffect(() => {
-        const checkAuthentication = async () => {
+        const verifyAuthentication = async () => {
             const token = Cookies.get('token');
 
             if (!token) {
-                setIsAuthenticated(false);
+                handleUnauthenticated();
                 setLoading(false);
                 return;
             }
 
             try {
-                const response = await axios.get('https://localhost:7240/authenticate', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                setIsAuthenticated(response.status === 200);
-                isAdminCheck(token);
+                const isAuthenticated = await checkAuthToken(token);
+                setIsAuthenticated(isAuthenticated);
+
+                if (isAuthenticated) {
+                    const userRole = await fetchUserRole(token);
+                    setIsAdmin(userRole === 'Admin');
+                } else {
+                    handleUnauthenticated();
+                }
             } catch (error) {
-                console.log(error)
-                setIsAuthenticated(false);
+                console.error('Error verifying authentication:', error);
+                handleUnauthenticated();
             } finally {
                 setLoading(false);
             }
         };
 
-        checkAuthentication();
+        verifyAuthentication();
     }, []);
-    const isAdminCheck = async (token) => {
-        const response = await axios.get('https://localhost:7240/user/GetRole', {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        const user = await response.data;
-        if (user.role === "Admin")
-            setIsAdmin(true);
-        else
-            setIsAdmin(false);
-    }
+
     if (loading) {
-        return <div>Loading...</div>; 
+        return <div>Loading...</div>;
     }
+
     if (adminOnly && !isAdmin) {
         return <Navigate to="/main" />;
     }
+
     return isAuthenticated ? (
         <>{element}</>
     ) : (

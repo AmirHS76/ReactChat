@@ -22,13 +22,6 @@ namespace ReactChat.Controllers.Hub
             await Clients.Caller.SendAsync("JoinedGroup", groupName);
         }
 
-        private string GetPrivateGroupName(string user1, string user2)
-        {
-            var sortedUsers = new[] { user1, user2 };
-            Array.Sort(sortedUsers);
-            return $"private_{sortedUsers[0]}_{sortedUsers[1]}";
-        }
-
         public async Task SendPrivateMessage(string recipientUsername, string message)
         {
             if (Context.User?.Identity?.Name == null)
