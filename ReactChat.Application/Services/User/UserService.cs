@@ -30,13 +30,13 @@ namespace ReactChat.Application.Services.Users
                 return false;
             user.Username = username;
             user.Email = email;
-            await _unitOfWork.Repository<BaseUser>().UpdateAsync(user);
+            await _unitOfWork.UserRepository.UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
         public async Task<IEnumerable<BaseUser>> GetAllUsersAsync()
         {
-            IEnumerable<BaseUser> allUsers = await _unitOfWork.Repository<BaseUser>().GetAllAsync();
+            IEnumerable<BaseUser> allUsers = await _unitOfWork.UserRepository.GetAllAsync();
             return allUsers;
         }
         public async Task<bool> AddNewUserAsync(string username, string password, string email, string role)
@@ -46,7 +46,7 @@ namespace ReactChat.Application.Services.Users
             if (baseUser != null)
                 return false;
             baseUser = CreateUser(username, password, email, role);
-            await _unitOfWork.Repository<BaseUser>().AddAsync(baseUser);
+            await _unitOfWork.UserRepository.AddAsync(baseUser);
             return true;
         }
         private BaseUser CreateUser(string username, string password, string email,string role)

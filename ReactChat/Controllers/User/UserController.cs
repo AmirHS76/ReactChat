@@ -50,7 +50,6 @@ namespace ReactChat.Controllers.Users
         {
             IEnumerable<BaseUser> result = await _userService.GetAllUsersAsync();
             List<UserDto> users = new List<UserDto>();
-            //todo : Automapper
             foreach (BaseUser baseUser in result)
             {
                 users.Add(_mapper.Map<UserDto>(baseUser));   

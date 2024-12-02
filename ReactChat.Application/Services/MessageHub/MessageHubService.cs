@@ -20,7 +20,7 @@ namespace ReactChat.Application.Services.MessageHub
                 SenderName = sender,
                 MessageDateTime = DateTime.Now.ToString()
             };
-            await _unitOfWork.Repository<PrivateMessage>().AddAsync(privateMessage);
+            await _unitOfWork.MessageRepository.AddAsync(privateMessage);
             await _unitOfWork.SaveChangesAsync();
         }
     }

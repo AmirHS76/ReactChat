@@ -1,6 +1,8 @@
 ﻿using ReactChat.Core.Entities.Login;
+using ReactChat.Core.Entities.Messages;
 using ReactChat.Infrastructure.Data.Context;
 using ReactChat.Infrastructure.Repositories;
+using ReactChat.Infrastructure.Repositories.Message;
 using ReactChat.Infrastructure.Repositories.Users;
 namespace ReactChat.Infrastructure.Data.UnitOfWork
 {
@@ -35,6 +37,20 @@ namespace ReactChat.Infrastructure.Data.UnitOfWork
                 var newUserRepository = new UserRepository(_context);
                 _repositories[typeof(BaseUser)] = newUserRepository;
                 return newUserRepository;
+            }
+        }
+        public IMessageRepository MessageRepository
+        {
+            get
+            {
+                if (_repositories.TryGetValue(typeof(PrivateMessage), out var repository))
+                {
+                    return (IMessageRepository)repository;
+                }
+
+                var newMessageRepository = new MessageRepository(_context);
+                _repositories[typeof(PrivateMessage)] = newMessageRepository;
+                return newMessageRepository;
             }
         }
         public async Task SaveChangesAsync()
