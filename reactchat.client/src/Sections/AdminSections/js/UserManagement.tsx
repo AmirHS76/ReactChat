@@ -97,40 +97,48 @@ const UserManagementPage: React.FC = () => {
             {error && <div className="error-message">{error}</div>}
             <div className="user-list">
                 {users.map((user) => (
-                    <div key={user.id} className="user-card">
-                        <p>Username: {user.username}</p>
-                        <p>Email: {user.email}</p>
-                        <p>Role: {user.role}</p>
-                        <button className="manage-button" onClick={() => handleEdit(user)}>Edit</button>
-                        <button className="manage-button" onClick={() => handleDelete(user.id)}>Delete</button>
+                    <div key={user.id} className="user-card-container">
+                        <div key={user.id} className="user-card">
+                            <p>Username: {user.username}</p>
+                            <p>Email: {user.email}</p>
+                            <p>Role: {user.role}</p>
+                        </div>
+                        <div>
+                            <button className="manage-button" onClick={() => handleEdit(user)}>Edit</button>
+                            <button className="manage-button" onClick={() => handleDelete(user.id)}>Delete</button>
+                        </div>
                     </div>
                 ))}
             </div>
 
             {editingUser && (
-                <div className="edit-form">
-                    <h3>Edit User</h3>
-                    <div>
-                        <label>Username:</label>
-                        <input
-                            type="text"
-                            name="username"
-                            value={newUserData.username}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div>
-                        <label>Email:</label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={newUserData.email}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <button className="manage-button" onClick={handleSave}>Save</button>
-                    <button className="manage-button" onClick={() => setEditingUser(null)}>Cancel</button>
-                </div>
+               <div className="modal">
+               <div className="modal-content">
+                   <h3>Edit User</h3>
+                   <div className="form-group">
+                       <label>Username:</label>
+                       <input
+                           type="text"
+                           name="username"
+                           value={newUserData.username}
+                           onChange={handleChange}
+                       />
+                   </div>
+                   <div className="form-group">
+                       <label>Email:</label>
+                       <input
+                           type="email"
+                           name="email"
+                           value={newUserData.email}
+                           onChange={handleChange}
+                       />
+                   </div>
+                   <div className="button-group">
+                       <button className="save-button" onClick={handleSave}>Save</button>
+                       <button className="cancel-button" onClick={() => setEditingUser(null)}>Cancel</button>
+                   </div>
+               </div>
+           </div>
             )}
         </div>
     );

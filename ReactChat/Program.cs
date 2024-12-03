@@ -1,3 +1,4 @@
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -16,9 +17,34 @@ using ReactChat.Infrastructure.Data.Context;
 using ReactChat.Infrastructure.Data.UnitOfWork;
 using ReactChat.Infrastructure.Repositories;
 using ReactChat.Infrastructure.Repositories.Users;
+using Serilog;
 using System.Text;
 
+
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var hangFireConnectionString = builder.Configuration.GetConnectionString("HangfireConnection");
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()
+    .WriteTo.MSSqlServer(
+    connectionString: connectionString,
+    sinkOptions: new Serilog.Sinks.MSSqlServer.MSSqlServerSinkOptions
+    {
+        TableName = "Logs",
+        AutoCreateSqlTable = true
+    },
+    restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
+    .CreateLogger();
+
+builder.Services.AddHangfire(config =>
+config.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+.UseSimpleAssemblyNameTypeSerializer()
+.UseRecommendedSerializerSettings()
+.UseSqlServerStorage(hangFireConnectionString));
+
+builder.Services.AddHangfireServer();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -53,6 +79,7 @@ builder.Services.AddAuthentication(options =>
         }
     };
 });
+builder.Host.UseSerilog();
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
@@ -91,13 +118,13 @@ builder.Services.AddLogging(logging =>
     logging.AddConsole();
 });
 builder.Services.AddSingleton<MessageProcessingService>();
-builder.Services.AddHostedService(provider => provider.GetRequiredService<MessageProcessingService>());
+//builder.Services.AddHostedService(provider => provider.GetRequiredService<MessageProcessingService>());
 var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseCors("AllowAll");
-
+app.UseHangfireDashboard();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -105,7 +132,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseSerilogRequestLogging();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

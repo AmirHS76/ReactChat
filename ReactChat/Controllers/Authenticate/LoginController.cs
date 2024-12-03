@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using ReactChat.Application.Services.Login;
 using ReactChat.Dtos.Authenticate;
 
 [Route("[Controller]")]
 public class LoginController : ControllerBase
 {
+    private readonly ILogger<LoginController> _logger;
     LoginService _loginService;
-    public LoginController(LoginService loginService)
+    public LoginController(ILogger<LoginController> logger,LoginService loginService)
     {
+        _logger = logger;
         _loginService = loginService;
     }
     [HttpPost]
@@ -18,6 +21,7 @@ public class LoginController : ControllerBase
             return BadRequest(ModelState);
         }
         var token = await _loginService.Authenticate(request.username, request.password);
+        _logger.LogInformation("User token = " + token);
         return token != null ? Ok(new { Token = token }) : Unauthorized("Invalid username or password");
     }
 }

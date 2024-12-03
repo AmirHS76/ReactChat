@@ -1,4 +1,5 @@
-﻿using ReactChat.Application.Interfaces.MessageHub;
+﻿using Hangfire;
+using ReactChat.Application.Interfaces.MessageHub;
 using ReactChat.Application.Services.BackgroundServices;
 
 namespace ReactChat.Helpers.HubHelpers
@@ -7,14 +8,17 @@ namespace ReactChat.Helpers.HubHelpers
     {
         IMessageHubService _messageHubService;
         private readonly MessageProcessingService _messageProcessingService;
-        public MessageHubHelper(IMessageHubService messageHubService, MessageProcessingService messageProcessingService)
+        private readonly IBackgroundJobClient _backgroundJobClient;
+
+        public MessageHubHelper(IMessageHubService messageHubService, MessageProcessingService messageProcessingService, IBackgroundJobClient backgroundJobClient)
         {
             _messageProcessingService = messageProcessingService;
             _messageHubService = messageHubService;
+            _backgroundJobClient = backgroundJobClient;
         }
         public async Task SaveMessageAsync(string sender, string recipient, string message)
         {
-            _messageProcessingService.EnqueueMessage(sender, recipient, message);
+            _backgroundJobClient.Enqueue(() => _messageProcessingService.EnqueueMessage(sender, recipient, message));
         }
 
         public string GetPrivateGroupName(string user1, string user2)
