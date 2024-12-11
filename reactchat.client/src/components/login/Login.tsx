@@ -32,7 +32,7 @@ const Login: React.FC = () => {
                 throw new Error('Invalid username or password');
             }
             const usernameToken = username;
-            Cookies.set('username', usernameToken);
+            Cookies.set('username', usernameToken, { secure: true, sameSite: 'Strict' });
             const token = response.data.token;
             Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'Strict' });
             console.log('Login successful');
