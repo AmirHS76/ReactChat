@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } 
 import Cookies from 'js-cookie';
 
 const apiClient = axios.create({
-    baseURL: 'https://localhost:7240',
+    baseURL: process.env.REACT_APP_API_BASE_URL,
     timeout: 5000,
     headers: {
         'Content-Type': 'application/json',

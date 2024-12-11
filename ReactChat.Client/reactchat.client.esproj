@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1184077">
+  <PropertyGroup>
+    <StartupCommand>npm run dev</StartupCommand>
+    <JavaScriptTestRoot>src\</JavaScriptTestRoot>
+    <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
+    <!-- Allows the build (or compile) script located on package.json to run on Build -->
+    <ShouldRunBuildScript>false</ShouldRunBuildScript>
+    <!-- Folder where production build objects will be placed -->
+    <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="services\" />
+    <Folder Include="src\components\ChatHub\css\" />
+    <Folder Include="src\components\shared\" />
+    <Folder Include="src\Header\" />
+    <Folder Include="src\utils\" />
+    <Folder Include="src\Repositories\" />
+    <Folder Include="src\services\" />
+  </ItemGroup>
+</Project>

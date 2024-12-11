@@ -1,14 +1,33 @@
-export class userRepository {
-    getUser = (userID: number) =>  {
-        HttpService.Get("Users/id=" + userID);
-    }
+import { getRequest, postRequest } from '../services/apiService';
 
-    getUsers = () => {
-        HttpService.Get("Users");
-    }
+export class UserRepository {
+    getUser = async (userID: number) => {
+        try {
+            const response = await getRequest(`Users/id=${userID}`);
+            return response;
+        } catch (error) {
+            console.error('Error fetching user:', error);
+            throw error;
+        }
+    };
 
+    getUsers = async () => {
+        try {
+            const response = await getRequest('Users');
+            return response;
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            throw error;
+        }
+    };
 
-    updateUser = (data : object) => {
-        HttpService.post("Users" , data);
-    }
+    updateUser = async (data: object) => {
+        try {
+            const response = await postRequest('Users', data);
+            return response;
+        } catch (error) {
+            console.error('Error updating user:', error);
+            throw error;
+        }
+    };
 }
