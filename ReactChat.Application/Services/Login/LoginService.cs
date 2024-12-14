@@ -9,11 +9,13 @@ namespace ReactChat.Application.Services.Login
 {
     public class LoginService
     {
+        private readonly string refreshTokenSecretKey = "UHyuZrvwyjfv9j0dgOGINMXRqiHzSeTlF+uYPsep2Dg=";
         IUnitOfWork _unitOfWork;
         public LoginService(IUnitOfWork userUnitOfWork)
         {
             _unitOfWork = userUnitOfWork;
         }
+
         public async Task<string?> Authenticate(string username, string password)
         {
             var userRepository = _unitOfWork.UserRepository;
@@ -25,11 +27,38 @@ namespace ReactChat.Application.Services.Login
             }
             return null;
         }
+
+        public async Task<string?> ValidateRefreshToken(string token)
+        {
+            var refreshToken = token;
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(refreshTokenSecretKey);
+            try
+            {
+                var principal = tokenHandler.ValidateToken(refreshToken, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                }, out var validatedToken);
+
+                int userId = Convert.ToInt32(principal.FindFirstValue("username"));
+                var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+                return user == null ? null : GenerateJwtToken(user);
+
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private string GenerateJwtToken(BaseUser user)
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Name, user.Username ?? throw new NullReferenceException()),
                 new Claim(ClaimTypes.Email, user.Email ?? ""),
                 new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())
             };
@@ -45,6 +74,21 @@ namespace ReactChat.Application.Services.Login
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public string GenerateRefreshToken(string username)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(refreshTokenSecretKey);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim("username", username) }),
+                Expires = DateTime.UtcNow.AddMinutes(60),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../css/MainPage.css';
-import WelcomeSection from '../../Sections/RegularUserSections/js/WelcomeSection';
-import AdminSection from '../../Sections/AdminSections/js/AdminSection';
-import ProfileSection from '../../Sections/PublicSections/js/ProfileSection';
-import NewChatSection from '../../Sections/PublicSections/js/NewChatSection';
+import WelcomeSection from '../../../Sections/RegularUserSections/js/WelcomeSection';
+import AdminSection from '../../../Sections/AdminSections/js/AdminSection';
+import ProfileSection from '../../../Sections/PublicSections/js/ProfileSection';
+import NewChatSection from '../../../Sections/PublicSections/js/NewChatSection';
 import Cookies from 'js-cookie';
 const MainPage = () => {
     const [userRole, setUserRole] = useState<string | null>(null);

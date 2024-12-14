@@ -9,16 +9,7 @@ namespace ReactChat.Infrastructure.Data.Context
     public class UserContext : DbContext
     {
         public UserContext(DbContextOptions<UserContext> options) : base(options) { }
-        public DbSet<BaseUser> Users { get; set; }
-        public DbSet<PrivateMessage> PrivateMessages { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<BaseUser>()
-                .HasDiscriminator<UserRole>("Role")
-                .HasValue<RegularUser>(UserRole.RegularUser)
-                .HasValue<AdminUser>(UserRole.Admin)
-                .HasValue<BaseUser>(UserRole.Guest);
-        }
+        public DbSet<BaseUser>? Users { get; set; }
+        public DbSet<PrivateMessage>? PrivateMessages { get; set; }
     }
 }

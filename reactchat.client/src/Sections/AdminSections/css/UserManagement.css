@@ -2,6 +2,18 @@
     box-sizing: border-box;
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #000;
+    overflow-x: hidden;
+}
+
+#root {
+    max-height: 100%;
+}
+
 .user-management-page {
     background-color: #1a1a1a;
     border-radius: 8px;
@@ -12,9 +24,10 @@
     align-items: center;
     gap: 20px;
 }
+
 .error-message {
-    color: #000000; /* Light text color for contrast */
-    background-color: #dc3545; /* Dark red background for errors */
+    color: #000000;
+    background-color: #dc3545;
     padding: 10px;
     border-radius: 5px;
     font-size: 15px;

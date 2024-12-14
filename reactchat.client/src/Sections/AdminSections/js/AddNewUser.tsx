@@ -1,31 +1,21 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import '../css/AddNewUser.css';
-import Cookies from 'js-cookie';
-
+import userModel from '../../../types/users';
+import { UserRepository } from '../../../Repositories/UserRepository';
 const AddNewUser: React.FC = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('RegularUser');
     const [error, setError] = useState('');
-
+    const repo = new UserRepository();
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const token = Cookies.get('token');
 
-        const newUser = { username, email, password, role };
+        const newUser : userModel = { id : 0,username, email, password, role };
 
         try {
-            const response = await axios.post(
-                'https://localhost:7240/user/addNewUser',
-                newUser,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await repo.addUser(newUser);
             if (response.status === 200) {
                 alert('User added successfully!');
                 setUsername('');
