@@ -59,5 +59,13 @@ namespace ReactChat.Application.Services.Users
                 Role = (UserRole)Enum.Parse(typeof(UserRole), role)
             };
         }
+        public async Task<bool> DeleteUserByID(int id)
+        {
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+            if (user == null)
+                return false;
+            await _unitOfWork.UserRepository.DeleteAsync(id);
+            return true;
+        }
     }
 }

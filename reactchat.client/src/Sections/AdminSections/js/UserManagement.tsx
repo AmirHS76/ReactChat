@@ -2,17 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import '../css/UserManagement.css';
-
-interface User {
-    id: string;
-    username: string;
-    email: string;
-    role: string;
-}
+import {UserRepository} from '../../../Repositories/UserRepository';
+import userModel from '../../../types/users';
 
 const UserManagementPage: React.FC = () => {
-    const [users, setUsers] = useState<User[]>([]);
-    const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [users, setUsers] = useState<userModel[]>([]);
+    const [editingUser, setEditingUser] = useState<userModel | null>(null);
     const [newUserData, setNewUserData] = useState<{ username: string; email: string; role: string }>({
         username: '',
         email: '',
@@ -21,12 +16,11 @@ const UserManagementPage: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const token = Cookies.get('token');
+    const repo = new UserRepository();
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('https://localhost:7240/user/getAll', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const response = await repo.getUsers()
                 setUsers(response.data);
             } catch (err) {
                 console.error(err);
@@ -70,7 +64,7 @@ const UserManagementPage: React.FC = () => {
         }
     };
 
-    const handleEdit = (user: User) => {
+    const handleEdit = (user: userModel) => {
         setEditingUser(user);
         setNewUserData({
             username: user.username,
@@ -79,9 +73,9 @@ const UserManagementPage: React.FC = () => {
         });
     };
 
-    const handleDelete = async (userId: string) => {
+    const handleDelete = async (userId: number) => {
         try {
-            await axios.delete(`https://your-backend-url/api/users/${userId}`);
+            await repo.deleteUser(userId);
             setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
         } catch (err) {
             console.error(err);

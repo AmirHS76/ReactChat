@@ -3,13 +3,14 @@ import './Login.css';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import { LoginRepository } from '../../Repositories/LoginRepository';
 const Login: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const navigate = useNavigate(); // Initialize useNavigate
-
+    const navigate = useNavigate(); 
+    const repo = new LoginRepository();
     useEffect(() => {
         const token = Cookies.get('token');
         if (token) {
@@ -23,10 +24,7 @@ const Login: React.FC = () => {
         setMessage(null);
 
         try {
-            const response = await axios.post('https://localhost:7240/login', {
-                username,
-                password
-            });
+            const response = await repo.login(username, password);
 
             if (response.status != 200) {
                 throw new Error('Invalid username or password');
@@ -34,7 +32,9 @@ const Login: React.FC = () => {
             const usernameToken = username;
             Cookies.set('username', usernameToken, { secure: true, sameSite: 'Strict' });
             const token = response.data.token;
-            Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'Strict' });
+            Cookies.set('token', token, { expires: 1, secure: true, sameSite: 'Strict' });
+            const refreshToken = response.data.refreshToken;
+            Cookies.set('refreshToken', refreshToken, { expires: 2, secure: true, sameSite: 'Strict' });
             console.log('Login successful');
             setMessage('Login successful! Redirecting...');
 

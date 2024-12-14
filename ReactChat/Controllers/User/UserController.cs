@@ -95,5 +95,13 @@ namespace ReactChat.Controllers.Users
                 return NotFound();
             return await _userService.UpdateUserAsync(user.Id, username, email) ? Ok() : BadRequest();
         }
+        [Authorize]
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var result = await _userService.DeleteUserByID(id);
+            return result ? Ok("User deleted successfully") : BadRequest("User not found");
+        }
     }
 }

@@ -1,8 +1,9 @@
 import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
 
+const refreshToken : string | undefined = Cookies.get('refreshToken');
 const apiClient = axios.create({
-    baseURL: process.env.REACT_APP_API_BASE_URL,
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     timeout: 5000,
     headers: {
         'Content-Type': 'application/json',
@@ -29,6 +30,13 @@ apiClient.interceptors.response.use(
         if (error.response?.status === 401) {
             console.log('Unauthorized access - redirecting to login.');
             Cookies.remove('token');
+            if(refreshToken){
+                loginRepo.refreshToken(refreshToken).then((response) => {
+                    if (response.status !== 200) {
+                        Cookies.remove('refreshToken');
+                    }
+                });
+            }
         }
         return Promise.reject(error);
     }
@@ -37,7 +45,7 @@ apiClient.interceptors.response.use(
 export const getRequest = async (url: string, config?: AxiosRequestConfig) => {
     try {
         const response = await apiClient.get(url, config);
-        return response.data;
+        return response;
     } catch (error) {
         console.error('GET request error:', error);
         throw error;
@@ -47,7 +55,7 @@ export const getRequest = async (url: string, config?: AxiosRequestConfig) => {
 export const postRequest = async (url: string, data: any, config?: AxiosRequestConfig) => {
     try {
         const response = await apiClient.post(url, data, config);
-        return response.data;
+        return response;
     } catch (error) {
         console.error('POST request error:', error);
         throw error;

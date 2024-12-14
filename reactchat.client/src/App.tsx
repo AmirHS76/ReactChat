@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Login from './login/Login';
-import Register from "./register/register";
-import MainPage from "./MainPage/js/MainPage"
+import Login from './components/login/Login';
+import Register from "./components/register/register";
+import MainPage from "./components/MainPage/js/MainPage"
 import ProtectedRoute from './ProtectedRoute';
 import PrivateChat from './components/privateChat/PrivateChat';
 import Header from './Header/Header'
-import UserList from './ChatHub/js/UsersList'
+import UserList from './components/ChatHub/js/UsersList'
 import UserManagementPage from './Sections/AdminSections/js/UserManagement'
 import AddNewUserPage from './Sections/AdminSections/js/AddNewUser'
 const App: React.FC = () => {
