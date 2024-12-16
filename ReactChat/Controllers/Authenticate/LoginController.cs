@@ -32,8 +32,8 @@ public class LoginController : ControllerBase
         return Ok(new { token, refreshToken });
     }
     [HttpGet]
-    public async Task<IActionResult> RefreshToken(string token)
+    public async Task<IActionResult> RefreshToken(string refreshToken)
     {
-        return Ok(await _loginService.ValidateRefreshToken(token));
+        return Ok(new {token = await _loginService.ValidateRefreshToken(refreshToken) });
     }
 }

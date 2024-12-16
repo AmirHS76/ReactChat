@@ -22,4 +22,14 @@ export class LoginRepository {
             throw error;
         }
     }
+    authenticate = async () => {
+        try{
+            const response = await getRequest(`authenticate`);
+            return response;
+        }
+        catch(error) {
+            console.log(error);
+            throw error;
+        }
+    }
 }

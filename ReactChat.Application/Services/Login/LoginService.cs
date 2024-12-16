@@ -43,12 +43,12 @@ namespace ReactChat.Application.Services.Login
                     ValidateAudience = false
                 }, out var validatedToken);
 
-                int userId = Convert.ToInt32(principal.FindFirstValue("username"));
-                var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+                string? username = principal.FindFirstValue("username");
+                var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username ?? throw new MissingFieldException("User not found"));
                 return user == null ? null : GenerateJwtToken(user);
 
             }
-            catch
+            catch(Exception ex)
             {
                 return null;
             }

@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
 
+
 const refreshToken : string | undefined = Cookies.get('refreshToken');
 const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -25,17 +26,32 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
     (response: AxiosResponse) => response,
-    (error) => {
+    async (error) => {
         console.error('API request error:', error);
-        if (error.response?.status === 401) {
+        const originalRequest = error.config;
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            const refreshToken = Cookies.get('refreshToken');
             console.log('Unauthorized access - redirecting to login.');
             Cookies.remove('token');
             if(refreshToken){
-                loginRepo.refreshToken(refreshToken).then((response) => {
-                    if (response.status !== 200) {
+                try {
+                    // Send refresh token request directly
+                    const response = await apiClient.get(`/login?refreshToken=${refreshToken}`);
+
+                    if (response.status === 200) {
+                        const newToken = response.data.token;
+                        Cookies.set('token', newToken);
+                        apiClient.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+                        originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+                        return apiClient(originalRequest);
+                    } else {
                         Cookies.remove('refreshToken');
                     }
-                });
+                } catch (refreshError) {
+                    Cookies.remove('refreshToken');
+                    return Promise.reject(refreshError);
+                }
             }
         }
         return Promise.reject(error);
