@@ -16,8 +16,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, adminOnly = fa
     useEffect(() => {
         const verifyAuthentication = async () => {
             const token = Cookies.get('token');
-
-            if (!token) {
+            const refreshToken = Cookies.get('refreshToken');
+            if (!token && !refreshToken) {
                 handleUnauthenticated();
                 setLoading(false);
                 return;
