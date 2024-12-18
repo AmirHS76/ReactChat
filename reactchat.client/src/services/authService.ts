@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import { LoginRepository } from '../Repositories/LoginRepository';
 const repo = new LoginRepository();
-export const checkAuthToken = async (token: string): Promise<boolean> => {
+export const checkAuthToken = async (): Promise<boolean> => {
     try {
         const response = await repo.authenticate();
         return response.status === 200;

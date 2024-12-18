@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReactChat.Application.Attributes;
+using ReactChat.Application.Interfaces.MessageHistory;
 using ReactChat.Application.Interfaces.Users;
 using ReactChat.Core.Entities.Login;
 using ReactChat.Dtos.Users;
@@ -14,10 +15,12 @@ namespace ReactChat.Controllers.Users
     {
         IMapper _mapper;
         IUserService _userService;
-        public UserController(IUserService userService,IMapper mapper)
+        IMessageService _messageService;
+        public UserController(IUserService userService, IMapper mapper, IMessageService messageService)
         {
             _mapper = mapper;
             _userService = userService;
+            _messageService = messageService;
         }
         [Authorize]
         [HttpGet]
@@ -52,7 +55,7 @@ namespace ReactChat.Controllers.Users
             List<UserDto> users = new List<UserDto>();
             foreach (BaseUser baseUser in result)
             {
-                users.Add(_mapper.Map<UserDto>(baseUser));   
+                users.Add(_mapper.Map<UserDto>(baseUser));
             }
 
             return Ok(users);
@@ -103,5 +106,24 @@ namespace ReactChat.Controllers.Users
             var result = await _userService.DeleteUserByID(id);
             return result ? Ok("User deleted successfully") : BadRequest("User not found");
         }
+
+        [Authorize]
+        [HttpGet]
+        [Route("chatHistory")]
+        public async Task<IActionResult> GetChatHistory(string targetUsername)
+        {
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            if (string.IsNullOrEmpty(username))
+                return Unauthorized("User not found in token.");
+
+            var messages = await _messageService.GetMessagesByUsernameAsync(username, targetUsername);
+
+            if (messages == null || !messages.Any())
+                return NotFound("No messages found.");
+
+            return Ok(messages);
+        }
+
     }
 }

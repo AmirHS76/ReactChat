@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactChat", "ReactChat\ReactChat.csproj", "{0B00F687-F22E-423F-BFF3-142083CA5F28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactChat.Presentation", "ReactChat\ReactChat.Presentation.csproj", "{0B00F687-F22E-423F-BFF3-142083CA5F28}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactChat.Application", "ReactChat.Application\ReactChat.Application.csproj", "{73044B3D-6DB7-497E-A82C-AF3E1CF86BF7}"
 EndProject

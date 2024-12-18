@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 
 export const useChatHub = () => {
     const [connection, setConnection] = useState<HubConnection | null>(null);
-
+    const serverURL = import.meta.env.VITE_API_BASE_URL;
     useEffect(() => {
         const newConnection = new HubConnectionBuilder()
-            .withUrl("https://localhost:7240/chatHub")
+            .withUrl(`${serverURL}chatHub`)
             .withAutomaticReconnect()
             .build();
 

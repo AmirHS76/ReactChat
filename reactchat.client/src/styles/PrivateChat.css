@@ -1,108 +1,113 @@
 /* PrivateChat.css */
 
 :root {
-    --primary-color: #1e90ff; /* Blue for contrast */
-    --background-color: #121212; /* Black background */
-    --chat-bg-color: #333333; /* Dark gray for chat container */
-    --input-bg-color: #444444; /* Darker input background */
-    --text-color: #ffffff; /* White text for contrast */
-    --sender-bg-color: #1f6f42; /* Green for sender messages */
-    --recipient-bg-color: #ff4b2b; /* Red for recipient messages */
+  --primary-color: #0088cc; /* Telegram blue */
+  --background-color: #1e1e1e; /* Dark background */
+  --chat-bg-color: #2c2c2c; /* Darker chat container */
+  --input-bg-color: #3c3c3c; /* Dark gray input background */
+  --text-color: #ffffff; /* White text */
+  --sender-bg-color: #056162; /* Dark green for sender messages */
+  --recipient-bg-color: #262626; /* Dark gray for recipient messages */
+  --border-radius: 12px; /* Consistent border radius */
+  --box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5); /* Consistent box shadow */
 }
 
 .private-chat-container {
-    display: flex;
-    flex-direction: column;
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    background-color: var(--chat-bg-color);
-    border-radius: 12px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  width: 500px;
+  background-color: var(--chat-bg-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
 }
 
-.chat-header {
-    font-size: 1.6em;
-    color: var(--primary-color);
-    text-align: center;
-    margin-bottom: 20px;
+.private-chat-header {
+  font-size: 1.6em;
+  color: var(--primary-color);
+  text-align: center;
 }
 
-.chat-messages {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 400px;
-    padding: 10px;
-    background-color: var(--background-color);
-    border-radius: 8px;
-    overflow-y: auto;
+.private-message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 500px; /* Increased height */
+  padding: 10px; /* Increased padding */
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+  overflow-y: auto;
+  box-shadow: inset var(--box-shadow);
 }
 
 .message-item {
-    padding: 8px 12px;
-    border-radius: 16px;
-    max-width: 70%;
-    width: fit-content;
-    font-size: 0.95em;
-    line-height: 1.4;
-    color: var(--text-color);
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  max-width: 70%;
+  width: fit-content;
+  font-size: 1em;
+  line-height: 1.5;
+  color: var(--text-color);
 }
 
-    .message-item.sender {
-        align-self: flex-end;
-        background-color: var(--sender-bg-color); /* Sender message color */
-        text-align: right;
-    }
+.message-item.sender {
+  align-self: flex-end;
+  background-color: var(--sender-bg-color); /* Sender message color */
+  text-align: right;
+  border-top-right-radius: 0;
+}
 
-    .message-item.recipient {
-        align-self: flex-start;
-        background-color: var(--recipient-bg-color); /* Recipient message color */
-        text-align: left;
-    }
+.message-item.recipient {
+  align-self: flex-start;
+  background-color: var(--recipient-bg-color); /* Recipient message color */
+  text-align: left;
+  border-top-left-radius: 0;
+}
 
 .input-container {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
 }
 
 .message-input {
-    flex-grow: 1;
-    padding: 12px;
-    font-size: 1em;
-    color: var(--text-color);
-    background-color: var(--input-bg-color);
-    border: none;
-    border-radius: 20px;
-    outline: none;
-    box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease;
+  flex-grow: 1;
+  padding: 12px;
+  font-size: 1em;
+  color: var(--text-color);
+  background-color: var(--input-bg-color);
+  border: none;
+  border-radius: var(--border-radius);
+  outline: none;
+  box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.5);
+  transition: background-color 0.3s ease;
 }
 
-    .message-input:focus {
-        background-color: #555555;
-    }
+.message-input:focus {
+  background-color: #4c4c4c;
+}
 
 .send-button {
-    padding: 10px 16px;
-    font-size: 1em;
-    font-weight: 600;
-    color: #ffffff;
-    background-color: var(--primary-color);
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.4);
+  padding: 10px 16px;
+  font-size: 1em;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: var(--box-shadow);
 }
 
-    .send-button:hover {
-        background-color: #176bbf;
-    }
+.send-button:hover {
+  background-color: #0077b3;
+}
 
-    .send-button:active {
-        background-color: #1558a4;
-    }
+.send-button:active {
+  background-color: #006699;
+}
