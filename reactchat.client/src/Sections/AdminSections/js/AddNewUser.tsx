@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../css/AddNewUser.css';
 import userModel from '../../../types/users';
-import { UserRepository } from '../../../Repositories/UserRepository';
+import  UserRepository  from '../../../Repositories/UserRepository';
 const AddNewUser: React.FC = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');

@@ -1,10 +1,6 @@
-﻿using ReactChat.Core.Entities.Messages;
+﻿using Microsoft.EntityFrameworkCore;
+using ReactChat.Core.Entities.Messages;
 using ReactChat.Infrastructure.Data.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReactChat.Infrastructure.Repositories.Message
 {
@@ -15,6 +11,19 @@ namespace ReactChat.Infrastructure.Repositories.Message
         public MessageRepository(UserContext context) : base(context)
         {
             _context = context;
+        }
+
+        public async Task<IEnumerable<PrivateMessage>?> GetMessagesByUsernameAsync(string username, string targetUsername)
+        {
+            if (_context?.PrivateMessages == null)
+            {
+                return null;
+            }
+
+            return await _context.PrivateMessages
+                .Where(message => (message.SenderName == username && message.ReceiverName == targetUsername) ||
+                message.SenderName == targetUsername && message.ReceiverName == username)
+                .ToListAsync();
         }
     }
 }

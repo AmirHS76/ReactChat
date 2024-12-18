@@ -2,12 +2,15 @@ using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using ReactChat.Application.Interfaces.MessageHistory;
 using ReactChat.Application.Interfaces.MessageHub;
 using ReactChat.Application.Interfaces.Register;
 using ReactChat.Application.Interfaces.Users;
 using ReactChat.Application.Mapping;
 using ReactChat.Application.Services.BackgroundServices;
 using ReactChat.Application.Services.Login;
+using ReactChat.Application.Services.MessageHistory;
 using ReactChat.Application.Services.MessageHub;
 using ReactChat.Application.Services.Register;
 using ReactChat.Application.Services.Users;
@@ -89,7 +92,33 @@ builder.Services.AddDbContext<UserContext>(options =>
     b => b.MigrationsAssembly("ReactChat.Infrastructure"));
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Enter 'Bearer' [space] and then your token",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -98,6 +127,7 @@ builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessageHubService, MessageHubService>();
 builder.Services.AddScoped<IMessageHubHelper, MessageHubHelper>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddCors(options =>
 {
@@ -142,5 +172,11 @@ app.MapControllers();
 app.MapFallbackToFile("/index.html");
 app.MapHub<ChatHub>("/chatHub");
 app.MapGet("/", () => "----REACT CHAT----");
+
+var messageProcessingService = app.Services.GetRequiredService<MessageProcessingService>();
+RecurringJob.AddOrUpdate(
+    "process-messages",
+    () => messageProcessingService.ProcessMessages(),
+    Cron.Minutely);
 
 app.Run();

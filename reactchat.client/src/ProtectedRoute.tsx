@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { checkAuthToken, handleUnauthenticated } from './services/authService';
-import { fetchUserRole } from './services/userService';
+import UserRepository from './Repositories/UserRepository';
 interface ProtectedRouteProps {
     element: React.ReactNode;
     adminOnly?: boolean;
@@ -12,7 +12,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, adminOnly = fa
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
-
+    const userRepo = new UserRepository();
     useEffect(() => {
         const verifyAuthentication = async () => {
             const token = Cookies.get('token');
@@ -24,11 +24,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, adminOnly = fa
             }
 
             try {
-                const isAuthenticated = await checkAuthToken(token);
+                const isAuthenticated = await checkAuthToken();
                 setIsAuthenticated(isAuthenticated);
 
                 if (isAuthenticated) {
-                    const userRole = await fetchUserRole(token);
+                    const userRole = await userRepo.fetchUserRole();
                     setIsAdmin(userRole === 'Admin');
                 } else {
                     handleUnauthenticated();

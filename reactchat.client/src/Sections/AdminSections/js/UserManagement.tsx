@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Cookies from 'js-cookie';
 import '../css/UserManagement.css';
-import {UserRepository} from '../../../Repositories/UserRepository';
+import UserRepository from '../../../Repositories/UserRepository';
 import userModel from '../../../types/users';
 
 const UserManagementPage: React.FC = () => {
@@ -15,13 +13,13 @@ const UserManagementPage: React.FC = () => {
     });
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const token = Cookies.get('token');
-    const repo = new UserRepository();
+    const userRepository = new UserRepository();
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await repo.getUsers()
-                setUsers(response.data);
+                const usersData = await userRepository.getUsers();
+                setUsers(usersData);
             } catch (err) {
                 console.error(err);
                 setError('Failed to load users.');
@@ -51,9 +49,7 @@ const UserManagementPage: React.FC = () => {
         };
 
         try {
-            await axios.put(`https://localhost:7240/user`, updatedUser, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await userRepository.updateUser(updatedUser);
             setUsers((prevUsers) =>
                 prevUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user))
             );
@@ -75,7 +71,7 @@ const UserManagementPage: React.FC = () => {
 
     const handleDelete = async (userId: number) => {
         try {
-            await repo.deleteUser(userId);
+            await userRepository.deleteUser(userId);
             setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
         } catch (err) {
             console.error(err);

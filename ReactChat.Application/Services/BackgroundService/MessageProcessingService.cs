@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using ReactChat.Application.Interfaces.MessageHub;
 using System.Collections.Concurrent;
 
 namespace ReactChat.Application.Services.BackgroundServices
 {
-    public class MessageProcessingService : BackgroundService
+    public class MessageProcessingService
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ConcurrentQueue<(string Sender, string Recipient, string Message)> _messageQueue = new ConcurrentQueue<(string, string, string)>();
@@ -15,15 +14,11 @@ namespace ReactChat.Application.Services.BackgroundServices
             _serviceProvider = serviceProvider;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public void ProcessMessages()
         {
-            while (!stoppingToken.IsCancellationRequested)
+            while (_messageQueue.TryDequeue(out var message))
             {
-                while (_messageQueue.TryDequeue(out var message))
-                {
-                    await ProcessMessageAsync(message.Sender, message.Recipient, message.Message);
-                }
-                await Task.Delay(1000, stoppingToken);
+                ProcessMessageAsync(message.Sender, message.Recipient, message.Message).GetAwaiter().GetResult();
             }
         }
 
