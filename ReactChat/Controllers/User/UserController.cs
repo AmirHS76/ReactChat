@@ -22,6 +22,7 @@ namespace ReactChat.Controllers.Users
             _userService = userService;
             _messageService = messageService;
         }
+
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetCurrentUser()
@@ -46,20 +47,19 @@ namespace ReactChat.Controllers.Users
                 email = user.Email
             });
         }
+
         [Authorize]
         [HttpGet]
         [Route("getAll")]
         public async Task<IActionResult> GetAllUsers()
         {
-            IEnumerable<BaseUser> result = await _userService.GetAllUsersAsync();
+            IEnumerable<BaseUser>? result = await _userService.GetAllUsersAsync();
             List<UserDto> users = new List<UserDto>();
-            foreach (BaseUser baseUser in result)
-            {
-                users.Add(_mapper.Map<UserDto>(baseUser));
-            }
+            users.AddRange(_mapper.Map<List<UserDto>>(result));
 
             return Ok(users);
         }
+
         [Authorize]
         [HttpGet]
         [Route("getRole")]
@@ -71,12 +71,14 @@ namespace ReactChat.Controllers.Users
                 return NotFound();
             return Ok(new { role = user.Role.ToString() });
         }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddNewUser([FromBody] UserDto user)
         {
             return await _userService.AddNewUserAsync(user.Username, user.Password, user.Email, user.Role) ? Ok(user) : BadRequest();
         }
+
         [CustomAuthorize("Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromBody] UserDto user)
@@ -85,6 +87,7 @@ namespace ReactChat.Controllers.Users
                 return BadRequest(ModelState);
             return (await _userService.UpdateUserAsync(user.Id ?? 0, user.Username, user.Email)) ? Ok(user) : BadRequest(ModelState);
         }
+
         [Authorize]
         [HttpPatch]
         [Route("{email}")]
@@ -98,6 +101,7 @@ namespace ReactChat.Controllers.Users
                 return NotFound();
             return await _userService.UpdateUserAsync(user.Id, username, email) ? Ok() : BadRequest();
         }
+
         [Authorize]
         [HttpDelete]
         [Route("{id}")]
