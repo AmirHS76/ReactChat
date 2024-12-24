@@ -6,7 +6,7 @@ namespace ReactChat.Application.Interfaces.Users
     {
         Task<BaseUser?> GetUserByUsernameAsync(string? username);
         Task<bool> UpdateUserAsync(int Id, string username, string email);
-        Task<IEnumerable<BaseUser>> GetAllUsersAsync();
+        Task<IEnumerable<BaseUser>?> GetAllUsersAsync();
         Task<bool> AddNewUserAsync(string username, string password, string email, string role);
         Task<bool> DeleteUserByID(int id);
     }

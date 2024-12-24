@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ReactChat.Application.Interfaces.Cache;
 using ReactChat.Application.Interfaces.MessageHistory;
 using ReactChat.Application.Interfaces.MessageHub;
 using ReactChat.Application.Interfaces.Register;
 using ReactChat.Application.Interfaces.Users;
 using ReactChat.Application.Mapping;
 using ReactChat.Application.Services.BackgroundServices;
+using ReactChat.Application.Services.Cache;
 using ReactChat.Application.Services.Login;
 using ReactChat.Application.Services.MessageHistory;
 using ReactChat.Application.Services.MessageHub;
@@ -38,7 +40,7 @@ Log.Logger = new LoggerConfiguration()
         TableName = "Logs",
         AutoCreateSqlTable = true
     },
-    restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
+    restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning)
     .CreateLogger();
 
 builder.Services.AddHangfire(config =>
@@ -128,6 +130,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessageHubService, MessageHubService>();
 builder.Services.AddScoped<IMessageHubHelper, MessageHubHelper>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddCors(options =>
 {
@@ -148,6 +151,12 @@ builder.Services.AddLogging(logging =>
     logging.AddConsole();
 });
 builder.Services.AddSingleton<MessageProcessingService>();
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+    options.InstanceName = "ReactChat_";
+});
 //builder.Services.AddHostedService(provider => provider.GetRequiredService<MessageProcessingService>());
 var app = builder.Build();
 
