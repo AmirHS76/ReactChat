@@ -100,7 +100,19 @@ export const putRequest = async (
     throw error;
   }
 };
-
+export const patchRequest = async (
+  url: string,
+  data: any,
+  config?: AxiosRequestConfig
+) => {
+  try {
+    const response = await apiClient.patch(url, data, config);
+    return response.data;
+  } catch (error) {
+    console.error("PATCH request error:", error);
+    throw error;
+  }
+};
 export const deleteRequest = async (
   url: string,
   config?: AxiosRequestConfig
