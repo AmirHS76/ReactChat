@@ -22,7 +22,7 @@ const PrivateChat: React.FC = () => {
     setMessages([]);
     if (username)
       fetchChatHistory(username).then((data) => {
-        data.data.forEach((message: any) => {
+        (data as { data: Message[] }).data.forEach((message: Message) => {
           setMessages((prevMessages) => [
             ...prevMessages,
             {
