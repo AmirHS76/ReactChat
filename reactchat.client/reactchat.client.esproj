@@ -9,7 +9,10 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="services\" />
+    <None Remove="services\**" />
+    <TypeScriptConfiguration Remove="services\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="src\components\ChatHub\css\" />
     <Folder Include="src\components\shared\" />
     <Folder Include="src\Header\" />
