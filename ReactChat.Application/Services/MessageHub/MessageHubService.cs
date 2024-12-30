@@ -1,19 +1,16 @@
 ﻿using ReactChat.Application.Interfaces.MessageHub;
-using ReactChat.Core.Entities.Messages;
+using ReactChat.Core.Entities.Message;
 using ReactChat.Infrastructure.Data.UnitOfWork;
 
 namespace ReactChat.Application.Services.MessageHub
 {
-    public class MessageHubService : IMessageHubService
+    public class MessageHubService(IUnitOfWork unitOfWork) : IMessageHubService
     {
-        IUnitOfWork _unitOfWork;
-        public MessageHubService(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
         public async Task SaveMessageAsync(string? sender, string? recipient, string? message)
         {
-            PrivateMessage privateMessage = new PrivateMessage()
+            PrivateMessage privateMessage = new()
             {
                 Message = message,
                 ReceiverName = recipient,

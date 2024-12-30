@@ -1,20 +1,16 @@
-﻿using ReactChat.Core.Entities.Login;
-using ReactChat.Core.Entities.Messages;
+﻿using ReactChat.Core.Entities.Message;
+using ReactChat.Core.Entities.User;
 using ReactChat.Infrastructure.Data.Context;
 using ReactChat.Infrastructure.Repositories;
 using ReactChat.Infrastructure.Repositories.Message;
+using ReactChat.Infrastructure.Repositories.User;
 using ReactChat.Infrastructure.Repositories.Users;
 namespace ReactChat.Infrastructure.Data.UnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork(UserContext context) : IUnitOfWork
     {
-        private readonly UserContext _context;
-        private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
-
-        public UnitOfWork(UserContext context)
-        {
-            _context = context;
-        }
+        private readonly UserContext _context = context;
+        private readonly Dictionary<Type, object> _repositories = [];
 
         public IGenericRepository<T> Repository<T>() where T : class
         {
@@ -25,6 +21,7 @@ namespace ReactChat.Infrastructure.Data.UnitOfWork
             _repositories[typeof(T)] = newRepository;
             return newRepository;
         }
+
         public IUserRepository UserRepository
         {
             get
@@ -39,6 +36,7 @@ namespace ReactChat.Infrastructure.Data.UnitOfWork
                 return newUserRepository;
             }
         }
+
         public IMessageRepository MessageRepository
         {
             get
@@ -53,6 +51,7 @@ namespace ReactChat.Infrastructure.Data.UnitOfWork
                 return newMessageRepository;
             }
         }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
@@ -60,6 +59,7 @@ namespace ReactChat.Infrastructure.Data.UnitOfWork
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
             _context.Dispose();
         }
     }

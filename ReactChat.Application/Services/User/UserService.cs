@@ -1,25 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
-using ReactChat.Application.Interfaces.Cache;
-using ReactChat.Application.Interfaces.Users;
-using ReactChat.Core.Entities.Login;
+﻿using ReactChat.Application.Interfaces.Cache;
+using ReactChat.Application.Interfaces.User;
+using ReactChat.Core.Entities.User;
 using ReactChat.Core.Enums;
 using ReactChat.Infrastructure.Data.UnitOfWork;
 
-namespace ReactChat.Application.Services.Users
+namespace ReactChat.Application.Services.User
 {
-    public class UserService : IUserService
+    public class UserService(IUnitOfWork unitOfWork, ICacheService cacheService) : IUserService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ICacheService _cacheService;
-        private readonly ILogger<UserService> _logger;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly ICacheService _cacheService = cacheService;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(5);
-
-        public UserService(IUnitOfWork unitOfWork, ICacheService cacheService, ILogger<UserService> logger)
-        {
-            _unitOfWork = unitOfWork;
-            _cacheService = cacheService;
-            _logger = logger;
-        }
 
         public async Task<BaseUser?> GetUserByUsernameAsync(string? username)
         {
@@ -30,11 +21,7 @@ namespace ReactChat.Application.Services.Users
 
         public async Task<bool> UpdateUserAsync(int id, string username, string email)
         {
-            BaseUser? user;
-            if (id == 0)
-                user = await GetUserByUsernameAsync(username);
-            else
-                user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+            BaseUser? user = id == 0 ? await GetUserByUsernameAsync(username) : await _unitOfWork.UserRepository.GetByIdAsync(id);
             if (user == null)
                 return false;
             user.Username = username;
@@ -69,7 +56,7 @@ namespace ReactChat.Application.Services.Users
             return true;
         }
 
-        private BaseUser CreateUser(string username, string password, string email, string role)
+        private static BaseUser CreateUser(string username, string password, string email, string role)
         {
             return new BaseUser
             {

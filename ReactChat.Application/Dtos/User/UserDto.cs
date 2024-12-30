@@ -1,7 +1,7 @@
 ﻿using ReactChat.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace ReactChat.Dtos.Users
+namespace ReactChat.Application.Dtos.User
 {
     public class UserDto
     {

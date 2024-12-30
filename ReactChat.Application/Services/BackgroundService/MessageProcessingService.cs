@@ -2,17 +2,12 @@
 using ReactChat.Application.Interfaces.MessageHub;
 using System.Collections.Concurrent;
 
-namespace ReactChat.Application.Services.BackgroundServices
+namespace ReactChat.Application.Services.BackgroundService
 {
-    public class MessageProcessingService
+    public class MessageProcessingService(IServiceProvider serviceProvider)
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ConcurrentQueue<(string Sender, string Recipient, string Message)> _messageQueue = new ConcurrentQueue<(string, string, string)>();
-
-        public MessageProcessingService(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
+        private readonly ConcurrentQueue<(string Sender, string Recipient, string Message)> _messageQueue = new();
 
         public void ProcessMessages()
         {
@@ -29,11 +24,9 @@ namespace ReactChat.Application.Services.BackgroundServices
 
         private async Task ProcessMessageAsync(string sender, string recipient, string message)
         {
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var messageHubService = scope.ServiceProvider.GetRequiredService<IMessageHubService>();
-                await messageHubService.SaveMessageAsync(sender, recipient, message);
-            }
+            using var scope = _serviceProvider.CreateScope();
+            var messageHubService = scope.ServiceProvider.GetRequiredService<IMessageHubService>();
+            await messageHubService.SaveMessageAsync(sender, recipient, message);
         }
     }
 }

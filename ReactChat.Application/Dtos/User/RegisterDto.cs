@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ReactChat.Dtos
+namespace ReactChat.Application.Dtos.User
 {
     public class RegisterDto
     {

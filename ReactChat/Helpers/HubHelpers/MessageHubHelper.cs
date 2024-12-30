@@ -1,22 +1,15 @@
 ﻿using Hangfire;
-using ReactChat.Application.Interfaces.MessageHub;
-using ReactChat.Application.Services.BackgroundServices;
+using ReactChat.Application.Services.BackgroundService;
+using ReactChat.Helpers.HubHelpers;
 
-namespace ReactChat.Helpers.HubHelpers
+namespace ReactChat.Presentation.Helpers.HubHelpers
 {
-    public class MessageHubHelper : IMessageHubHelper
+    public class MessageHubHelper(MessageProcessingService messageProcessingService, IBackgroundJobClient backgroundJobClient) : IMessageHubHelper
     {
-        IMessageHubService _messageHubService;
-        private readonly MessageProcessingService _messageProcessingService;
-        private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly MessageProcessingService _messageProcessingService = messageProcessingService;
+        private readonly IBackgroundJobClient _backgroundJobClient = backgroundJobClient;
 
-        public MessageHubHelper(IMessageHubService messageHubService, MessageProcessingService messageProcessingService, IBackgroundJobClient backgroundJobClient)
-        {
-            _messageProcessingService = messageProcessingService;
-            _messageHubService = messageHubService;
-            _backgroundJobClient = backgroundJobClient;
-        }
-        public async Task SaveMessageAsync(string sender, string recipient, string message)
+        public void SaveMessageAsync(string sender, string recipient, string message)
         {
             _backgroundJobClient.Enqueue(() => _messageProcessingService.EnqueueMessage(sender, recipient, message));
         }

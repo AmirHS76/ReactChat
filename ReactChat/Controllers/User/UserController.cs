@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReactChat.Application.Attributes;
+using ReactChat.Application.Dtos.User;
 using ReactChat.Application.Interfaces.MessageHistory;
-using ReactChat.Application.Interfaces.Users;
-using ReactChat.Core.Entities.Login;
-using ReactChat.Dtos.Users;
+using ReactChat.Application.Interfaces.User;
+using ReactChat.Core.Entities.User;
 using System.Security.Claims;
 
 namespace ReactChat.Controllers.Users
@@ -76,7 +76,8 @@ namespace ReactChat.Controllers.Users
         [HttpPost]
         public async Task<IActionResult> AddNewUser([FromBody] UserDto user)
         {
-            return await _userService.AddNewUserAsync(user.Username, user.Password, user.Email, user.Role) ? Ok(user) : BadRequest();
+            return await _userService.AddNewUserAsync(user.Username, user.Password ?? throw new ArgumentNullException("Password was null"),
+                user.Email, user.Role) ? Ok(user) : BadRequest();
         }
 
         [CustomAuthorize("Admin")]

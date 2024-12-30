@@ -1,6 +1,6 @@
 ﻿using ReactChat.Core.Enums;
 
-namespace ReactChat.Core.Entities.Login
+namespace ReactChat.Core.Entities.User
 {
     public class BaseUser
     {
