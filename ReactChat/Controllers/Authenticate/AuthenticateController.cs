@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ReactChat.Application.Interfaces.Users;
-using ReactChat.Core.Entities.Login;
+using ReactChat.Application.Interfaces.User;
+using ReactChat.Core.Entities.User;
 using System.Security.Claims;
 
-namespace ReactChat.Controllers.Authenticate
+namespace ReactChat.Presentation.Controllers.Authenticate
 {
     [Route("[Controller]")]
     public class AuthenticateController : ControllerBase

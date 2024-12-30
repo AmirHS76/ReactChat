@@ -1,6 +1,6 @@
-﻿using ReactChat.Core.Entities.Login;
+﻿using ReactChat.Core.Entities.User;
 
-namespace ReactChat.Application.Interfaces.Users
+namespace ReactChat.Application.Interfaces.User
 {
     public interface IUserService
     {

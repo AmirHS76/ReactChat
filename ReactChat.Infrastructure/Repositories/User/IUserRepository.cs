@@ -1,4 +1,4 @@
-﻿using ReactChat.Core.Entities.Login;
+﻿using ReactChat.Core.Entities.User;
 
 namespace ReactChat.Infrastructure.Repositories.Users
 {

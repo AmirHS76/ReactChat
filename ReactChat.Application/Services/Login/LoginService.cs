@@ -1,5 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using ReactChat.Core.Entities.Login;
+using ReactChat.Core.Entities.User;
 using ReactChat.Infrastructure.Data.UnitOfWork;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -7,14 +7,10 @@ using System.Text;
 
 namespace ReactChat.Application.Services.Login
 {
-    public class LoginService
+    public class LoginService(IUnitOfWork unitOfWork)
     {
         private readonly string refreshTokenSecretKey = "UHyuZrvwyjfv9j0dgOGINMXRqiHzSeTlF+uYPsep2Dg=";
-        IUnitOfWork _unitOfWork;
-        public LoginService(IUnitOfWork userUnitOfWork)
-        {
-            _unitOfWork = userUnitOfWork;
-        }
+        readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<string?> Authenticate(string username, string password)
         {
@@ -48,13 +44,13 @@ namespace ReactChat.Application.Services.Login
                 return user == null ? null : GenerateJwtToken(user);
 
             }
-            catch(Exception ex)
+            catch (Exception)
             {
                 return null;
             }
         }
 
-        private string GenerateJwtToken(BaseUser user)
+        private static string GenerateJwtToken(BaseUser user)
         {
             var claims = new[]
             {
@@ -82,7 +78,7 @@ namespace ReactChat.Application.Services.Login
             var key = Encoding.ASCII.GetBytes(refreshTokenSecretKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("username", username) }),
+                Subject = new ClaimsIdentity([new Claim("username", username)]),
                 Expires = DateTime.UtcNow.AddMinutes(60),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

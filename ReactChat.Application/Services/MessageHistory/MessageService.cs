@@ -5,15 +5,11 @@ using ReactChat.Infrastructure.Data.UnitOfWork;
 
 namespace ReactChat.Application.Services.MessageHistory
 {
-    public class MessageService : IMessageService
+    public class MessageService(IUnitOfWork unitOfWork, IMapper mapper) : IMessageService
     {
-        IUnitOfWork _unitOfWork;
-        IMapper _mapper;
-        public MessageService(IUnitOfWork unitOfWork, IMapper mapper)
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
+
         public async Task<IEnumerable<MessageDto>> GetMessagesByUsernameAsync(string username, string targetUsername)
         {
             var result = await _unitOfWork.MessageRepository.GetMessagesByUsernameAsync(username, targetUsername);

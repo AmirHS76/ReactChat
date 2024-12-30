@@ -1,4 +1,4 @@
-﻿using ReactChat.Core.Entities.Messages;
+﻿using ReactChat.Core.Entities.Message;
 
 namespace ReactChat.Infrastructure.Repositories.Message
 {

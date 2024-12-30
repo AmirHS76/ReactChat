@@ -4,24 +4,14 @@ using System.Text.Json;
 
 namespace ReactChat.Application.Services.Cache
 {
-    public class CacheService : ICacheService
+    public class CacheService(IDistributedCache cache) : ICacheService
     {
-        private readonly IDistributedCache _cache;
-
-        public CacheService(IDistributedCache cache)
-        {
-            _cache = cache;
-        }
+        private readonly IDistributedCache _cache = cache;
 
         public async Task<T?> GetAsync<T>(string cacheKey)
         {
             var cachedData = await _cache.GetStringAsync(cacheKey);
-            if (string.IsNullOrEmpty(cachedData))
-            {
-                return default;
-            }
-
-            return JsonSerializer.Deserialize<T>(cachedData);
+            return string.IsNullOrEmpty(cachedData) ? default : JsonSerializer.Deserialize<T>(cachedData);
         }
 
         public async Task SetAsync<T>(string cacheKey, T value, TimeSpan expiration)

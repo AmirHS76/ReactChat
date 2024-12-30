@@ -1,17 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ReactChat.Core.Entities.Login;
+using ReactChat.Core.Entities.User;
 using ReactChat.Infrastructure.Data.Context;
+using ReactChat.Infrastructure.Repositories.Users;
 
-namespace ReactChat.Infrastructure.Repositories.Users
+namespace ReactChat.Infrastructure.Repositories.User
 {
-    public class UserRepository : GenericRepository<BaseUser>, IUserRepository
+    public class UserRepository(UserContext context) : GenericRepository<BaseUser>(context), IUserRepository
     {
-        private readonly UserContext _context;
-
-        public UserRepository(UserContext context) : base(context)
-        {
-            _context = context;
-        }
+        private readonly UserContext _context = context;
 
         public async Task<BaseUser?> GetUserByUsernameAsync(string username)
         {

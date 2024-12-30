@@ -1,33 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ReactChat.Application.Dtos.Authenticate;
 using ReactChat.Application.Services.Login;
-using ReactChat.Dtos.Authenticate;
 
-[Route("[Controller]")]
-public class LoginController : ControllerBase
+namespace ReactChat.Presentation.Controllers.Authenticate
 {
-    private readonly ILogger<LoginController> _logger;
-    LoginService _loginService;
-    public LoginController(ILogger<LoginController> logger, LoginService loginService)
+    [Route("[Controller]")]
+    public class LoginController(ILogger<LoginController> logger, LoginService loginService) : ControllerBase
     {
-        _logger = logger;
-        _loginService = loginService;
-    }
-    [HttpPost]
-    public async Task<IActionResult> Login([FromBody] LoginDto request)
-    {
-        if (!ModelState.IsValid)
+        private readonly ILogger<LoginController> _logger = logger;
+        private readonly LoginService _loginService = loginService;
+
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var token = await _loginService.Authenticate(request.Username, request.Password);
+            if (token == null)
+                return Unauthorized("Invalid username or password");
+            var refreshToken = _loginService.GenerateRefreshToken(request.Username);
+            return Ok(new { token, refreshToken });
         }
-        var token = await _loginService.Authenticate(request.username, request.password);
-        if (token == null)
-            return Unauthorized("Invalid username or password");
-        var refreshToken = _loginService.GenerateRefreshToken(request.username);
-        return Ok(new { token, refreshToken });
-    }
-    [HttpGet]
-    public async Task<IActionResult> RefreshToken(string refreshToken)
-    {
-        return Ok(new { token = await _loginService.ValidateRefreshToken(refreshToken) });
+        [HttpGet]
+        public async Task<IActionResult> RefreshToken(string refreshToken)
+        {
+            return Ok(new { token = await _loginService.ValidateRefreshToken(refreshToken) });
+        }
     }
 }

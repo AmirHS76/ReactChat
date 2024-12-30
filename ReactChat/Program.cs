@@ -7,21 +7,23 @@ using ReactChat.Application.Interfaces.Cache;
 using ReactChat.Application.Interfaces.MessageHistory;
 using ReactChat.Application.Interfaces.MessageHub;
 using ReactChat.Application.Interfaces.Register;
-using ReactChat.Application.Interfaces.Users;
+using ReactChat.Application.Interfaces.User;
 using ReactChat.Application.Mapping;
-using ReactChat.Application.Services.BackgroundServices;
+using ReactChat.Application.Services.BackgroundService;
 using ReactChat.Application.Services.Cache;
 using ReactChat.Application.Services.Login;
 using ReactChat.Application.Services.MessageHistory;
 using ReactChat.Application.Services.MessageHub;
 using ReactChat.Application.Services.Register;
-using ReactChat.Application.Services.Users;
-using ReactChat.Controllers.Hub;
+using ReactChat.Application.Services.User;
 using ReactChat.Helpers.HubHelpers;
 using ReactChat.Infrastructure.Data.Context;
 using ReactChat.Infrastructure.Data.UnitOfWork;
 using ReactChat.Infrastructure.Repositories;
+using ReactChat.Infrastructure.Repositories.User;
 using ReactChat.Infrastructure.Repositories.Users;
+using ReactChat.Presentation.Controllers.Hub;
+using ReactChat.Presentation.Helpers.HubHelpers;
 using Serilog;
 using System.Text;
 
@@ -66,7 +68,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? ""))
     };
     options.Events = new JwtBearerEvents
     {

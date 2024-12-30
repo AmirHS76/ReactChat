@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using ReactChat.Application.Interfaces.Users;
-using ReactChat.Application.Services.Users;
-using ReactChat.Core.Entities.Login;
+using ReactChat.Application.Interfaces.User;
 using System.Security.Claims;
 
 namespace ReactChat.Application.Attributes
