@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using ReactChat.Helpers.HubHelpers;
+using ReactChat.Presentation.Helpers.HubHelpers;
 
 namespace ReactChat.Presentation.Controllers.Hub
 {
@@ -25,7 +25,7 @@ namespace ReactChat.Presentation.Controllers.Hub
             string senderUsername = Context.User.Identity.Name;
             string groupName = _messageHubHelper.GetPrivateGroupName(senderUsername, recipientUsername);
 
-            _messageHubHelper.SaveMessageAsync(senderUsername, recipientUsername, message);
+            await _messageHubHelper.SaveMessageAsync(senderUsername, recipientUsername, message);
             await Clients.Caller.SendAsync("ReceiveMessage", senderUsername, message, "sender");
 
             await Clients.GroupExcept(groupName, Context.ConnectionId)

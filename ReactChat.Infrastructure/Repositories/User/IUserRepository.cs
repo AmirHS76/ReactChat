@@ -1,6 +1,6 @@
 ﻿using ReactChat.Core.Entities.User;
 
-namespace ReactChat.Infrastructure.Repositories.Users
+namespace ReactChat.Infrastructure.Repositories.User
 {
     public interface IUserRepository : IGenericRepository<BaseUser>
     {

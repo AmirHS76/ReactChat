@@ -16,12 +16,10 @@ using ReactChat.Application.Services.MessageHistory;
 using ReactChat.Application.Services.MessageHub;
 using ReactChat.Application.Services.Register;
 using ReactChat.Application.Services.User;
-using ReactChat.Helpers.HubHelpers;
 using ReactChat.Infrastructure.Data.Context;
 using ReactChat.Infrastructure.Data.UnitOfWork;
 using ReactChat.Infrastructure.Repositories;
 using ReactChat.Infrastructure.Repositories.User;
-using ReactChat.Infrastructure.Repositories.Users;
 using ReactChat.Presentation.Controllers.Hub;
 using ReactChat.Presentation.Helpers.HubHelpers;
 using Serilog;
@@ -30,7 +28,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var hangFireConnectionString = builder.Configuration.GetConnectionString("HangfireConnection");
+var hangFireConnectionString = builder.Configuration.GetConnectionString("HangFireConnection");
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()

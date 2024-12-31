@@ -1,27 +1,21 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ReactChat.Application.Attributes;
 using ReactChat.Application.Dtos.User;
 using ReactChat.Application.Interfaces.MessageHistory;
 using ReactChat.Application.Interfaces.User;
 using ReactChat.Core.Entities.User;
+using ReactChat.Presentation.Helpers.Attributes;
 using System.Security.Claims;
 
-namespace ReactChat.Controllers.Users
+namespace ReactChat.Presentation.Controllers.User
 {
     [Route("[Controller]/")]
-    public class UserController : ControllerBase
+    public class UserController(IUserService userService, IMapper mapper, IMessageService messageService) : ControllerBase
     {
-        IMapper _mapper;
-        IUserService _userService;
-        IMessageService _messageService;
-        public UserController(IUserService userService, IMapper mapper, IMessageService messageService)
-        {
-            _mapper = mapper;
-            _userService = userService;
-            _messageService = messageService;
-        }
+        private readonly IMapper _mapper = mapper;
+        private readonly IUserService _userService = userService;
+        private readonly IMessageService _messageService = messageService;
 
         [Authorize]
         [HttpGet]
@@ -54,8 +48,7 @@ namespace ReactChat.Controllers.Users
         public async Task<IActionResult> GetAllUsers()
         {
             IEnumerable<BaseUser>? result = await _userService.GetAllUsersAsync();
-            List<UserDto> users = new List<UserDto>();
-            users.AddRange(_mapper.Map<List<UserDto>>(result));
+            List<UserDto> users = [.. _mapper.Map<List<UserDto>>(result)];
 
             return Ok(users);
         }
@@ -76,8 +69,11 @@ namespace ReactChat.Controllers.Users
         [HttpPost]
         public async Task<IActionResult> AddNewUser([FromBody] UserDto user)
         {
-            return await _userService.AddNewUserAsync(user.Username, user.Password ?? throw new ArgumentNullException("Password was null"),
-                user.Email, user.Role) ? Ok(user) : BadRequest();
+            if (user.Password == null)
+            {
+                throw new ArgumentNullException(nameof(user), "Password was null");
+            }
+            return await _userService.AddNewUserAsync(user.Username, user.Password, user.Email, user.Role) ? Ok(user) : BadRequest();
         }
 
         [CustomAuthorize("Admin")]
@@ -86,7 +82,7 @@ namespace ReactChat.Controllers.Users
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return (await _userService.UpdateUserAsync(user.Id ?? 0, user.Username, user.Email)) ? Ok(user) : BadRequest(ModelState);
+            return await _userService.UpdateUserAsync(user.Id ?? 0, user.Username, user.Email) ? Ok(user) : BadRequest(ModelState);
         }
 
         [Authorize]

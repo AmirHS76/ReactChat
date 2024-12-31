@@ -4,7 +4,6 @@ using ReactChat.Infrastructure.Data.Context;
 using ReactChat.Infrastructure.Repositories;
 using ReactChat.Infrastructure.Repositories.Message;
 using ReactChat.Infrastructure.Repositories.User;
-using ReactChat.Infrastructure.Repositories.Users;
 namespace ReactChat.Infrastructure.Data.UnitOfWork
 {
     public class UnitOfWork(UserContext context) : IUnitOfWork
@@ -21,7 +20,6 @@ namespace ReactChat.Infrastructure.Data.UnitOfWork
             _repositories[typeof(T)] = newRepository;
             return newRepository;
         }
-
         public IUserRepository UserRepository
         {
             get
@@ -36,7 +34,6 @@ namespace ReactChat.Infrastructure.Data.UnitOfWork
                 return newUserRepository;
             }
         }
-
         public IMessageRepository MessageRepository
         {
             get
@@ -51,7 +48,6 @@ namespace ReactChat.Infrastructure.Data.UnitOfWork
                 return newMessageRepository;
             }
         }
-
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

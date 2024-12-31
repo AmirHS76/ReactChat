@@ -7,13 +7,10 @@ using System.Security.Claims;
 namespace ReactChat.Presentation.Controllers.Authenticate
 {
     [Route("[Controller]")]
-    public class AuthenticateController : ControllerBase
+    public class AuthenticateController(IUserService userService) : ControllerBase
     {
-        IUserService _userService;
-        public AuthenticateController(IUserService userService)
-        {
-            _userService = userService;
-        }
+        private readonly IUserService _userService = userService;
+
         [HttpGet]
         [Authorize]
         public IActionResult Auth()

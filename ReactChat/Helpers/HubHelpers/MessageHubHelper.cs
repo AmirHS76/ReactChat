@@ -1,6 +1,5 @@
 ﻿using Hangfire;
 using ReactChat.Application.Services.BackgroundService;
-using ReactChat.Helpers.HubHelpers;
 
 namespace ReactChat.Presentation.Helpers.HubHelpers
 {
@@ -8,8 +7,8 @@ namespace ReactChat.Presentation.Helpers.HubHelpers
     {
         private readonly MessageProcessingService _messageProcessingService = messageProcessingService;
         private readonly IBackgroundJobClient _backgroundJobClient = backgroundJobClient;
-
-        public void SaveMessageAsync(string sender, string recipient, string message)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async Task SaveMessageAsync(string sender, string recipient, string message)
         {
             _backgroundJobClient.Enqueue(() => _messageProcessingService.EnqueueMessage(sender, recipient, message));
         }

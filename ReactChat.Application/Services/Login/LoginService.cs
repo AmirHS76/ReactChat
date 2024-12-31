@@ -7,10 +7,10 @@ using System.Text;
 
 namespace ReactChat.Application.Services.Login
 {
-    public class LoginService(IUnitOfWork unitOfWork)
+    public class LoginService(IUnitOfWork userUnitOfWork)
     {
         private readonly string refreshTokenSecretKey = "UHyuZrvwyjfv9j0dgOGINMXRqiHzSeTlF+uYPsep2Dg=";
-        readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IUnitOfWork _unitOfWork = userUnitOfWork;
 
         public async Task<string?> Authenticate(string username, string password)
         {
@@ -39,7 +39,7 @@ namespace ReactChat.Application.Services.Login
                     ValidateAudience = false
                 }, out var validatedToken);
 
-                string? username = principal.FindFirstValue("username");
+                string? username = principal.Claims.FirstOrDefault(c => c.Type == "username")?.Value;
                 var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username ?? throw new MissingFieldException("User not found"));
                 return user == null ? null : GenerateJwtToken(user);
 

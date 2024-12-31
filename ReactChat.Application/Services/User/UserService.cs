@@ -21,7 +21,11 @@ namespace ReactChat.Application.Services.User
 
         public async Task<bool> UpdateUserAsync(int id, string username, string email)
         {
-            BaseUser? user = id == 0 ? await GetUserByUsernameAsync(username) : await _unitOfWork.UserRepository.GetByIdAsync(id);
+            BaseUser? user;
+            if (id == 0)
+                user = await GetUserByUsernameAsync(username);
+            else
+                user = await _unitOfWork.UserRepository.GetByIdAsync(id);
             if (user == null)
                 return false;
             user.Username = username;
