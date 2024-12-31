@@ -5,9 +5,8 @@ using ReactChat.Application.Services.Login;
 namespace ReactChat.Presentation.Controllers.Authenticate
 {
     [Route("[Controller]")]
-    public class LoginController(ILogger<LoginController> logger, LoginService loginService) : ControllerBase
+    public class LoginController(LoginService loginService) : ControllerBase
     {
-        private readonly ILogger<LoginController> _logger = logger;
         private readonly LoginService _loginService = loginService;
 
         [HttpPost]

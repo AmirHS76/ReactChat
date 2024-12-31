@@ -3,16 +3,13 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ReactChat.Application.Dtos.User;
 using ReactChat.Application.Interfaces.Register;
 
-namespace ReactChat.Controllers.Users
+namespace ReactChat.Presentation.Controllers.User
 {
     [Route("[Controller]")]
-    public class RegisterController : ControllerBase
+    public class RegisterController(IRegisterService registerService) : ControllerBase
     {
-        IRegisterService _registerService;
-        public RegisterController(IRegisterService registerService)
-        {
-            _registerService = registerService;
-        }
+        private readonly IRegisterService _registerService = registerService;
+
         [HttpPost]
         public async Task<ActionResult> Register([FromBody] RegisterDto registerDto)
         {

@@ -4,15 +4,11 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using ReactChat.Application.Interfaces.User;
 using System.Security.Claims;
 
-namespace ReactChat.Application.Attributes
+namespace ReactChat.Presentation.Helpers.Attributes
 {
-    public class CustomAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilter
+    public class CustomAuthorizeAttribute(params string[] roles) : AuthorizeAttribute, IAuthorizationFilter
     {
-        private readonly string[] _roles;
-        public CustomAuthorizeAttribute(params string[] roles)
-        {
-            _roles = roles;
-        }
+        private readonly string[] _roles = roles;
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {

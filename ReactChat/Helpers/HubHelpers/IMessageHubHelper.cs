@@ -1,8 +1,8 @@
-﻿namespace ReactChat.Helpers.HubHelpers
+﻿namespace ReactChat.Presentation.Helpers.HubHelpers
 {
     public interface IMessageHubHelper
     {
-        void SaveMessageAsync(string sender, string recipient, string message);
+        Task SaveMessageAsync(string sender, string recipient, string message);
         string GetPrivateGroupName(string user1, string user2);
     }
 }
