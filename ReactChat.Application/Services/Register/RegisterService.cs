@@ -4,13 +4,10 @@ using ReactChat.Infrastructure.Data.UnitOfWork;
 
 namespace ReactChat.Application.Services.Register
 {
-    public class RegisterService : IRegisterService
+    public class RegisterService(IUnitOfWork unitOfWork) : IRegisterService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public RegisterService(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
         public async Task<bool> Register(string username, string password, string email)
         {
             if (await CheckIfUserExist(username, email))

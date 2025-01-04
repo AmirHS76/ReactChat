@@ -111,19 +111,19 @@ namespace ReactChat.Presentation.Controllers.User
         [Authorize]
         [HttpGet]
         [Route("chatHistory")]
-        public async Task<IActionResult> GetChatHistory(string targetUsername)
+        public async Task<IActionResult> GetChatHistory(string targetUsername, int pageNum)
         {
             var username = User.FindFirst(ClaimTypes.Name)?.Value;
 
             if (string.IsNullOrEmpty(username))
                 return Unauthorized("User not found in token.");
 
-            var messages = await _messageService.GetMessagesByUsernameAsync(username, targetUsername);
+            var (messages, hasMore) = await _messageService.GetMessagesByUsernameAsync(username, targetUsername, pageNum);
 
             if (messages == null || !messages.Any())
                 return NotFound("No messages found.");
 
-            return Ok(messages);
+            return Ok(new { messages, hasMore });
         }
 
     }
