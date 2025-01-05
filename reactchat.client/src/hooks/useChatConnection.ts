@@ -37,12 +37,12 @@ export const useChatConnection = (): [
       newConnection.on("ReceiveMessage", (sender: string, content: string) => {
         const isSender = sender === currentUser;
         setMessages((prevMessages) => [
-          ...prevMessages,
           {
             sender: isSender ? "You" : sender,
             content,
             type: isSender ? "sender" : "recipient",
           },
+          ...prevMessages,
         ]);
       });
 

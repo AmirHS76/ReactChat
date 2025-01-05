@@ -74,6 +74,8 @@ const PrivateChat: React.FC = () => {
   const handleSendMessage = async (message: string) => {
     if (connection && message.trim()) {
       await connection.invoke("SendPrivateMessage", username, message);
+      const container = messageListRef.current;
+      if (container) container.scrollTop = container.scrollHeight;
     }
   };
 
