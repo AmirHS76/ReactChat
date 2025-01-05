@@ -21,7 +21,6 @@ namespace ReactChat.Infrastructure.Repositories.Message
                 .OrderByDescending(x => x.Id)
                 .Skip((pageNum - 1) * pageSize)
                 .Take(pageSize + 1) // Fetch one extra message to check if there are more
-                .OrderBy(x => x.Id)
                 .ToListAsync();
 
             bool hasMore = messages.Count > pageSize;
