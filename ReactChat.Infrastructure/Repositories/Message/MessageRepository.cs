@@ -7,18 +7,30 @@ namespace ReactChat.Infrastructure.Repositories.Message
     public class MessageRepository(UserContext context) : GenericRepository<PrivateMessage>(context), IMessageRepository
     {
         private readonly UserContext _context = context;
-
-        public async Task<IEnumerable<PrivateMessage>?> GetMessagesByUsernameAsync(string username, string targetUsername)
+        private static readonly int pageSize = 10;
+        public async Task<(IEnumerable<PrivateMessage> Messages, bool HasMore)> GetMessagesByUsernameAsync(string username, string targetUsername, int pageNum)
         {
             if (_context?.PrivateMessages == null)
             {
-                return null;
+                return (Enumerable.Empty<PrivateMessage>(), false);
             }
 
-            return await _context.PrivateMessages
+            var messages = await _context.PrivateMessages
                 .Where(message => (message.SenderName == username && message.ReceiverName == targetUsername) ||
-                message.SenderName == targetUsername && message.ReceiverName == username)
+                                  (message.SenderName == targetUsername && message.ReceiverName == username))
+                .OrderByDescending(x => x.Id)
+                .Skip((pageNum - 1) * pageSize)
+                .Take(pageSize + 1) // Fetch one extra message to check if there are more
+                .OrderBy(x => x.Id)
                 .ToListAsync();
+
+            bool hasMore = messages.Count > pageSize;
+            if (hasMore)
+            {
+                messages.RemoveAt(pageSize); // Remove the extra message
+            }
+
+            return (messages, hasMore);
         }
     }
 }
