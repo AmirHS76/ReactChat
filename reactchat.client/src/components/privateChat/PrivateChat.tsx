@@ -5,6 +5,7 @@ import { useChatConnection } from "../../hooks/useChatConnection";
 import ChatRepository from "../../Repositories/ChatRepository";
 import MessageList from "./MessageList";
 import ChatInput from "./ChatInput";
+import "../../styles/PrivateChat.css";
 
 interface Message {
   sender: string;
@@ -58,7 +59,7 @@ const PrivateChat: React.FC = () => {
     const nextPage = page + 1;
     setPage(nextPage);
     const data = await fetchChatHistory(username!, nextPage);
-    (data as { data: Message[] }).data.forEach((message: Message) => {
+    data.forEach((message: Message) => {
       setMessages((prev) => [
         ...prev,
         {
@@ -79,26 +80,25 @@ const PrivateChat: React.FC = () => {
   useEffect(() => {
     const container = messageListRef.current;
     if (!container) return;
+    container.scrollTop = container.scrollTop + 20; // Scroll to the bottom
     const handleScroll = () => {
-      if (container.scrollTop < 10 && hasMore) {
+      if (container.scrollTop === 0 && hasMore) {
         loadMoreMessages();
       }
     };
     container.addEventListener("scroll", handleScroll);
     return () => container.removeEventListener("scroll", handleScroll);
-  }, [hasMore]);
+  }, [hasMore, messages]);
 
   return (
-    <div
-      className="private-chat-container"
-      style={{ height: "100%", overflow: "hidden" }}
-    >
+    <div className="private-chat-container">
       <div className="private-chat-header">
         <h2>{username}</h2>
       </div>
       <div
+        id="111"
         ref={messageListRef}
-        style={{ flexGrow: 1, overflowY: "auto", maxHeight: "100%" }}
+        style={{ flex: "1", overflowY: "auto", maxHeight: "400px" }}
       >
         <MessageList messages={messages} />
       </div>

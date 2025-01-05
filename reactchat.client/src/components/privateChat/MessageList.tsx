@@ -1,5 +1,4 @@
 import React from "react";
-import "../../styles/PrivateChat.css"; // Correctly importing plain CSS
 import MessageItem from "./MessageItem";
 
 interface Message {

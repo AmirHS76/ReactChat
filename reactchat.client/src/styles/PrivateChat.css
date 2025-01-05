@@ -15,7 +15,6 @@
 .private-chat-container {
   display: flex;
   flex-direction: column;
-  max-width: 600px;
   margin: auto;
   padding: 20px;
   width: 500px;
@@ -34,14 +33,14 @@
 
 .private-message-list {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse; /* Reverse the order of the messages */
   gap: 10px;
-  max-height: 500px; /* Increased height */
-  padding: 10px; /* Increased padding */
+  padding: 10px;
   background-color: var(--background-color);
   border-radius: var(--border-radius);
-  overflow-y: auto;
   box-shadow: inset var(--box-shadow);
+  height: 100%; /* Ensure it takes full height */
+  overflow-y: auto; /* Enable scrolling */
 }
 
 .message-item {
