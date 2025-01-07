@@ -121,7 +121,7 @@ namespace ReactChat.Presentation.Controllers.User
             var (messages, hasMore) = await _messageService.GetMessagesByUsernameAsync(username, targetUsername, pageNum);
 
             if (messages == null || !messages.Any())
-                return NotFound("No messages found.");
+                return Ok();
 
             return Ok(new { messages, hasMore });
         }
