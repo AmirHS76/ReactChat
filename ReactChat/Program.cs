@@ -187,6 +187,12 @@ app.MapFallbackToFile("/index.html");
 app.MapHub<ChatHub>("/chatHub");
 app.MapGet("/", () => "----REACT CHAT----");
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
+    context.Response.Headers.TryAdd("Content-Security-Policy", "frame-ancestors 'none'");
+    await next();
+});
 var messageProcessingService = app.Services.GetRequiredService<MessageProcessingService>();
 RecurringJob.AddOrUpdate(
     "process-messages",

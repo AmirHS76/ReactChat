@@ -29,16 +29,18 @@ const PrivateChat: React.FC = () => {
     setMessages([]);
     if (username) {
       fetchChatHistory(username, 1).then((data) => {
-        data.forEach((message: Message) => {
-          setMessages((prev) => [
-            ...prev,
-            {
-              sender: message.sender === currentUser ? "You" : message.sender,
-              content: message.content,
-              type: message.sender === currentUser ? "sender" : "recipient",
-            },
-          ]);
-        });
+        if (data) {
+          data.forEach((message: Message) => {
+            setMessages((prev) => [
+              ...prev,
+              {
+                sender: message.sender === currentUser ? "You" : message.sender,
+                content: message.content,
+                type: message.sender === currentUser ? "sender" : "recipient",
+              },
+            ]);
+          });
+        }
       });
     }
   }, []);
@@ -51,6 +53,7 @@ const PrivateChat: React.FC = () => {
 
   const fetchChatHistory = async (username: string, pageNum = 1) => {
     const result = await chatRepo.getUserChats(username, pageNum);
+    if (!result.data) return [];
     setHasMore(result.data.hasMore);
     return result.data.messages;
   };
