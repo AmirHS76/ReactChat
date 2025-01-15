@@ -32,7 +32,7 @@ namespace ReactChat.Presentation.Helpers.Attributes
 
             // Fetch the user and check the role
             var baseUser = userService.GetUserByUsernameAsync(username).Result;
-            if (!_roles.Any(role => baseUser?.Role.ToString() == role))
+            if (!_roles.Any(role => baseUser?.UserRole.ToString() == role))
             {
                 context.Result = new ForbidResult();
                 return;

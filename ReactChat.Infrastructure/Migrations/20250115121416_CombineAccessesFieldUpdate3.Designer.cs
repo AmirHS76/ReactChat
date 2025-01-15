@@ -11,8 +11,8 @@ using ReactChat.Infrastructure.Data.Context;
 namespace ReactChat.Infrastructure.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20241107081615_AddRoleToUser")]
-    partial class AddRoleToUser
+    [Migration("20250115121416_CombineAccessesFieldUpdate3")]
+    partial class CombineAccessesFieldUpdate3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,32 +24,7 @@ namespace ReactChat.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ReactChat.Core.Entities.Login.BaseUser", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("ReactChat.Core.Entities.Messages.PrivateMessage", b =>
+            modelBuilder.Entity("ReactChat.Core.Entities.Message.PrivateMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,6 +47,52 @@ namespace ReactChat.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PrivateMessages");
+                });
+
+            modelBuilder.Entity("ReactChat.Core.Entities.User.BaseUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Accesses")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserRole")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users", (string)null);
+
+                    b.HasDiscriminator<int>("UserRole").HasValue(2);
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("ReactChat.Core.Entities.User.AdminUser", b =>
+                {
+                    b.HasBaseType("ReactChat.Core.Entities.User.BaseUser");
+
+                    b.HasDiscriminator().HasValue(0);
+                });
+
+            modelBuilder.Entity("ReactChat.Core.Entities.User.RegularUser", b =>
+                {
+                    b.HasBaseType("ReactChat.Core.Entities.User.BaseUser");
+
+                    b.HasDiscriminator().HasValue(1);
                 });
 #pragma warning restore 612, 618
         }

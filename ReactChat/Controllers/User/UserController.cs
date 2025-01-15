@@ -62,7 +62,7 @@ namespace ReactChat.Presentation.Controllers.User
             var user = await _userService.GetUserByUsernameAsync(username);
             if (user == null)
                 return NotFound();
-            return Ok(new { role = user.Role.ToString() });
+            return Ok(new { role = user.UserRole.ToString() });
         }
 
         [Authorize]

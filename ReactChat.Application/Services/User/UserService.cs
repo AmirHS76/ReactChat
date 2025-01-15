@@ -60,14 +60,39 @@ namespace ReactChat.Application.Services.User
             return true;
         }
 
-        private static BaseUser CreateUser(string username, string password, string email, string role)
+        private static BaseUser? CreateUser(string username, string password, string email, string role)
         {
-            return new BaseUser
+            if (!Enum.TryParse(role, out UserRole userRole))
+                return null;
+
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+            return userRole switch
             {
-                Username = username,
-                Password = BCrypt.Net.BCrypt.HashPassword(password),
-                Email = email,
-                Role = (UserRole)Enum.Parse(typeof(UserRole), role)
+                UserRole.Admin => new AdminUser
+                {
+                    Username = username,
+                    Password = hashedPassword,
+                    Email = email,
+                    UserRole = userRole,
+                    Accesses = Accesses.CanCreateGroup | Accesses.CanUpdateGroup | Accesses.CanDeleteGroup | Accesses.CanRemoveUser | Accesses.CanUpdateUser
+                },
+                UserRole.RegularUser => new RegularUser
+                {
+                    Username = username,
+                    Password = hashedPassword,
+                    Email = email,
+                    UserRole = userRole,
+                    Accesses = Accesses.CanSendMessage | Accesses.CanDeleteMessage | Accesses.CanEditMessage
+                },
+                _ => new BaseUser
+                {
+                    Username = username,
+                    Password = hashedPassword,
+                    Email = email,
+                    UserRole = userRole,
+                    Accesses = Accesses.None
+                }
             };
         }
 
