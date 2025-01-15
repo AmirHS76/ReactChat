@@ -1,0 +1,39 @@
+/* UsersList.css */
+
+.user-list-container {
+  background-color: var(--chat-bg-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 30px; /* Increased padding */
+  max-width: 700px; /* Increased max-width */
+  color: var(--text-color);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.user-list-container h2 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-list-item {
+  background-color: var(--input-bg-color);
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user-list-item:hover {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  transition: background-color 0.5s ease, transform 0.5s ease; /* Smooth transition effects */
+  transform: scale(1.05); /* Slightly scale up on hover for effect */
+}

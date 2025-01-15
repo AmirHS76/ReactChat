@@ -5,7 +5,7 @@
 namespace ReactChat.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRoleToUser : Migration
+    public partial class CombineAccessesFieldUpdate3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,7 +35,8 @@ namespace ReactChat.Infrastructure.Migrations
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Role = table.Column<int>(type: "int", nullable: false)
+                    UserRole = table.Column<int>(type: "int", nullable: false),
+                    Accesses = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

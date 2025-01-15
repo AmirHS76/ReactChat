@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserRepository from "../../../Repositories/UserRepository";
+import "../../../styles/UserList.css";
 interface User {
   username: string;
   email: string;
@@ -41,13 +42,14 @@ const UserList: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="user-list-container">
       <h2>Select a user to chat with:</h2>
-      <ul>
+      <ul className="user-list">
         {users.map((user) => (
           <li
             key={user.username}
             onClick={() => handleUserSelect(user.username)}
+            className="user-list-item"
           >
             {user.username}
           </li>

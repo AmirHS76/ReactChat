@@ -13,7 +13,7 @@ namespace ReactChat.Application.Mapping
             CreateMap<BaseUser, UserDto>()
                 .ForMember(dest => dest.Password, opt => opt.Ignore())
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => (int?)src.Id))
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()));
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.UserRole.ToString()));
 
             CreateMap<PrivateMessage, MessageDto>()
                 .ForMember(dest => dest.Sender, opt => opt.MapFrom(src => src.SenderName))

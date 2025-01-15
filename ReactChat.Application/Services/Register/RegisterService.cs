@@ -21,11 +21,12 @@ namespace ReactChat.Application.Services.Register
 
         private static BaseUser CreateUser(string username, string password, string email)
         {
-            return new BaseUser
+            return new RegularUser
             {
                 Username = username,
                 Password = BCrypt.Net.BCrypt.HashPassword(password),
-                Email = email
+                Email = email,
+                UserRole = Core.Enums.UserRole.Guest
             };
         }
         public async Task<bool> CheckIfUserExist(string username, string email)

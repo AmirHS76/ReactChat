@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReactChat.Core.Entities.Message;
 using ReactChat.Core.Entities.User;
+using ReactChat.Core.Enums;
 
 namespace ReactChat.Infrastructure.Data.Context
 {
@@ -8,5 +9,21 @@ namespace ReactChat.Infrastructure.Data.Context
     {
         public DbSet<BaseUser>? Users { get; set; }
         public DbSet<PrivateMessage>? PrivateMessages { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<BaseUser>(entity =>
+            {
+                entity.ToTable("Users");
+                entity.HasDiscriminator<UserRole>("UserRole")
+                      .HasValue<BaseUser>(UserRole.Guest)
+                      .HasValue<RegularUser>(UserRole.RegularUser)
+                      .HasValue<AdminUser>(UserRole.Admin);
+            });
+
+            modelBuilder.Entity<BaseUser>()
+                .Property(e => e.Accesses)
+                .HasConversion<int>();
+        }
     }
 }
