@@ -1,4 +1,5 @@
 using Hangfire;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +24,7 @@ using ReactChat.Infrastructure.Repositories.User;
 using ReactChat.Presentation.Controllers.Hub;
 using ReactChat.Presentation.Helpers.HubHelpers;
 using Serilog;
+using System.Reflection;
 using System.Text;
 
 
@@ -150,6 +152,10 @@ builder.Services.AddCors(options =>
                     .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
         });
 });
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
+    Assembly.GetExecutingAssembly()
+    , typeof(ReactChat.Application.Features.Queries.GetAllUsersQuery).Assembly // Add the assembly containing your handlers
+));
 builder.Services.AddLogging(logging =>
 {
     logging.ClearProviders();

@@ -1,4 +1,6 @@
-﻿using ReactChat.Application.Interfaces.Cache;
+﻿using MediatR;
+using ReactChat.Application.Features.Queries;
+using ReactChat.Application.Interfaces.Cache;
 using ReactChat.Application.Interfaces.User;
 using ReactChat.Core.Entities.User;
 using ReactChat.Core.Enums;
@@ -6,12 +8,12 @@ using ReactChat.Infrastructure.Data.UnitOfWork;
 
 namespace ReactChat.Application.Services.User
 {
-    public class UserService(IUnitOfWork unitOfWork, ICacheService cacheService) : IUserService
+    public class UserService(IUnitOfWork unitOfWork, ICacheService cacheService, IMediator mediator) : IUserService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly ICacheService _cacheService = cacheService;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(5);
-
+        private readonly IMediator _mediator = mediator;
         public async Task<BaseUser?> GetUserByUsernameAsync(string? username)
         {
             if (username == null) return null;
@@ -38,11 +40,11 @@ namespace ReactChat.Application.Services.User
         public async Task<IEnumerable<BaseUser>?> GetAllUsersAsync()
         {
             var cacheKey = "AllUsers";
-            var cachesUsers = await _cacheService.GetAsync<IEnumerable<BaseUser>>(cacheKey);
-            if (cachesUsers != null)
-                return cachesUsers;
+            //var cachesUsers = await _cacheService.GetAsync<IEnumerable<BaseUser>>(cacheKey);
+            //if (cachesUsers != null)
+            //    return cachesUsers;
 
-            IEnumerable<BaseUser> allUsers = await _unitOfWork.UserRepository.GetAllAsync();
+            IEnumerable<BaseUser> allUsers = await _mediator.Send(new GetAllUsersQuery());
             if (allUsers != null)
                 await _cacheService.SetAsync(cacheKey, allUsers, _cacheExpiration);
 

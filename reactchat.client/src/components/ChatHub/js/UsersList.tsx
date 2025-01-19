@@ -14,6 +14,7 @@ const UserList: React.FC = () => {
   const userRepo = new UserRepository();
   useEffect(() => {
     const fetchCurrentUser = async () => {
+      if (currentUsername) return;
       try {
         const response = await userRepo.getCurrentUser();
         const user = (await response).data as User;
@@ -24,6 +25,7 @@ const UserList: React.FC = () => {
     };
 
     const fetchUsers = async () => {
+      if (!currentUsername) return;
       try {
         const response = await userRepo.getUsers();
 

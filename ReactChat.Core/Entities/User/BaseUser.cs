@@ -11,5 +11,14 @@ namespace ReactChat.Core.Entities.User
         public UserRole UserRole { get; set; }
         public Accesses Accesses { get; set; } = Accesses.None;
 
+        public bool HasAccess(Accesses access)
+        {
+            return (Accesses & access) == access;
+        }
+
+        public void GrantAccess(Accesses access)
+        {
+            Accesses |= access;
+        }
     }
 }
