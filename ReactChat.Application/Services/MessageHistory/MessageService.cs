@@ -15,7 +15,7 @@ namespace ReactChat.Application.Services.MessageHistory
         private readonly IMapper _mapper = mapper;
         private readonly ICacheService _cacheService = cacheService;
 
-        public async Task<(IEnumerable<MessageDto> Messages, bool HasMore)> GetMessagesByUsernameAsync(string username, string targetUsername, int pageNum)
+        public async Task<(IEnumerable<MessageDTO> Messages, bool HasMore)> GetMessagesByUsernameAsync(string username, string targetUsername, int pageNum)
         {
             var result = await _cacheService.GetAsync<MessageResultDTO>(CacheKeys.Messages + username + targetUsername + pageNum);
             if (result?.Messages == null)
