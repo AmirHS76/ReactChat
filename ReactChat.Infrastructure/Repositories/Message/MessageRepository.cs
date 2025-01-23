@@ -16,6 +16,7 @@ namespace ReactChat.Infrastructure.Repositories.Message
             }
 
             var messages = await _context.PrivateMessages
+                .AsNoTracking()
                 .Where(message => (message.SenderName == username && message.ReceiverName == targetUsername) ||
                                   (message.SenderName == targetUsername && message.ReceiverName == username))
                 .OrderByDescending(x => x.Id)

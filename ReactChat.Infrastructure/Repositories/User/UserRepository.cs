@@ -10,11 +10,11 @@ namespace ReactChat.Infrastructure.Repositories.User
 
         public async Task<BaseUser?> GetUserByUsernameAsync(string username)
         {
-            return await _context.Set<BaseUser>().FirstOrDefaultAsync(u => u.Username == username);
+            return await _context.Set<BaseUser>().AsNoTracking().FirstOrDefaultAsync(u => u.Username == username);
         }
         public async Task<BaseUser?> GetUserByEmailAsync(string email)
         {
-            return await _context.Set<BaseUser>().FirstOrDefaultAsync(u => u.Email == email);
+            return await _context.Set<BaseUser>().AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }
