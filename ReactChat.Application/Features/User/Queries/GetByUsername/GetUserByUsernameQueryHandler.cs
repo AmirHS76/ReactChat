@@ -2,16 +2,11 @@
 using ReactChat.Core.Entities.User;
 using ReactChat.Infrastructure.Data.UnitOfWork;
 
-namespace ReactChat.Application.Features.Queries
+namespace ReactChat.Application.Features.User.Queries.GetByUsername
 {
-    public class GetUserByUsernameQueryHandler : IRequestHandler<GetUserByUsernameQuery, BaseUser?>
+    public class GetUserByUsernameQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetUserByUsernameQuery, BaseUser?>
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public GetUserByUsernameQueryHandler(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<BaseUser?> Handle(GetUserByUsernameQuery request, CancellationToken cancellationToken)
         {

@@ -10,7 +10,7 @@ namespace ReactChat.Presentation.Controllers.Authenticate
         private readonly LoginService _loginService = loginService;
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginDto request)
+        public async Task<IActionResult> Login([FromBody] LoginDTO request)
         {
             if (!ModelState.IsValid)
             {

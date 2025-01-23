@@ -11,7 +11,7 @@ namespace ReactChat.Application.Features.Message.Queries
         {
             var result = await _unitOfWork.MessageRepository.GetMessagesByUsernameAsync(request.username, request.targetUsername, request.pageNum);
             return new MessageResultDTO()
-            {
+        {
                 Messages = result.Messages,
                 HasMore = result.HasMore
             };

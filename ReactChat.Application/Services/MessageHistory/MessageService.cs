@@ -6,7 +6,6 @@ using ReactChat.Application.DTOs;
 using ReactChat.Application.Features.Message.Queries;
 using ReactChat.Application.Interfaces.Cache;
 using ReactChat.Application.Interfaces.MessageHistory;
-using ReactChat.Infrastructure.Data.UnitOfWork;
 
 namespace ReactChat.Application.Services.MessageHistory
 {
