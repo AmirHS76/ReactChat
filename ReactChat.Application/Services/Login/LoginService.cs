@@ -1,21 +1,21 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using MediatR;
+using Microsoft.IdentityModel.Tokens;
+using ReactChat.Application.Features.User.Queries.GetByUsername;
 using ReactChat.Core.Entities.User;
-using ReactChat.Infrastructure.Data.UnitOfWork;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace ReactChat.Application.Services.Login
 {
-    public class LoginService(IUnitOfWork userUnitOfWork)
+    public class LoginService(IMediator mediator)
     {
         private readonly string refreshTokenSecretKey = "UHyuZrvwyjfv9j0dgOGINMXRqiHzSeTlF+uYPsep2Dg=";
-        private readonly IUnitOfWork _unitOfWork = userUnitOfWork;
+        private readonly IMediator _mediator = mediator;
 
         public async Task<string?> Authenticate(string username, string password)
         {
-            var userRepository = _unitOfWork.UserRepository;
-            BaseUser? user = await userRepository.GetUserByUsernameAsync(username);
+            BaseUser? user = await _mediator.Send(new GetUserByUsernameQuery(username));
             if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
                 var token = GenerateJwtToken(user);
@@ -40,7 +40,7 @@ namespace ReactChat.Application.Services.Login
                 }, out var validatedToken);
 
                 string? username = principal.Claims.FirstOrDefault(c => c.Type == "username")?.Value;
-                var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username ?? throw new MissingFieldException("User not found"));
+                var user = await _mediator.Send(new GetUserByUsernameQuery(username ?? throw new MissingFieldException("User not found")));
                 return user == null ? null : GenerateJwtToken(user);
 
             }

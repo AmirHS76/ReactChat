@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserRepository from "../../../Repositories/UserRepository";
 import "../../../styles/UserList.css";
+import Cookies from "js-cookie";
 interface User {
   username: string;
   email: string;
@@ -16,8 +17,18 @@ const UserList: React.FC = () => {
     const fetchCurrentUser = async () => {
       if (currentUsername) return;
       try {
+        const username = Cookies.get("username");
+        if (username) {
+          setCurrentUsername(username);
+          return;
+        }
         const response = await userRepo.getCurrentUser();
         const user = (await response).data as User;
+        Cookies.set("username", user.username, {
+          secure: true,
+          sameSite: "Strict",
+        });
+
         setCurrentUsername(user.username);
       } catch {
         console.error("Failed to fetch current user");

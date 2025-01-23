@@ -10,12 +10,12 @@ namespace ReactChat.Application.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<BaseUser, UserDto>()
+            CreateMap<BaseUser, UserDTO>()
                 .ForMember(dest => dest.Password, opt => opt.Ignore())
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => (int?)src.Id))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.UserRole.ToString()));
 
-            CreateMap<PrivateMessage, MessageDto>()
+            CreateMap<PrivateMessage, MessageDTO>()
                 .ForMember(dest => dest.Sender, opt => opt.MapFrom(src => src.SenderName))
                 .ForMember(dest => dest.Recipient, opt => opt.MapFrom(src => src.ReceiverName))
                 .ForMember(dest => dest.Timestamp, opt => opt.MapFrom(src => src.MessageDateTime))

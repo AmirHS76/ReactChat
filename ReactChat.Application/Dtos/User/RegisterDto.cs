@@ -2,7 +2,7 @@
 
 namespace ReactChat.Application.Dtos.User
 {
-    public class RegisterDto
+    public class RegisterDTO
     {
         [Required]
         [StringLength(40)]

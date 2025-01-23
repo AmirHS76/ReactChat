@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ReactChat.Application.Features.User.Queries.GetAll;
 using ReactChat.Application.Interfaces.Cache;
 using ReactChat.Application.Interfaces.MessageHistory;
 using ReactChat.Application.Interfaces.MessageHub;
@@ -154,7 +155,7 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
     Assembly.GetExecutingAssembly()
-    , typeof(ReactChat.Application.Features.Queries.GetAllUsersQuery).Assembly // Add the assembly containing your handlers
+    , typeof(GetAllUsersQuery).Assembly // Add the assembly containing your handlers
 ));
 builder.Services.AddLogging(logging =>
 {

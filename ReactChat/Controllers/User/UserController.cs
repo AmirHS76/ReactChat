@@ -48,7 +48,7 @@ namespace ReactChat.Presentation.Controllers.User
         public async Task<IActionResult> GetAllUsers()
         {
             IEnumerable<BaseUser>? result = await _userService.GetAllUsersAsync();
-            List<UserDto> users = [.. _mapper.Map<List<UserDto>>(result)];
+            List<UserDTO> users = [.. _mapper.Map<List<UserDTO>>(result)];
 
             return Ok(users);
         }
@@ -67,7 +67,7 @@ namespace ReactChat.Presentation.Controllers.User
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddNewUser([FromBody] UserDto user)
+        public async Task<IActionResult> AddNewUser([FromBody] UserDTO user)
         {
             if (user.Password == null)
             {
@@ -78,7 +78,7 @@ namespace ReactChat.Presentation.Controllers.User
 
         [CustomAuthorize("Admin")]
         [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromBody] UserDto user)
+        public async Task<IActionResult> UpdateUser([FromBody] UserDTO user)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

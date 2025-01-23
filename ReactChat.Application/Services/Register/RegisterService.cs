@@ -1,20 +1,22 @@
-﻿using ReactChat.Application.Interfaces.Register;
+﻿using MediatR;
+using ReactChat.Application.Features.User.Commands.Create;
+using ReactChat.Application.Features.User.Queries.GetByEmail;
+using ReactChat.Application.Features.User.Queries.GetByUsername;
+using ReactChat.Application.Interfaces.Register;
 using ReactChat.Core.Entities.User;
-using ReactChat.Infrastructure.Data.UnitOfWork;
 
 namespace ReactChat.Application.Services.Register
 {
-    public class RegisterService(IUnitOfWork unitOfWork) : IRegisterService
+    public class RegisterService(IMediator mediator) : IRegisterService
     {
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
-
+        private readonly IMediator _mediator = mediator;
         public async Task<bool> Register(string username, string password, string email)
         {
             if (await CheckIfUserExist(username, email))
                 return false;
 
             var newUser = CreateUser(username, password, email);
-            await _unitOfWork.UserRepository.AddAsync(newUser);
+            await _mediator.Send(new CreateUserCommand(newUser));
 
             return true;
         }
@@ -31,8 +33,8 @@ namespace ReactChat.Application.Services.Register
         }
         public async Task<bool> CheckIfUserExist(string username, string email)
         {
-            return await _unitOfWork.UserRepository.GetUserByUsernameAsync(username) != null
-                || await _unitOfWork.UserRepository.GetUserByEmailAsync(email) != null;
+            return await _mediator.Send(new GetUserByUsernameQuery(username)) != null
+                || await _mediator.Send(new GetUserByEmailQuery(email)) != null;
         }
     }
 }
