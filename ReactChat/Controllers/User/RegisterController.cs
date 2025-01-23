@@ -11,7 +11,7 @@ namespace ReactChat.Presentation.Controllers.User
         private readonly IRegisterService _registerService = registerService;
 
         [HttpPost]
-        public async Task<ActionResult> Register([FromBody] RegisterDto registerDto)
+        public async Task<ActionResult> Register([FromBody] RegisterDTO registerDto)
         {
             if (!ModelState.IsValid)
             {

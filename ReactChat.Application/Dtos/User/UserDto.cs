@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ReactChat.Application.Dtos.User
 {
-    public class UserDto
+    public class UserDTO
     {
         public int? Id { get; set; }
         [Required]

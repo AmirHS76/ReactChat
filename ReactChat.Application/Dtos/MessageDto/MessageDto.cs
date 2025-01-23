@@ -1,6 +1,6 @@
 ﻿namespace ReactChat.Application.Dtos.MessageDto
 {
-    public class MessageDto
+    public class MessageDTO
     {
         public int Id { get; set; }
         public string Sender { get; set; } = default!;

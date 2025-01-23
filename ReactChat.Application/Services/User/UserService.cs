@@ -1,23 +1,27 @@
 ﻿using MediatR;
-using ReactChat.Application.Features.Queries;
+using ReactChat.Application.Constants;
+using ReactChat.Application.Features.User.Commands.Create;
+using ReactChat.Application.Features.User.Commands.Delete;
+using ReactChat.Application.Features.User.Commands.Update;
+using ReactChat.Application.Features.User.Queries.GetAll;
+using ReactChat.Application.Features.User.Queries.GetById;
+using ReactChat.Application.Features.User.Queries.GetByUsername;
 using ReactChat.Application.Interfaces.Cache;
 using ReactChat.Application.Interfaces.User;
 using ReactChat.Core.Entities.User;
 using ReactChat.Core.Enums;
-using ReactChat.Infrastructure.Data.UnitOfWork;
 
 namespace ReactChat.Application.Services.User
 {
-    public class UserService(IUnitOfWork unitOfWork, ICacheService cacheService, IMediator mediator) : IUserService
+    public class UserService(ICacheService cacheService, IMediator mediator) : IUserService
     {
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly ICacheService _cacheService = cacheService;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(5);
         private readonly IMediator _mediator = mediator;
         public async Task<BaseUser?> GetUserByUsernameAsync(string? username)
         {
             if (username == null) return null;
-            BaseUser? user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username);
+            BaseUser? user = await _mediator.Send(new GetUserByUsernameQuery(username));
             return user;
         }
 
@@ -27,26 +31,24 @@ namespace ReactChat.Application.Services.User
             if (id == 0)
                 user = await GetUserByUsernameAsync(username);
             else
-                user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+                user = await _mediator.Send(new GetUserByIdQuery(id));
             if (user == null)
                 return false;
             user.Username = username;
             user.Email = email;
-            await _unitOfWork.UserRepository.UpdateAsync(user);
-            await _unitOfWork.SaveChangesAsync();
+            await _mediator.Send(new UpdateUserCommand(user));
             return true;
         }
 
         public async Task<IEnumerable<BaseUser>?> GetAllUsersAsync()
         {
-            var cacheKey = "AllUsers";
-            //var cachesUsers = await _cacheService.GetAsync<IEnumerable<BaseUser>>(cacheKey);
-            //if (cachesUsers != null)
-            //    return cachesUsers;
+            var cachesUsers = await _cacheService.GetAsync<IEnumerable<BaseUser>>(CacheKeys.AllUsers);
+            if (cachesUsers != null)
+                return cachesUsers;
 
             IEnumerable<BaseUser> allUsers = await _mediator.Send(new GetAllUsersQuery());
             if (allUsers != null)
-                await _cacheService.SetAsync(cacheKey, allUsers, _cacheExpiration);
+                await _cacheService.SetAsync(CacheKeys.AllUsers, allUsers, _cacheExpiration);
 
             return allUsers;
         }
@@ -58,7 +60,7 @@ namespace ReactChat.Application.Services.User
             if (baseUser != null)
                 return false;
             baseUser = CreateUser(username, password, email, role);
-            await _unitOfWork.UserRepository.AddAsync(baseUser);
+            await _mediator.Send(new CreateUserCommand(baseUser ?? throw new InvalidDataException("User information was incorrect")));
             return true;
         }
 
@@ -100,10 +102,7 @@ namespace ReactChat.Application.Services.User
 
         public async Task<bool> DeleteUserByID(int id)
         {
-            var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
-            if (user == null)
-                return false;
-            await _unitOfWork.UserRepository.DeleteAsync(id);
+            await _mediator.Send(new DeleteUserByIdCommand(id));
             return true;
         }
     }

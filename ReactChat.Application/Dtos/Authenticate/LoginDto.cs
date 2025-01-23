@@ -2,7 +2,7 @@
 
 namespace ReactChat.Application.Dtos.Authenticate
 {
-    public class LoginDto
+    public class LoginDTO
     {
         [Required]
         public required string Username { get; set; }
