@@ -20,6 +20,7 @@ using ReactChat.Application.Services.Register;
 using ReactChat.Application.Services.User;
 using ReactChat.Infrastructure.Data.Context;
 using ReactChat.Infrastructure.Data.UnitOfWork;
+using ReactChat.Infrastructure.Logging.Enrichers;
 using ReactChat.Infrastructure.Repositories;
 using ReactChat.Infrastructure.Repositories.User;
 using ReactChat.Presentation.Controllers.Hub;
@@ -33,8 +34,14 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var hangFireConnectionString = builder.Configuration.GetConnectionString("HangFireConnection");
 var SeqServer = builder.Configuration.GetConnectionString("SeqConnection");
+builder.Services.AddHttpContextAccessor();
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
+    .Enrich.FromLogContext()
+    .Enrich.WithEnvironmentName()
+    .Enrich.WithThreadId()
+    .Enrich.WithProcessId()
+    .Enrich.With(new UserNameEnricher(builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>()))
     .WriteTo.Console()
     .WriteTo.MSSqlServer(
     connectionString: connectionString,
@@ -174,7 +181,6 @@ builder.Services.AddStackExchangeRedisCache(options =>
 var app = builder.Build();
 
 app.UseDefaultFiles();
-app.UseStaticFiles();
 app.UseCors("AllowAll");
 app.UseHangfireDashboard();
 if (app.Environment.IsDevelopment())
