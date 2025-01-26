@@ -32,7 +32,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var hangFireConnectionString = builder.Configuration.GetConnectionString("HangFireConnection");
-
+var SeqServer = builder.Configuration.GetConnectionString("SeqConnection");
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console()
@@ -44,6 +44,7 @@ Log.Logger = new LoggerConfiguration()
         AutoCreateSqlTable = true
     },
     restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning)
+    .WriteTo.Seq(SeqServer!)
     .CreateLogger();
 
 builder.Services.AddHangfire(config =>
