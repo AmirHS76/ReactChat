@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace ReactChat.Application.Services.Cache
 {
-    public class CacheService(IDistributedCache cache) : ICacheService
+    public class DistributedCacheService(IDistributedCache cache) : ICacheService
     {
         private readonly IDistributedCache _cache = cache;
 
