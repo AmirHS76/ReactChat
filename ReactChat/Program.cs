@@ -26,6 +26,7 @@ using ReactChat.Infrastructure.Repositories.User;
 using ReactChat.Presentation.Controllers.Hub;
 using ReactChat.Presentation.Helpers.HubHelpers;
 using Serilog;
+using StackExchange.Redis;
 using System.Reflection;
 using System.Text;
 
@@ -141,7 +142,6 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessageHubService, MessageHubService>();
 builder.Services.AddScoped<IMessageHubHelper, MessageHubHelper>();
 builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddCors(options =>
 {
@@ -163,7 +163,7 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
     Assembly.GetExecutingAssembly()
-    , typeof(GetAllUsersQuery).Assembly // Add the assembly containing your handlers
+    , typeof(GetAllUsersQuery).Assembly
 ));
 builder.Services.AddLogging(logging =>
 {
@@ -172,12 +172,24 @@ builder.Services.AddLogging(logging =>
 });
 builder.Services.AddSingleton<MessageProcessingService>();
 
-builder.Services.AddStackExchangeRedisCache(options =>
+try
 {
-    options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
-    options.InstanceName = "ReactChat_";
-});
-//builder.Services.AddHostedService(provider => provider.GetRequiredService<MessageProcessingService>());
+    var redisConnection = ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection"));
+    builder.Services.AddSingleton<IConnectionMultiplexer>(redisConnection);
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+        options.InstanceName = "ReactChat_";
+    });
+    builder.Services.AddScoped<ICacheService, DistributedCacheService>();
+}
+catch (Exception ex)
+{
+    Log.Logger.Warning("Could not connect to Redis. Falling back to in-memory caching. Exception: {Exception}", ex);
+    builder.Services.AddMemoryCache();
+    builder.Services.AddScoped<ICacheService, MemoryCacheService>();
+}
+
 var app = builder.Build();
 
 app.UseDefaultFiles();
