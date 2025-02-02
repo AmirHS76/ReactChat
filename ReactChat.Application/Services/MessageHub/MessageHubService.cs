@@ -20,5 +20,6 @@ namespace ReactChat.Application.Services.MessageHub
             };
             await _mediator.Send(new CreateMessageCommand(privateMessage));
         }
+
     }
 }

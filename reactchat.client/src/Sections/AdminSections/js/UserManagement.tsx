@@ -61,7 +61,6 @@ const UserManagementPage: React.FC = () => {
       );
       setEditingUser(null);
     } catch (err) {
-      console.error(err);
       setError("Failed to update user.");
     }
   };

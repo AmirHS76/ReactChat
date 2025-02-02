@@ -23,6 +23,8 @@ namespace ReactChat.Presentation.Controllers.Hub
             if (Context.User?.Identity?.Name == null)
                 throw new ArgumentNullException(nameof(recipientUsername), "User not found");
             string senderUsername = Context.User.Identity.Name;
+            if (!await _messageHubHelper.CheckUserAccess(senderUsername, Core.Enums.Accesses.CanSendMessage))
+                throw new UnauthorizedAccessException("You don't have access to send message");
             string groupName = _messageHubHelper.GetPrivateGroupName(senderUsername, recipientUsername);
 
             await _messageHubHelper.SaveMessageAsync(senderUsername, recipientUsername, message);

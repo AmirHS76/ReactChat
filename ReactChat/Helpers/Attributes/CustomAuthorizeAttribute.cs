@@ -2,13 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ReactChat.Application.Interfaces.User;
+using ReactChat.Core.Entities.User;
+using ReactChat.Core.Enums;
 using System.Security.Claims;
 
 namespace ReactChat.Presentation.Helpers.Attributes
 {
-    public class CustomAuthorizeAttribute(params string[] roles) : AuthorizeAttribute, IAuthorizationFilter
+    public class CustomAuthorizeAttribute(params Accesses[] roles) : AuthorizeAttribute, IAuthorizationFilter
     {
-        private readonly string[] _roles = roles;
+        private readonly Accesses[] _roles = roles;
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
@@ -32,7 +34,7 @@ namespace ReactChat.Presentation.Helpers.Attributes
 
             // Fetch the user and check the role
             var baseUser = userService.GetUserByUsernameAsync(username).Result;
-            if (!_roles.Any(role => baseUser?.UserRole.ToString() == role))
+            if (baseUser is not AdminUser || _roles.Any(x => !baseUser!.HasAccess(x)))
             {
                 context.Result = new ForbidResult();
                 return;

@@ -7,6 +7,7 @@ using ReactChat.Application.Interfaces.User;
 using ReactChat.Core.Entities.User;
 using ReactChat.Presentation.Helpers.Attributes;
 using System.Security.Claims;
+using static ReactChat.Core.Enums.Accesses;
 
 namespace ReactChat.Presentation.Controllers.User
 {
@@ -65,7 +66,7 @@ namespace ReactChat.Presentation.Controllers.User
             return Ok(new { role = user.UserRole.ToString() });
         }
 
-        [Authorize]
+        [CustomAuthorize(CanAddUser)]
         [HttpPost]
         public async Task<IActionResult> AddNewUser([FromBody] UserDTO user)
         {
@@ -76,7 +77,7 @@ namespace ReactChat.Presentation.Controllers.User
             return await _userService.AddNewUserAsync(user.Username, user.Password, user.Email, user.Role) ? Ok(user) : BadRequest();
         }
 
-        [CustomAuthorize("Admin")]
+        [CustomAuthorize(CanUpdateUser)]
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromBody] UserDTO user)
         {
@@ -99,7 +100,7 @@ namespace ReactChat.Presentation.Controllers.User
             return await _userService.UpdateUserAsync(user.Id, username, email) ? Ok() : BadRequest();
         }
 
-        [Authorize]
+        [CustomAuthorize(CanRemoveUser)]
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteUser(int id)

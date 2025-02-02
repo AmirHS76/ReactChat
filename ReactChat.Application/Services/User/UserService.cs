@@ -37,6 +37,7 @@ namespace ReactChat.Application.Services.User
             user.Username = username;
             user.Email = email;
             await _mediator.Send(new UpdateUserCommand(user));
+            await _cacheService.RemoveAsync(CacheKeys.AllUsers);
             return true;
         }
 
@@ -79,7 +80,7 @@ namespace ReactChat.Application.Services.User
                     Password = hashedPassword,
                     Email = email,
                     UserRole = userRole,
-                    Accesses = Accesses.CanCreateGroup | Accesses.CanUpdateGroup | Accesses.CanDeleteGroup | Accesses.CanRemoveUser | Accesses.CanUpdateUser
+                    Accesses = (Accesses)AccessesHelper.FullAccess
                 },
                 UserRole.RegularUser => new RegularUser
                 {
@@ -87,7 +88,7 @@ namespace ReactChat.Application.Services.User
                     Password = hashedPassword,
                     Email = email,
                     UserRole = userRole,
-                    Accesses = Accesses.CanSendMessage | Accesses.CanDeleteMessage | Accesses.CanEditMessage
+                    Accesses = (Accesses)AccessesHelper.FullUserAccess
                 },
                 _ => new BaseUser
                 {

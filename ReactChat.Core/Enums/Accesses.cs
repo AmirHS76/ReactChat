@@ -13,8 +13,16 @@ namespace ReactChat.Core.Enums
         // Admin user accesses     
         CanCreateGroup = 1 << 3,   // 0000 1000  8
         CanUpdateGroup = 1 << 4,   // 0001 0000  16
-        CanDeleteGroup = 1 << 5,   // 0010 0000  32
+        CanAddUser = 1 << 5,   // 0010 0000  32
         CanRemoveUser = 1 << 6,    // 0100 0000  64
-        CanUpdateUser = 1 << 7     // 1000 0000  128
+        CanUpdateUser = 1 << 7,     // 1000 0000  128
+        CanDeleteGroup = 1 << 8     // 0001 0000 0000  256
+    }
+
+    public class AccessesHelper
+    {
+        public const int FullAccess = 511;
+        public const int FullUserAccess = 7;
+        public const int NormalAdminAccess = 31;
     }
 }
