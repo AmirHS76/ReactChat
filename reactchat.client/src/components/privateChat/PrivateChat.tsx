@@ -6,7 +6,6 @@ import ChatRepository from "../../Repositories/ChatRepository";
 import MessageList from "./MessageList";
 import ChatInput from "./ChatInput";
 import "../../styles/PrivateChat.css";
-import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
 interface Message {
