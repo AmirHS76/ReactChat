@@ -4,6 +4,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -31,6 +32,15 @@ apiClient.interceptors.response.use(
   async (error) => {
     console.error("API request error:", error);
     const originalRequest = error.config;
+
+    if (error.response?.status === 403) {
+      toast.error("You don't have permission to do this action.", {
+        position: "top-center",
+        autoClose: 5000,
+      });
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const refreshToken = Cookies.get("refreshToken");

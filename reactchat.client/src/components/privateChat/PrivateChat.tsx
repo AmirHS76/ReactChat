@@ -6,6 +6,8 @@ import ChatRepository from "../../Repositories/ChatRepository";
 import MessageList from "./MessageList";
 import ChatInput from "./ChatInput";
 import "../../styles/PrivateChat.css";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 interface Message {
   sender: string;
@@ -76,7 +78,15 @@ const PrivateChat: React.FC = () => {
 
   const handleSendMessage = async (message: string) => {
     if (connection && message.trim()) {
-      await connection.invoke("SendPrivateMessage", username, message);
+      try {
+        await connection.invoke("SendPrivateMessage", username, message);
+      } catch (error) {
+        toast.error("You don't have permission to send Message.", {
+          position: "top-center",
+          autoClose: 5000,
+        });
+      }
+
       const container = messageListRef.current;
       if (container) container.scrollTop = container.scrollHeight;
     }
