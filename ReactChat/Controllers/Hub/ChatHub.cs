@@ -27,7 +27,7 @@ namespace ReactChat.Presentation.Controllers.Hub
                 throw new UnauthorizedAccessException("You don't have access to send message");
             string groupName = _messageHubHelper.GetPrivateGroupName(senderUsername, recipientUsername);
 
-            await _messageHubHelper.SaveMessageAsync(senderUsername, recipientUsername, message);
+            _messageHubHelper.SaveMessageAsync(senderUsername, recipientUsername, message);
             await Clients.Caller.SendAsync("ReceiveMessage", senderUsername, message, "sender");
 
             await Clients.GroupExcept(groupName, Context.ConnectionId)

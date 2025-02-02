@@ -1,7 +1,7 @@
 // src/register/Register.tsx
 import React, { useState } from "react";
 import "./register.css";
-
+import RegisterRepository from "../../Repositories/RegisterRepository";
 const Register: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -9,6 +9,7 @@ const Register: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const RegisterRepo = new RegisterRepository();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,21 +23,15 @@ const Register: React.FC = () => {
     }
 
     try {
-      const response = await fetch("https://localhost:7240/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, email, password }),
-      });
+      const response = await RegisterRepo.register(username, password, email);
 
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (response.status !== 200) {
+        const errorData = response.data;
         const errorString = errorData.join("\n");
         throw errorString;
       }
 
-      const data = await response;
+      const data = response.data;
       console.log("Registration successful:", data);
       setMessage("Registration successful! Redirecting to login...");
 

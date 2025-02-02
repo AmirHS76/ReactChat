@@ -11,8 +11,8 @@ namespace ReactChat.Presentation.Helpers.HubHelpers
         private readonly MessageProcessingService _messageProcessingService = messageProcessingService;
         private readonly IBackgroundJobClient _backgroundJobClient = backgroundJobClient;
         private readonly IMediator _mediator = mediator;
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task SaveMessageAsync(string sender, string recipient, string message)
+
+        public void SaveMessageAsync(string sender, string recipient, string message)
         {
             _backgroundJobClient.Enqueue(() => _messageProcessingService.EnqueueMessage(sender, recipient, message));
         }
