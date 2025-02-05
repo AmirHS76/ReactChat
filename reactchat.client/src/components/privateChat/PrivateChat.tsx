@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useChatConnection } from "../../hooks/useChatConnection";
@@ -20,11 +26,21 @@ const PrivateChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [connection, connectToHub] = useChatConnection();
   const messageListRef = useRef<HTMLDivElement | null>(null);
-  const chatRepo = new ChatRepository();
+  const chatRepo = useMemo(() => new ChatRepository(), []);
 
   // Pagination states
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+
+  const fetchChatHistory = useCallback(
+    async (username: string, pageNum = 1) => {
+      const result = await chatRepo.getUserChats(username, pageNum);
+      if (!result.data) return [];
+      setHasMore(result.data.hasMore);
+      return result.data.messages;
+    },
+    [chatRepo]
+  );
 
   useEffect(() => {
     setMessages([]);
@@ -44,7 +60,7 @@ const PrivateChat: React.FC = () => {
         }
       });
     }
-  }, []);
+  }, [currentUser, fetchChatHistory, username]);
 
   useEffect(() => {
     if (!connection && username) {
@@ -52,14 +68,7 @@ const PrivateChat: React.FC = () => {
     }
   }, [connection, connectToHub, username, currentUser]);
 
-  const fetchChatHistory = async (username: string, pageNum = 1) => {
-    const result = await chatRepo.getUserChats(username, pageNum);
-    if (!result.data) return [];
-    setHasMore(result.data.hasMore);
-    return result.data.messages;
-  };
-
-  const loadMoreMessages = async () => {
+  const loadMoreMessages = useCallback(async () => {
     const nextPage = page + 1;
     setPage(nextPage);
     const data = await fetchChatHistory(username!, nextPage);
@@ -73,13 +82,14 @@ const PrivateChat: React.FC = () => {
         },
       ]);
     });
-  };
+  }, [page, fetchChatHistory, username, currentUser]);
 
   const handleSendMessage = async (message: string) => {
     if (connection && message.trim()) {
       try {
         await connection.invoke("SendPrivateMessage", username, message);
       } catch (error) {
+        console.error(error);
         toast.error("You don't have permission to send Message.", {
           position: "top-center",
           autoClose: 5000,
@@ -102,7 +112,7 @@ const PrivateChat: React.FC = () => {
     };
     container.addEventListener("scroll", handleScroll);
     return () => container.removeEventListener("scroll", handleScroll);
-  }, [hasMore, messages]);
+  }, [hasMore, loadMoreMessages, messages]);
 
   return (
     <div className="private-chat-container">

@@ -39,7 +39,7 @@ const Register: React.FC = () => {
         window.location.href = "/login";
       }, 2000);
     } catch (err) {
-      setError("An error occurred during registration.");
+      setError("An error occurred during registration. : " + err);
       setTimeout(() => setError(null), 3000);
     }
   };

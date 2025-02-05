@@ -85,7 +85,7 @@ export const getRequest = async (url: string, config?: AxiosRequestConfig) => {
 
 export const postRequest = async (
   url: string,
-  data: any,
+  data: unknown,
   config?: AxiosRequestConfig
 ) => {
   try {
@@ -99,7 +99,7 @@ export const postRequest = async (
 
 export const putRequest = async (
   url: string,
-  data: any,
+  data: unknown,
   config?: AxiosRequestConfig
 ) => {
   try {
@@ -112,7 +112,7 @@ export const putRequest = async (
 };
 export const patchRequest = async (
   url: string,
-  data: any,
+  data: unknown,
   config?: AxiosRequestConfig
 ) => {
   try {

@@ -8,13 +8,6 @@ const ProfileSection = () => {
   const [newEmail, setNewEmail] = useState<string>("");
   const userRepo = new UserRepository();
 
-  const GetUserData = async () => {
-    const response = await userRepo.getUserData();
-    const data = response.data as { username: string; email: string };
-    setUsername(data.username);
-    setEmail(data.email);
-  };
-
   const updateEmail = async () => {
     await userRepo.updateEmail(newEmail);
     setEmail(newEmail);
@@ -22,6 +15,12 @@ const ProfileSection = () => {
   };
 
   useEffect(() => {
+    const GetUserData = async () => {
+      const response = await userRepo.getUserData();
+      const data = response.data as { username: string; email: string };
+      setUsername(data.username);
+      setEmail(data.email);
+    };
     GetUserData();
   }, []);
 

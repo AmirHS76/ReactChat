@@ -7,8 +7,8 @@ import NewChatSection from "../../../Sections/PublicSections/js/NewChatSection";
 import UserRepository from "../../../Repositories/UserRepository";
 const MainPage = () => {
   const [userRole, setUserRole] = useState<string | null>(null);
-  const userRepo = new UserRepository();
   useEffect(() => {
+    const userRepo = new UserRepository();
     const fetchUserRole = async () => {
       const response = await userRepo.fetchUserRole();
       const data: string = response;
