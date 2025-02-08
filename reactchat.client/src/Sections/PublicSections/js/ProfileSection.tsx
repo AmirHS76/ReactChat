@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "../css/ProfileSection.css";
 import UserRepository from "../../../Repositories/UserRepository";
 const ProfileSection = () => {
@@ -6,7 +6,7 @@ const ProfileSection = () => {
   const [email, setEmail] = useState<string>("");
   const [isEditingEmail, setIsEditingEmail] = useState<boolean>(false);
   const [newEmail, setNewEmail] = useState<string>("");
-  const userRepo = new UserRepository();
+  const userRepo = useMemo(() => new UserRepository(), []);
 
   const updateEmail = async () => {
     await userRepo.updateEmail(newEmail);
@@ -22,7 +22,7 @@ const ProfileSection = () => {
       setEmail(data.email);
     };
     GetUserData();
-  }, []);
+  }, [userRepo]);
 
   return (
     <div className="profile-section">

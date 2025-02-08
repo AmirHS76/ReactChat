@@ -12,8 +12,8 @@ const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const navigate = useNavigate();
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
-  const userRepo = new UserRepository();
   useEffect(() => {
+    const userRepo = new UserRepository();
     const fetchCurrentUser = async () => {
       if (currentUsername) return;
       try {
