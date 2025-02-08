@@ -8,7 +8,7 @@ namespace ReactChat.Infrastructure.Repositories.Message
     {
         private readonly UserContext _context = context;
         private static readonly int pageSize = 10;
-        public async Task<(IEnumerable<PrivateMessage> Messages, bool HasMore)> GetMessagesByUsernameAsync(string username, string targetUsername, int pageNum)
+        public async Task<(IEnumerable<PrivateMessage> Messages, bool HasMore)> GetMessagesByUsernameAsync(string username, string targetUsername, int pageNum, CancellationToken cancellationToken)
         {
             if (_context?.PrivateMessages == null)
             {
@@ -22,7 +22,7 @@ namespace ReactChat.Infrastructure.Repositories.Message
                 .OrderByDescending(x => x.Id)
                 .Skip((pageNum - 1) * pageSize)
                 .Take(pageSize + 1) // Fetch one extra message to check if there are more
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             bool hasMore = messages.Count > pageSize;
             if (hasMore)

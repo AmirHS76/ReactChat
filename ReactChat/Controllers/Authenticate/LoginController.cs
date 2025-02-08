@@ -10,22 +10,22 @@ namespace ReactChat.Presentation.Controllers.Authenticate
         private readonly LoginService _loginService = loginService;
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginDTO request)
+        public async Task<IActionResult> Login([FromBody] LoginDTO request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var token = await _loginService.Authenticate(request.Username, request.Password);
+            var token = await _loginService.Authenticate(request.Username, request.Password, cancellationToken);
             if (token == null)
                 return Unauthorized("Invalid username or password");
             var refreshToken = _loginService.GenerateRefreshToken(request.Username);
             return Ok(new { token, refreshToken });
         }
         [HttpGet]
-        public async Task<IActionResult> RefreshToken(string refreshToken)
+        public async Task<IActionResult> RefreshToken(string refreshToken, CancellationToken cancellationToken)
         {
-            return Ok(new { token = await _loginService.ValidateRefreshToken(refreshToken) });
+            return Ok(new { token = await _loginService.ValidateRefreshToken(refreshToken, cancellationToken) });
         }
     }
 }

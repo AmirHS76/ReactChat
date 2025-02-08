@@ -7,7 +7,7 @@ namespace ReactChat.Presentation.Controllers.Hub
     {
         private readonly IMessageHubHelper _messageHubHelper = messageHubHelper;
 
-        public async Task JoinPrivateChat(string username)
+        public async Task JoinPrivateChat(string username, CancellationToken cancellationToken = default)
         {
             if (Context.User?.Identity?.Name == null)
                 throw new ArgumentNullException(nameof(username), "User not found");
@@ -18,7 +18,7 @@ namespace ReactChat.Presentation.Controllers.Hub
             await Clients.Caller.SendAsync("JoinedGroup", groupName);
         }
 
-        public async Task SendPrivateMessage(string recipientUsername, string message)
+        public async Task SendPrivateMessage(string recipientUsername, string message, CancellationToken cancellationToken = default)
         {
             if (Context.User?.Identity?.Name == null)
                 throw new ArgumentNullException(nameof(recipientUsername), "User not found");

@@ -20,10 +20,10 @@ namespace ReactChat.Presentation.Controllers.Authenticate
         [HttpGet]
         [Authorize]
         [Route("Data")]
-        public async Task<IActionResult> GetUserData()
+        public async Task<IActionResult> GetUserData(CancellationToken cancellationToken)
         {
             var username = User.FindFirst(ClaimTypes.Name)?.Value;
-            BaseUser? baseUser = await _userService.GetUserByUsernameAsync(username);
+            BaseUser? baseUser = await _userService.GetUserByUsernameAsync(username, cancellationToken);
             return Ok(new { username, baseUser?.Email });
         }
     }

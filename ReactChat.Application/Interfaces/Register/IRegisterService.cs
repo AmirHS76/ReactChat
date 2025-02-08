@@ -2,6 +2,6 @@
 {
     public interface IRegisterService
     {
-        Task<bool> Register(string username, string password, string email);
+        Task<bool> Register(string username, string password, string email, CancellationToken cancellationToken);
     }
 }

@@ -10,7 +10,7 @@ public class UpdateUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
     public async Task<bool> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
         _unitOfWork.UserRepository.UpdateAsync(request.User);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return true;
     }
 }

@@ -18,50 +18,50 @@ namespace ReactChat.Application.Services.User
         private readonly ICacheService _cacheService = cacheService;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(5);
         private readonly IMediator _mediator = mediator;
-        public async Task<BaseUser?> GetUserByUsernameAsync(string? username)
+        public async Task<BaseUser?> GetUserByUsernameAsync(string? username, CancellationToken cancellationToken = default)
         {
             if (username == null) return null;
-            BaseUser? user = await _mediator.Send(new GetUserByUsernameQuery(username));
+            BaseUser? user = await _mediator.Send(new GetUserByUsernameQuery(username), cancellationToken);
             return user;
         }
 
-        public async Task<bool> UpdateUserAsync(int id, string username, string email)
+        public async Task<bool> UpdateUserAsync(int id, string username, string email, CancellationToken cancellationToken)
         {
             BaseUser? user;
             if (id == 0)
-                user = await GetUserByUsernameAsync(username);
+                user = await GetUserByUsernameAsync(username, cancellationToken);
             else
-                user = await _mediator.Send(new GetUserByIdQuery(id));
+                user = await _mediator.Send(new GetUserByIdQuery(id), cancellationToken);
             if (user == null)
                 return false;
             user.Username = username;
             user.Email = email;
-            await _mediator.Send(new UpdateUserCommand(user));
+            await _mediator.Send(new UpdateUserCommand(user), cancellationToken);
             await _cacheService.RemoveAsync(CacheKeys.AllUsers);
             return true;
         }
 
-        public async Task<IEnumerable<BaseUser>?> GetAllUsersAsync()
+        public async Task<IEnumerable<BaseUser>?> GetAllUsersAsync(CancellationToken cancellationToken)
         {
             var cachesUsers = await _cacheService.GetAsync<IEnumerable<BaseUser>>(CacheKeys.AllUsers);
             if (cachesUsers != null)
                 return cachesUsers;
 
-            IEnumerable<BaseUser> allUsers = await _mediator.Send(new GetAllUsersQuery());
+            IEnumerable<BaseUser> allUsers = await _mediator.Send(new GetAllUsersQuery(), cancellationToken);
             if (allUsers != null)
                 await _cacheService.SetAsync(CacheKeys.AllUsers, allUsers, _cacheExpiration);
 
             return allUsers;
         }
 
-        public async Task<bool> AddNewUserAsync(string username, string password, string email, string role)
+        public async Task<bool> AddNewUserAsync(string username, string password, string email, string role, CancellationToken cancellationToken)
         {
             BaseUser? baseUser;
-            baseUser = await GetUserByUsernameAsync(username);
+            baseUser = await GetUserByUsernameAsync(username, cancellationToken);
             if (baseUser != null)
                 return false;
             baseUser = CreateUser(username, password, email, role);
-            await _mediator.Send(new CreateUserCommand(baseUser ?? throw new InvalidDataException("User information was incorrect")));
+            await _mediator.Send(new CreateUserCommand(baseUser ?? throw new InvalidDataException("User information was incorrect")), cancellationToken);
             return true;
         }
 
@@ -101,9 +101,9 @@ namespace ReactChat.Application.Services.User
             };
         }
 
-        public async Task<bool> DeleteUserByID(int id)
+        public async Task<bool> DeleteUserByID(int id, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new DeleteUserByIdCommand(id));
+            await _mediator.Send(new DeleteUserByIdCommand(id), cancellationToken);
             return true;
         }
     }

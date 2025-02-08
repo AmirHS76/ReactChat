@@ -10,7 +10,7 @@ namespace ReactChat.Application.Features.User.Queries.GetById
 
         public async Task<BaseUser?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.UserRepository.GetByIdAsync(request.Id);
+            return await _unitOfWork.UserRepository.GetByIdAsync(request.Id, cancellationToken);
         }
     }
 }

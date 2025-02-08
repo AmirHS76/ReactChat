@@ -48,9 +48,9 @@ namespace ReactChat.Infrastructure.Data.UnitOfWork
                 return newMessageRepository;
             }
         }
-        public async Task SaveChangesAsync()
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public void Dispose()

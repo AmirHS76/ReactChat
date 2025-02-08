@@ -12,8 +12,8 @@ namespace ReactChat.Application.Features.User.Commands.Create
 
         public async Task<bool> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.UserRepository.AddAsync(request.User);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.UserRepository.AddAsync(request.User, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             await _cacheService.RemoveAsync(CacheKeys.AllUsers);
             return true;
         }
