@@ -49,7 +49,7 @@ namespace ReactChat.Presentation.Controllers.User
         public async Task<IActionResult> GetAllUsers()
         {
             IEnumerable<BaseUser>? result = await _userService.GetAllUsersAsync();
-            List<UserDTO> users = [.. _mapper.Map<List<UserDTO>>(result)];
+            List<UserDTO> users = _mapper.Map<List<UserDTO>>(result);
 
             return Ok(users);
         }

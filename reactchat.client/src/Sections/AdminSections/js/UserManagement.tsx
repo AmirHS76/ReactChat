@@ -17,7 +17,7 @@ const UserManagementPage: React.FC = () => {
   });
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const userRepository = new UserRepository();
+  const userRepository = React.useMemo(() => new UserRepository(), []);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -33,7 +33,7 @@ const UserManagementPage: React.FC = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, [userRepository]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -60,7 +60,7 @@ const UserManagementPage: React.FC = () => {
         )
       );
       setEditingUser(null);
-    } catch (err) {
+    } catch {
       setError("Failed to update user.");
     }
   };

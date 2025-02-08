@@ -29,9 +29,9 @@ class UserRepository {
     }
   }
 
-  async updateUser(user: any) {
+  async updateUser(user: User) {
     try {
-      const response = (await putRequest("/user", user)) as { data: any };
+      const response = await putRequest("/user", user);
       return response.data;
     } catch (error) {
       console.error("Error updating user:", error);
@@ -42,7 +42,7 @@ class UserRepository {
   async deleteUser(userId: number) {
     try {
       const response = (await deleteRequest(`/user/${userId}`)) as {
-        data: any;
+        data: unknown;
       };
       return response.data;
     } catch (error) {
