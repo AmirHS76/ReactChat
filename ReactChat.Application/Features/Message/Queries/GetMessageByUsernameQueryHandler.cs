@@ -9,11 +9,11 @@ namespace ReactChat.Application.Features.Message.Queries
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public async Task<MessageResultDTO> Handle(GetMessageByUsernameQuery request, CancellationToken cancellationToken)
         {
-            var result = await _unitOfWork.MessageRepository.GetMessagesByUsernameAsync(request.username, request.targetUsername, request.pageNum);
+            var (Messages, HasMore) = await _unitOfWork.MessageRepository.GetMessagesByUsernameAsync(request.username, request.targetUsername, request.pageNum, cancellationToken);
             return new MessageResultDTO()
-        {
-                Messages = result.Messages,
-                HasMore = result.HasMore
+            {
+                Messages = Messages,
+                HasMore = HasMore
             };
         }
     }

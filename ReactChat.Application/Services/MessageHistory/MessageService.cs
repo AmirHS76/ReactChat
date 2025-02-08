@@ -11,9 +11,9 @@ namespace ReactChat.Application.Services.MessageHistory
         private readonly IMediator _mediator = mediator;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<(IEnumerable<MessageDTO> Messages, bool HasMore)> GetMessagesByUsernameAsync(string username, string targetUsername, int pageNum)
+        public async Task<(IEnumerable<MessageDTO> Messages, bool HasMore)> GetMessagesByUsernameAsync(string username, string targetUsername, int pageNum, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new GetMessageByUsernameQuery(username, targetUsername, pageNum));
+            var result = await _mediator.Send(new GetMessageByUsernameQuery(username, targetUsername, pageNum), cancellationToken);
             var messages = _mapper.Map<IEnumerable<MessageDTO>>(result.Messages);
             return (messages, result.HasMore);
         }

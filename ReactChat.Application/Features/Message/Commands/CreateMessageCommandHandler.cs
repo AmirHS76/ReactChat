@@ -8,8 +8,8 @@ namespace ReactChat.Application.Features.Message.Commands
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public async Task<bool> Handle(CreateMessageCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.MessageRepository.AddAsync(request.Message);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.MessageRepository.AddAsync(request.Message, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
     }

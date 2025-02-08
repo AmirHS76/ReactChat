@@ -13,9 +13,9 @@ namespace ReactChat.Application.Services.Login
         private readonly string refreshTokenSecretKey = "UHyuZrvwyjfv9j0dgOGINMXRqiHzSeTlF+uYPsep2Dg=";
         private readonly IMediator _mediator = mediator;
 
-        public async Task<string?> Authenticate(string username, string password)
+        public async Task<string?> Authenticate(string username, string password, CancellationToken cancellationToken)
         {
-            BaseUser? user = await _mediator.Send(new GetUserByUsernameQuery(username));
+            BaseUser? user = await _mediator.Send(new GetUserByUsernameQuery(username), cancellationToken);
             if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
                 var token = GenerateJwtToken(user);
@@ -24,7 +24,7 @@ namespace ReactChat.Application.Services.Login
             return null;
         }
 
-        public async Task<string?> ValidateRefreshToken(string token)
+        public async Task<string?> ValidateRefreshToken(string token, CancellationToken cancellationToken)
         {
             var refreshToken = token;
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -40,7 +40,7 @@ namespace ReactChat.Application.Services.Login
                 }, out var validatedToken);
 
                 string? username = principal.Claims.FirstOrDefault(c => c.Type == "username")?.Value;
-                var user = await _mediator.Send(new GetUserByUsernameQuery(username ?? throw new MissingFieldException("User not found")));
+                var user = await _mediator.Send(new GetUserByUsernameQuery(username ?? throw new MissingFieldException("User not found")), cancellationToken);
                 return user == null ? null : GenerateJwtToken(user);
 
             }

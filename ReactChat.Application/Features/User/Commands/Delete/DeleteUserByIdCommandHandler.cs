@@ -8,8 +8,8 @@ namespace ReactChat.Application.Features.User.Commands.Delete
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public async Task<bool> Handle(DeleteUserByIdCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.UserRepository.DeleteAsync(request.Id);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.UserRepository.DeleteAsync(request.Id, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
     }
