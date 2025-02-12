@@ -65,10 +65,8 @@ const Login: React.FC = () => {
   };
 
   const handleGoogleLogin = () => {
-    // Redirect to your backend Google login endpoint.
-    // Adjust the URL (and port) as needed.
-    window.location.href =
-      "https://localhost:7240/api/ExternalAuth/google-login";
+    const backendUrl: string = import.meta.env.VITE_BACKEND_URL;
+    window.location.href = backendUrl + "api/ExternalAuth/google-login";
   };
 
   return (

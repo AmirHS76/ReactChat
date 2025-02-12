@@ -27,7 +27,7 @@ namespace ReactChat.Presentation.Controllers
             if (!result.Succeeded)
                 return BadRequest();
 
-            var (token, refreshToken) = _loginService.GenerateTokensForGoogleUser(result.Principal ?? throw new UnauthorizedAccessException("Claims was null")); // Assuming GenerateToken method exists
+            var (token, refreshToken) = _loginService.GenerateTokensForGoogleUser(result.Principal ?? throw new UnauthorizedAccessException("Claims was null"));
 
             var frontEndUrl = _configuration["FrontEnd:Url"];
             return Redirect($"{frontEndUrl}/google-callback?token={token}&refreshToken={refreshToken}");

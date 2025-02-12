@@ -97,7 +97,7 @@ public static class ServiceExtensions
                     }
                 };
             })
-             .AddCookie("External") // Add a cookie authentication scheme for external sign-in
+             .AddCookie("External")
              .AddGoogle(options =>
              {
                  options.ClientId = configuration["Authentication:Google:ClientId"]!;
