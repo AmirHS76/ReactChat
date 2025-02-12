@@ -5,7 +5,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import Login from "./components/login/Login";
+import Login from "./components/login/manual/Login";
 import Register from "./components/register/register";
 import MainPage from "./components/MainPage/js/MainPage";
 import ProtectedRoute from "./ProtectedRoute";
@@ -15,6 +15,7 @@ import UserList from "./components/ChatHub/js/UsersList";
 import UserManagementPage from "./Sections/AdminSections/js/UserManagement";
 import AddNewUserPage from "./Sections/AdminSections/js/AddNewUser";
 import { ToastContainer } from "react-toastify";
+import GoogleCallback from "./components/login/google/GoogleCallback";
 const App: React.FC = () => {
   return (
     <Router>
@@ -59,6 +60,7 @@ const App: React.FC = () => {
             <ProtectedRoute element={<AddNewUserPage />} adminOnly={true} />
           }
         />
+        <Route path="/google-callback" element={<GoogleCallback />} />
       </Routes>
     </Router>
   );

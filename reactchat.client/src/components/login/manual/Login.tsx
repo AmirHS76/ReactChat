@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./Login.css";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import { LoginRepository } from "../../Repositories/LoginRepository";
+import { LoginRepository } from "../../../Repositories/LoginRepository";
+
 interface LoginResponse {
   token: string;
   refreshToken: string;
@@ -15,6 +16,7 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const repo = new LoginRepository();
+
   useEffect(() => {
     const token = Cookies.get("token");
     if (token) {
@@ -30,7 +32,7 @@ const Login: React.FC = () => {
     try {
       const response = await repo.login(username, password);
 
-      if (response.status != 200) {
+      if (response.status !== 200) {
         throw new Error("Invalid username or password");
       }
       const usernameToken = username;
@@ -62,6 +64,13 @@ const Login: React.FC = () => {
     }
   };
 
+  const handleGoogleLogin = () => {
+    // Redirect to your backend Google login endpoint.
+    // Adjust the URL (and port) as needed.
+    window.location.href =
+      "https://localhost:7240/api/ExternalAuth/google-login";
+  };
+
   return (
     <div className="login-container">
       {message && <div className="info-message">{message}</div>}
@@ -91,6 +100,13 @@ const Login: React.FC = () => {
         <div className="button-container">
           <button type="submit" className="login-button">
             Login
+          </button>
+          <button
+            type="button"
+            className="google-login-button"
+            onClick={handleGoogleLogin}
+          >
+            Continue with Google
           </button>
         </div>
         <div className="login-footer">

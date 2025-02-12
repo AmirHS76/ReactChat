@@ -7,13 +7,21 @@ using Serilog;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
-var configuration = builder.Configuration;
 builder.Services.AddHttpContextAccessor();
+builder.Configuration.AddUserSecrets<Program>();
+var configuration = builder.Configuration;
 
 // Configuration
-var connectionString = configuration.GetConnectionString("DefaultConnection");
-var hangFireConnectionString = configuration.GetConnectionString("HangFireConnection");
-var seqServer = configuration.GetConnectionString("SeqConnection");
+
+//AppSettings
+//var connectionString = configuration.GetConnectionString("DefaultConnection");
+//var hangFireConnectionString = configuration.GetConnectionString("HangFireConnection");
+//var seqServer = configuration.GetConnectionString("SeqConnection");
+
+//UserSecrets
+var connectionString = configuration["ConnectionStrings:DefaultConnection"];
+var hangFireConnectionString = configuration["ConnectionStrings:HangFireConnection"];
+var seqServer = configuration["ConnectionStrings:SeqConnection"];
 
 // Configure Logging
 builder.ConfigureLogging(connectionString!, seqServer!);
@@ -43,12 +51,14 @@ app.MapControllers();
 app.MapFallbackToFile("/index.html");
 app.MapHub<ChatHub>("/chatHub");
 app.MapGet("/", () => "----REACT CHAT----");
-app.Use(async (context, next) =>
-{
-    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
-    context.Response.Headers.TryAdd("Content-Security-Policy", "frame-ancestors 'none'");
-    await next();
-});
+var a = configuration["Authentication:Google:ClientId"]!;
+var b = configuration["Authentication:Google:ClientSecret"]!;
+//app.Use(async (context, next) =>
+//{
+//    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
+//    context.Response.Headers.TryAdd("Content-Security-Policy", "frame-ancestors 'none'");
+//    await next();
+//});
 app.MapHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = async (context, report) =>

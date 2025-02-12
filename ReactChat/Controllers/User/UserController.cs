@@ -62,7 +62,11 @@ namespace ReactChat.Presentation.Controllers.User
             var username = User.FindFirst(ClaimTypes.Name)?.Value;
             var user = await _userService.GetUserByUsernameAsync(username, cancellationToken);
             if (user == null)
-                return NotFound();
+            {
+                if (User.FindFirst(ClaimTypes.Role) != null)
+                    return Ok(User.FindFirst(ClaimTypes.Role)?.Value);
+                return BadRequest();
+            }
             return Ok(new { role = user.UserRole.ToString() });
         }
 

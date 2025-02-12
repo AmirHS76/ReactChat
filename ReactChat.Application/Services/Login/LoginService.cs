@@ -18,7 +18,7 @@ namespace ReactChat.Application.Services.Login
             BaseUser? user = await _mediator.Send(new GetUserByUsernameQuery(username), cancellationToken);
             if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
-                var token = GenerateJwtToken(user);
+                var token = GenerateJwtTokenFromUser(user);
                 return token;
             }
             return null;
@@ -40,8 +40,12 @@ namespace ReactChat.Application.Services.Login
                 }, out var validatedToken);
 
                 string? username = principal.Claims.FirstOrDefault(c => c.Type == "username")?.Value;
-                var user = await _mediator.Send(new GetUserByUsernameQuery(username ?? throw new MissingFieldException("User not found")), cancellationToken);
-                return user == null ? null : GenerateJwtToken(user);
+                var user = await _mediator.Send(new GetUserByUsernameQuery(username ?? ""), cancellationToken);
+                if (user is null)
+                    return GenerateTokensForGoogleUser(principal).token;
+                else
+                    return GenerateJwtTokenFromUser(user);
+                return null;
 
             }
             catch (Exception)
@@ -50,7 +54,7 @@ namespace ReactChat.Application.Services.Login
             }
         }
 
-        private static string GenerateJwtToken(BaseUser user)
+        private static string GenerateJwtTokenFromUser(BaseUser user)
         {
             var claims = new[]
             {
@@ -86,5 +90,35 @@ namespace ReactChat.Application.Services.Login
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        public (string token, string refreshToken) GenerateTokensForGoogleUser(ClaimsPrincipal principal)
+        {
+            var username = principal.FindFirst(ClaimTypes.Name)?.Value ?? principal.FindFirst("username")?.Value ?? throw new NullReferenceException("Username not found");
+            var email = principal.FindFirst(ClaimTypes.Email)?.Value ?? "";
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Email, email),
+                new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role,"RegularUser")
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("dDgM0xSLiiYjqF+U4TkygUYjaDWdE68RLkilOHTzHrY="));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: "YourIssuer",
+                audience: "YourAudience",
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds);
+
+            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+            var refreshToken = GenerateRefreshToken(username);
+
+            return (jwtToken, refreshToken);
+        }
+
     }
 }
