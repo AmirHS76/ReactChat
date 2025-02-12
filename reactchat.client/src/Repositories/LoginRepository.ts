@@ -33,4 +33,14 @@ export class LoginRepository {
       throw error;
     }
   };
+
+  authenticateWithGoogle = async () => {
+    try {
+      const response = await getRequest(`api/ExternalAuth/google-login`);
+      return response;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
 }

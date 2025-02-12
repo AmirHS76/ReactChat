@@ -65,7 +65,12 @@ public static class ServiceExtensions
 
     public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultSignInScheme = "External";
+        })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -91,7 +96,14 @@ public static class ServiceExtensions
                         return Task.CompletedTask;
                     }
                 };
-            });
+            })
+             .AddCookie("External") // Add a cookie authentication scheme for external sign-in
+             .AddGoogle(options =>
+             {
+                 options.ClientId = configuration["Authentication:Google:ClientId"]!;
+                 options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
+             });
+        ;
     }
 
     public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
@@ -163,7 +175,7 @@ public static class ServiceExtensions
 
         try
         {
-            var redisConnection = ConnectionMultiplexer.Connect(configuration.GetConnectionString("RedisConnection")!);
+            var redisConnection = ConnectionMultiplexer.Connect(configuration["RedisConnection"]!);
             services.AddSingleton<IConnectionMultiplexer>(redisConnection);
             services.AddStackExchangeRedisCache(options =>
             {
