@@ -196,5 +196,8 @@ public static class ServiceExtensions
             .AddRedis(configuration.GetConnectionString("RedisConnection")!, name: "Redis Cache")
             .AddHangfire(hangfireOptions => { hangfireOptions.MinimumAvailableServers = 1; })
             .AddDiskStorageHealthCheck(setup => { setup.AddDrive("C:\\", 1024); });
+
+        services.AddHealthChecksUI()
+            .AddInMemoryStorage();
     }
 }

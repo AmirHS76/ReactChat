@@ -1,10 +1,10 @@
 using Hangfire;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using ReactChat.Application.Services.BackgroundService;
 using ReactChat.Presentation.Controllers.Hub;
 using ReactChat.Presentation.Extensions;
 using Serilog;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
@@ -61,24 +61,10 @@ var b = configuration["Authentication:Google:ClientSecret"]!;
 //});
 app.MapHealthChecks("/health", new HealthCheckOptions
 {
-    ResponseWriter = async (context, report) =>
-    {
-        var result = new
-        {
-            status = report.Status.ToString(),
-            checks = report.Entries.Select(e => new
-            {
-                name = e.Key,
-                status = e.Value.Status.ToString(),
-                description = e.Value.Description,
-                duration = e.Value.Duration.ToString()
-            })
-        };
-
-        context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync(JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true }));
-    }
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
+
+app.MapHealthChecksUI(app => app.UIPath = "/health-ui");
 
 // Background Jobs
 var messageProcessingService = app.Services.GetRequiredService<MessageProcessingService>();
