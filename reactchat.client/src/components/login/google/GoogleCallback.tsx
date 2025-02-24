@@ -22,10 +22,8 @@ const GoogleCallback: React.FC = () => {
         secure: true,
         sameSite: "Strict",
       });
-      // Optionally, set any additional data like username
       navigate("/main");
     } else {
-      // Handle error conditions, such as showing an error message
       console.error("Missing token(s) in Google callback.");
     }
   }, [location, navigate]);
