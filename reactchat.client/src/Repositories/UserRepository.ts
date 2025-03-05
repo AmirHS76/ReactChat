@@ -71,7 +71,7 @@ class UserRepository {
     }
   }
   async getUserData() {
-    return await getRequest("authenticate/data");
+    return await getRequest("api/v1/authenticate/data");
   }
 
   async updateEmail(newEmail: string) {

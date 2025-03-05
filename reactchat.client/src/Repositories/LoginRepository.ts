@@ -26,7 +26,7 @@ export class LoginRepository {
   };
   authenticate = async () => {
     try {
-      const response = await getRequest(`authenticate`);
+      const response = await getRequest(`api/v1/authenticate`);
       return response;
     } catch (error) {
       console.log(error);
