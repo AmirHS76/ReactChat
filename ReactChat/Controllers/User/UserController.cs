@@ -49,6 +49,7 @@ namespace ReactChat.Presentation.Controllers.User
         public async Task<IActionResult> GetAllUsers(CancellationToken cancellationToken)
         {
             IEnumerable<BaseUser>? result = await _userService.GetAllUsersAsync(cancellationToken);
+
             List<UserDTO> users = _mapper.Map<List<UserDTO>>(result);
 
             return Ok(users);
