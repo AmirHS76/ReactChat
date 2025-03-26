@@ -6,7 +6,6 @@ import {
   patchRequest,
 } from "../services/apiService";
 import User from "../types/users";
-import user from "../types/users";
 
 class UserRepository {
   async fetchUserRole(): Promise<string> {
@@ -61,7 +60,7 @@ class UserRepository {
     }
   }
 
-  async addUser(userModel: user) {
+  async addUser(userModel: User) {
     try {
       const response = await postRequest(`user`, userModel);
       return response;

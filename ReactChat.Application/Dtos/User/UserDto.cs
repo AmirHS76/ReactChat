@@ -14,5 +14,6 @@ namespace ReactChat.Application.Dtos.User
         [EmailAddress]
         public required string Email { get; set; }
         public string Role { get; set; } = UserRole.Guest.ToString();
+        public string? Accesses { get; set; }
     }
 }

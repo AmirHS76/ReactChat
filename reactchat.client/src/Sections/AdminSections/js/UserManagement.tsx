@@ -92,13 +92,13 @@ const UserManagementPage: React.FC = () => {
       {error && <div className="error-message">{error}</div>}
       <div className="user-list">
         {users.map((user) => (
-          <div key={user.id} className="user-card-container">
-            <div key={user.id} className="user-card">
+          <div key={user.id} className="user-card">
+            <div className="user-info">
               <p>Username: {user.username}</p>
               <p>Email: {user.email}</p>
               <p>Role: {user.role}</p>
             </div>
-            <div>
+            <div className="user-actions">
               <button
                 className="manage-button"
                 onClick={() => handleEdit(user)}
