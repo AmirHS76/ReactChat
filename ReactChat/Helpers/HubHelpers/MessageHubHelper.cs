@@ -1,7 +1,13 @@
 ﻿using Hangfire;
 using MediatR;
+using ReactChat.Application.Features.Groups.Commands;
+using ReactChat.Application.Features.Groups.Queries;
 using ReactChat.Application.Features.User.Queries.GetByUsername;
+using ReactChat.Application.Features.UserGroups.Commands;
+using ReactChat.Application.Features.UserGroups.Queries.GetUserGroups;
 using ReactChat.Application.Services.BackgroundService;
+using ReactChat.Core.Entities.Chat.Group;
+using ReactChat.Core.Entities.User;
 using ReactChat.Core.Enums;
 
 namespace ReactChat.Presentation.Helpers.HubHelpers
@@ -32,6 +38,26 @@ namespace ReactChat.Presentation.Helpers.HubHelpers
                 return true;
             }
             return false;
+        }
+
+        public async Task<List<string>> GetGroupsAsync()
+        {
+            return (await _mediator.Send(new GetListGroupByGroupNameQuery(null)) ?? throw new NullReferenceException("No group found")).Select(g => g.GroupName).ToList();
+        }
+
+        public async Task AddUserToGroupAsync(string username, string groupName)
+        {
+            var group = await _mediator.Send(new GetSingleGroupByGroupNameQuery(groupName));
+            if (group == null)
+            {
+                group = new ChatGroup { GroupName = groupName };
+                await _mediator.Send(new CreateGroupCommand(group));
+            }
+
+            if (!(await _mediator.Send(new GetUserGroupsQuery(username, group.Id))).Any())
+            {
+                await _mediator.Send(new CreateUserGroupCommand(new UserGroup { Username = username, GroupId = group.Id }));
+            }
         }
     }
 }

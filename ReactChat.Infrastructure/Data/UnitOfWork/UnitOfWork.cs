@@ -1,7 +1,7 @@
-﻿using ReactChat.Core.Entities.Message;
-using ReactChat.Core.Entities.User;
+﻿using ReactChat.Core.Entities.Chat.Message;
 using ReactChat.Infrastructure.Data.Context;
 using ReactChat.Infrastructure.Repositories;
+using ReactChat.Infrastructure.Repositories.Chat;
 using ReactChat.Infrastructure.Repositories.Message;
 using ReactChat.Infrastructure.Repositories.User;
 namespace ReactChat.Infrastructure.Data.UnitOfWork
@@ -20,19 +20,9 @@ namespace ReactChat.Infrastructure.Data.UnitOfWork
             _repositories[typeof(T)] = newRepository;
             return newRepository;
         }
-        public IUserRepository UserRepository
+        public IUserRepository<T> UserRepository<T>() where T : class
         {
-            get
-            {
-                if (_repositories.TryGetValue(typeof(BaseUser), out var repository))
-                {
-                    return (IUserRepository)repository;
-                }
-
-                var newUserRepository = new UserRepository(_context);
-                _repositories[typeof(BaseUser)] = newUserRepository;
-                return newUserRepository;
-            }
+            return new UserRepository<T>(_context);
         }
         public IMessageRepository MessageRepository
         {
@@ -48,6 +38,11 @@ namespace ReactChat.Infrastructure.Data.UnitOfWork
                 return newMessageRepository;
             }
         }
+        public IChatRepository<T> ChatRepository<T>() where T : class
+        {
+            return new ChatRepository<T>(_context);
+        }
+
         public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
             await _context.SaveChangesAsync(cancellationToken);

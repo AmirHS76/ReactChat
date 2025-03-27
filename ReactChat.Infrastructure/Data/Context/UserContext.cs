@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ReactChat.Core.Entities.Message;
+using ReactChat.Core.Entities.Chat.Group;
+using ReactChat.Core.Entities.Chat.Message;
 using ReactChat.Core.Entities.User;
 using ReactChat.Core.Enums;
 
@@ -9,6 +10,8 @@ namespace ReactChat.Infrastructure.Data.Context
     {
         public DbSet<BaseUser>? Users { get; set; }
         public DbSet<PrivateMessage>? PrivateMessages { get; set; }
+        public DbSet<ChatGroup> ChatGroups { get; set; }
+        public DbSet<UserGroup> UserGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

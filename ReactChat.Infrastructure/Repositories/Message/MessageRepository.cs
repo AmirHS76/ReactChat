@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ReactChat.Core.Entities.Message;
+using ReactChat.Core.Entities.Chat.Message;
 using ReactChat.Infrastructure.Data.Context;
 
 namespace ReactChat.Infrastructure.Repositories.Message

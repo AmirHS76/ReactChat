@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using ReactChat.Application.Constants;
 using ReactChat.Application.Interfaces.Cache;
+using ReactChat.Core.Entities.User;
 using ReactChat.Infrastructure.Data.UnitOfWork;
 
 namespace ReactChat.Application.Features.User.Commands.Create
@@ -12,7 +13,7 @@ namespace ReactChat.Application.Features.User.Commands.Create
 
         public async Task<bool> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.UserRepository.AddAsync(request.User, cancellationToken);
+            await _unitOfWork.UserRepository<BaseUser>().AddAsync(request.User, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             await _cacheService.RemoveAsync(CacheKeys.AllUsers);
             return true;

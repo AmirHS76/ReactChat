@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ReactChat.Application.Dtos.MessageDto;
 using ReactChat.Application.Dtos.User;
-using ReactChat.Core.Entities.Message;
+using ReactChat.Core.Entities.Chat.Message;
 using ReactChat.Core.Entities.User;
 
 namespace ReactChat.Application.Mapping

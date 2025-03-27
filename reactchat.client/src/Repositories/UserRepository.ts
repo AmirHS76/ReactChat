@@ -80,6 +80,9 @@ class UserRepository {
   async getCurrentUser() {
     return await getRequest("user");
   }
+  async getAccesses() {
+    return await getRequest("/user/getAccesses");
+  }
 }
 
 export default UserRepository;

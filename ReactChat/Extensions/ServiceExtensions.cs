@@ -145,7 +145,7 @@ public static class ServiceExtensions
             });
         });
         services.AddScoped<LoginService>();
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped(typeof(IUserRepository<>), typeof(UserRepository<>));
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IRegisterService, RegisterService>();

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { act, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { checkAuthToken, handleUnauthenticated } from "./services/authService";
 import UserRepository from "./Repositories/UserRepository";
+import AccessesService from "./services/AccessesService";
 interface ProtectedRouteProps {
   element: React.ReactNode;
   adminOnly?: boolean;
@@ -15,6 +16,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
   useEffect(() => {
     const userRepo = new UserRepository();
     const verifyAuthentication = async () => {
@@ -31,8 +33,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         setIsAuthenticated(isAuthenticated);
 
         if (isAuthenticated) {
+          const role = localStorage.getItem("role");
+          if (role !== null) {
+            const userRole = role;
+            setIsAdmin(userRole === "Admin");
+            return;
+          }
           const userRole = await userRepo.fetchUserRole();
           setIsAdmin(userRole === "Admin");
+          localStorage.setItem("role", userRole);
         } else {
           handleUnauthenticated();
         }
@@ -42,8 +51,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       } finally {
         setLoading(false);
       }
+      setUserAccesses();
     };
 
+    const setUserAccesses = async () => {
+      if (localStorage.getItem("accesses") !== null) {
+        return;
+      }
+      userRepo.getAccesses().then((response) => {
+        localStorage.setItem("accesses", JSON.stringify(response.data));
+      });
+    };
     verifyAuthentication();
   }, []);
 
