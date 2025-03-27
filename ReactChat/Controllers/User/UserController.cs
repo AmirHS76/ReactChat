@@ -71,6 +71,20 @@ namespace ReactChat.Presentation.Controllers.User
             return Ok(new { role = user.UserRole.ToString() });
         }
 
+        [Authorize]
+        [HttpGet]
+        [Route("getAccesses")]
+        public async Task<IActionResult> GetUserAccesses(CancellationToken cancellationToken)
+        {
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
+            var user = await _userService.GetUserByUsernameAsync(username, cancellationToken);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            return Ok(new { accesses = user.Accesses.ToString() });
+        }
+
         [CustomAuthorize(CanAddUser)]
         [HttpPost]
         public async Task<IActionResult> AddNewUser([FromBody] UserDTO user, CancellationToken cancellationToken)

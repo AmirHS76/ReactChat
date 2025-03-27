@@ -16,12 +16,29 @@ namespace ReactChat.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ReactChat.Core.Entities.Message.PrivateMessage", b =>
+            modelBuilder.Entity("ReactChat.Core.Entities.Chat.Group.ChatGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("GroupName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChatGroups");
+                });
+
+            modelBuilder.Entity("ReactChat.Core.Entities.Chat.Message.PrivateMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,6 +95,28 @@ namespace ReactChat.Infrastructure.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("ReactChat.Core.Entities.User.UserGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("UserGroups");
+                });
+
             modelBuilder.Entity("ReactChat.Core.Entities.User.AdminUser", b =>
                 {
                     b.HasBaseType("ReactChat.Core.Entities.User.BaseUser");
@@ -90,6 +129,17 @@ namespace ReactChat.Infrastructure.Migrations
                     b.HasBaseType("ReactChat.Core.Entities.User.BaseUser");
 
                     b.HasDiscriminator().HasValue(1);
+                });
+
+            modelBuilder.Entity("ReactChat.Core.Entities.User.UserGroup", b =>
+                {
+                    b.HasOne("ReactChat.Core.Entities.Chat.Group.ChatGroup", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
                 });
 #pragma warning restore 612, 618
         }

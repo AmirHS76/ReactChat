@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using ReactChat.Application.Features.Message.Commands;
 using ReactChat.Application.Interfaces.MessageHub;
-using ReactChat.Core.Entities.Message;
+using ReactChat.Core.Entities.Chat.Message;
 
 namespace ReactChat.Application.Services.MessageHub
 {

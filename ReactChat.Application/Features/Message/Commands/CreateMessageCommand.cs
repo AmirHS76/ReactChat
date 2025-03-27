@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using ReactChat.Core.Entities.Message;
+using ReactChat.Core.Entities.Chat.Message;
 
 namespace ReactChat.Application.Features.Message.Commands
 {

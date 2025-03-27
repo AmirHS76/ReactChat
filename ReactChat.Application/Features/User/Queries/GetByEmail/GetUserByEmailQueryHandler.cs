@@ -9,7 +9,7 @@ namespace ReactChat.Application.Features.User.Queries.GetByEmail
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public async Task<BaseUser?> Handle(GetUserByEmailQuery request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.UserRepository.GetUserByEmailAsync(request.Email, cancellationToken);
+            return await _unitOfWork.UserRepository<BaseUser>().GetUserByEmailAsync(request.Email, cancellationToken);
         }
     }
 }

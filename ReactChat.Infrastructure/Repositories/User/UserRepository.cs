@@ -4,7 +4,7 @@ using ReactChat.Infrastructure.Data.Context;
 
 namespace ReactChat.Infrastructure.Repositories.User
 {
-    public class UserRepository(UserContext context) : GenericRepository<BaseUser>(context), IUserRepository
+    public class UserRepository<T>(UserContext context) : GenericRepository<T>(context), IUserRepository<T> where T : class
     {
         private readonly UserContext _context = context;
 
@@ -16,6 +16,19 @@ namespace ReactChat.Infrastructure.Repositories.User
         public async Task<BaseUser?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
         {
             return await _context.Set<BaseUser>().AsNoTracking().FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+        }
+
+        public async Task<IEnumerable<UserGroup>> GetUserGroupAsync(string? userName, int? groupId)
+        {
+            var query = _context.Set<UserGroup>().AsNoTracking();
+
+            if (userName is not null)
+                query = query.Where(x => x.Username == userName);
+
+            if (groupId is not null)
+                query = query.Where(x => x.GroupId == groupId);
+
+            return await query.ToListAsync();
         }
     }
 }

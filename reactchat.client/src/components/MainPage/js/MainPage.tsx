@@ -10,8 +10,14 @@ const MainPage = () => {
   useEffect(() => {
     const userRepo = new UserRepository();
     const fetchUserRole = async () => {
+      const role = localStorage.getItem("role");
+      if (role !== null) {
+        setUserRole(role);
+        return;
+      }
       const response = await userRepo.fetchUserRole();
       const data: string = response;
+      localStorage.setItem("role", data);
       setUserRole(data);
     };
 

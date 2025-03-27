@@ -1,4 +1,4 @@
-﻿namespace ReactChat.Core.Entities.Message
+﻿namespace ReactChat.Core.Entities.Chat.Message
 {
     public class PrivateMessage
     {

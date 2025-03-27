@@ -10,7 +10,7 @@ namespace ReactChat.Application.Features.User.Queries.GetAll
 
         public async Task<IEnumerable<BaseUser>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.UserRepository.GetAllAsync(cancellationToken);
+            return await _unitOfWork.UserRepository<BaseUser>().GetAllAsync(cancellationToken);
         }
     }
 }
