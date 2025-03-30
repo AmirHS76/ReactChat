@@ -1,0 +1,36 @@
+.new-group-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+}
+
+.group-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: rgb(255, 255, 255);
+}
+
+.new-group-section input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.new-group-section button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.new-group-section button:hover {
+  background-color: #0056b3;
+}

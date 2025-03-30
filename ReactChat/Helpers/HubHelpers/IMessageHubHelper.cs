@@ -8,6 +8,7 @@ namespace ReactChat.Presentation.Helpers.HubHelpers
         string GetPrivateGroupName(string user1, string user2);
         Task<bool> CheckUserAccess(string userName, Accesses access);
         Task AddUserToGroupAsync(string username, string groupName);
-
+        Task<List<string?>?> GetUserGroupsAsync(string username);
+        Task<bool> CreateGroupAsync(string groupName, List<string> members);
     }
 }

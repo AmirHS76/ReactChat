@@ -27,7 +27,6 @@ const PrivateChat: React.FC = () => {
   const [connection, connectToHub] = useChatConnection();
   const messageListRef = useRef<HTMLDivElement | null>(null);
   const chatRepo = useMemo(() => new ChatRepository(), []);
-
   // Pagination states
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -63,10 +62,10 @@ const PrivateChat: React.FC = () => {
   }, [currentUser, fetchChatHistory, username]);
 
   useEffect(() => {
-    if (!connection && username) {
+    if (username) {
       connectToHub(username, setMessages, currentUser);
     }
-  }, [connection, connectToHub, username, currentUser]);
+  }, [connectToHub, username, currentUser]);
 
   const loadMoreMessages = useCallback(async () => {
     const nextPage = page + 1;
@@ -104,7 +103,9 @@ const PrivateChat: React.FC = () => {
   useEffect(() => {
     const container = messageListRef.current;
     if (!container) return;
-    container.scrollTop = container.scrollTop + 20; // Scroll to the bottom
+    if (page === 1) {
+      container.scrollTop = container.scrollHeight;
+    } else container.scrollTop = container.scrollTop + 1;
     const handleScroll = () => {
       if (container.scrollTop === 0 && hasMore) {
         loadMoreMessages();
@@ -112,7 +113,7 @@ const PrivateChat: React.FC = () => {
     };
     container.addEventListener("scroll", handleScroll);
     return () => container.removeEventListener("scroll", handleScroll);
-  }, [hasMore, loadMoreMessages, messages]);
+  }, [hasMore, loadMoreMessages, messages, page]);
 
   return (
     <div className="private-chat-container">
