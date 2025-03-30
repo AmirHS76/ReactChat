@@ -20,7 +20,8 @@ namespace ReactChat.Infrastructure.Repositories.User
 
         public async Task<IEnumerable<UserGroup>> GetUserGroupAsync(string? userName, int? groupId)
         {
-            var query = _context.Set<UserGroup>().AsNoTracking();
+            var query = _context.Set<UserGroup>().AsNoTracking()
+                .Include(ug => ug.Group).AsQueryable();
 
             if (userName is not null)
                 query = query.Where(x => x.Username == userName);
@@ -28,6 +29,7 @@ namespace ReactChat.Infrastructure.Repositories.User
             if (groupId is not null)
                 query = query.Where(x => x.GroupId == groupId);
 
+            var a = await query.ToListAsync();
             return await query.ToListAsync();
         }
     }

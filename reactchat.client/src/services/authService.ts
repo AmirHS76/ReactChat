@@ -1,5 +1,7 @@
 import Cookies from "js-cookie";
 import { LoginRepository } from "../Repositories/LoginRepository";
+import { disconnectChatHub } from "../hooks/useChatConnection";
+import { disconnectHub } from "../components/ChatHub/js/useChatHub";
 const repo = new LoginRepository();
 export const checkAuthToken = async (): Promise<boolean> => {
   try {
@@ -11,7 +13,10 @@ export const checkAuthToken = async (): Promise<boolean> => {
   }
 };
 
-export const handleUnauthenticated = () => {
+export const handleUnauthenticated = async () => {
+  await disconnectChatHub();
+  await disconnectHub();
   Cookies.remove("token");
+  Cookies.remove("refreshToken");
   localStorage.clear();
 };

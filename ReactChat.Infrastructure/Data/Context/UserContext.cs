@@ -27,6 +27,12 @@ namespace ReactChat.Infrastructure.Data.Context
             modelBuilder.Entity<BaseUser>()
                 .Property(e => e.Accesses)
                 .HasConversion<int>();
+
+            modelBuilder.Entity<UserGroup>()
+            .HasOne(ug => ug.Group)
+            .WithMany()
+            .HasForeignKey(ug => ug.GroupId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

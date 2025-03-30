@@ -1,0 +1,58 @@
+.groups-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 30px;
+  background-color: #1a1a1a; /* Changed to grey background */
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.groups-title {
+  text-align: center;
+  font-size: 32px;
+  color: #ffffff; /* Dark text for contrast */
+  margin: 0;
+}
+
+.groups-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.group-card {
+  background-color: var(--input-bg-color);
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.group-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.add-group-container {
+  display: flex;
+  justify-content: center;
+}
+
+.add-group-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-group-btn:hover {
+  background-color: #0056b3;
+}

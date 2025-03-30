@@ -16,6 +16,8 @@ import UserManagementPage from "./Sections/AdminSections/js/UserManagement";
 import AddNewUserPage from "./Sections/AdminSections/js/AddNewUser";
 import { ToastContainer } from "react-toastify";
 import GoogleCallback from "./components/login/google/GoogleCallback";
+import GroupsPage from "./Sections/PublicSections/js/GroupsPage";
+import NewGroupSection from "./Sections/PublicSections/js/NewGroupSection";
 const App: React.FC = () => {
   return (
     <Router>
@@ -61,6 +63,14 @@ const App: React.FC = () => {
           }
         />
         <Route path="/google-callback" element={<GoogleCallback />} />
+        <Route
+          path="/Groups"
+          element={<ProtectedRoute element={<GroupsPage />} />}
+        />
+        <Route
+          path="/new-group"
+          element={<ProtectedRoute element={<NewGroupSection />} />}
+        />
       </Routes>
     </Router>
   );
