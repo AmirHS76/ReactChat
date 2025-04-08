@@ -71,7 +71,7 @@ namespace ReactChat.Presentation.Controllers.Hub
 
             _messageHubHelper.SaveMessageAsync(username, groupName, message);
 
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", username, message);
+            await Clients.Group(groupName).SendAsync("ReceiveMessage", username, message, null);
         }
 
         public async Task<List<string?>?> GetUserGroups()

@@ -1,0 +1,120 @@
+:root {
+  --primary-color: #0088cc; /* Telegram blue */
+  --background-color: #1e1e1e; /* Dark background */
+  --chat-bg-color: #2c2c2c; /* Darker chat container */
+  --input-bg-color: #3c3c3c; /* Dark gray input background */
+  --text-color: #ffffff; /* White text */
+  --sender-bg-color: #056162; /* Dark green for sender messages */
+  --recipient-bg-color: #262626; /* Dark gray for recipient messages */
+  --border-radius: 12px; /* Consistent border radius */
+  --box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5); /* Consistent box shadow */
+}
+
+.group-chat-container {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  padding: 20px;
+  width: 600px;
+  background-color: var(--chat-bg-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+}
+
+.group-chat-header {
+  font-size: 1.6em;
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.message-list {
+  display: flex;
+  flex-direction: column-reverse; /* Newest messages at the bottom */
+  gap: 10px;
+  padding: 10px;
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+  box-shadow: inset var(--box-shadow);
+  height: 400px;
+  overflow-y: auto;
+}
+
+.message-item {
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  max-width: 70%;
+  font-size: 1em;
+  line-height: 1.5;
+  color: var(--text-color);
+}
+
+.message-item.self {
+  align-self: flex-end;
+  background-color: var(--sender-bg-color); /* Sender message color */
+  text-align: right;
+  border-top-right-radius: 0;
+}
+
+.message-item.other {
+  align-self: flex-start;
+  background-color: var(--recipient-bg-color); /* Recipient message color */
+  text-align: left;
+  border-top-left-radius: 0;
+}
+
+.input-container {
+  position: relative; /* Ensure the container is relative */
+  margin-top: 15px;
+  width: 100%;
+}
+
+.message-input {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  padding: 12px;
+  font-size: 1em;
+  color: var(--text-color);
+  background-color: var(--input-bg-color);
+  border: none;
+  border-radius: var(--border-radius);
+  outline: none;
+  box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.5);
+  transition: background-color 0.3s ease;
+}
+
+.message-input input {
+  flex: 1; /* Makes the input take up the remaining space */
+}
+
+.message-input .send-button {
+  flex-shrink: 0; /* Prevents the button from shrinking */
+}
+
+.message-input:focus {
+  background-color: #4c4c4c;
+}
+
+.send-button {
+  padding: 10px 16px;
+  font-size: 1em;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: var(--box-shadow);
+}
+
+.send-button:hover {
+  background-color: #0077b3;
+}
+
+.send-button:active {
+  background-color: #006699;
+}

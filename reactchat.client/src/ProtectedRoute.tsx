@@ -1,9 +1,8 @@
-import React, { act, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { checkAuthToken, handleUnauthenticated } from "./services/authService";
 import UserRepository from "./Repositories/UserRepository";
-import AccessesService from "./services/AccessesService";
 interface ProtectedRouteProps {
   element: React.ReactNode;
   adminOnly?: boolean;
@@ -51,17 +50,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       } finally {
         setLoading(false);
       }
-      setUserAccesses();
     };
 
-    const setUserAccesses = async () => {
-      if (localStorage.getItem("accesses") !== null) {
-        return;
-      }
-      userRepo.getAccesses().then((response) => {
-        localStorage.setItem("accesses", JSON.stringify(response.data));
-      });
-    };
     verifyAuthentication();
   }, []);
 

@@ -1,5 +1,5 @@
 export interface Message {
-    sender: string;
-    content: string;
-    type: 'sender' | 'recipient';
+  sender: string;
+  content: string;
+  type: "sender" | "recipient" | null;
 }
