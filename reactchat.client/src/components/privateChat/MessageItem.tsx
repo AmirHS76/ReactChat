@@ -1,11 +1,6 @@
 import React from "react";
 import "../../styles/PrivateChat.css"; // Correctly importing plain CSS
-
-interface Message {
-  sender: string;
-  content: string;
-  type: "sender" | "recipient";
-}
+import { Message } from "../../contexts/ChatContext";
 
 interface MessageItemProps {
   message: Message;

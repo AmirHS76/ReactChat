@@ -43,12 +43,42 @@ const GroupsPage = () => {
     navigate("/new-group");
   };
 
+  useEffect(() => {
+    if (connection) {
+      const handleJoinedGroup = (groupName: string) => {
+        console.log(`Server confirmed joined group: ${groupName}`);
+        navigate(`/group-chat/${groupName}`);
+      };
+
+      connection.on("JoinedGroup", handleJoinedGroup);
+
+      return () => {
+        connection.off("JoinedGroup", handleJoinedGroup);
+      };
+    }
+  }, [connection, navigate]);
+
+  const handleJoinGroup = async (groupName: string) => {
+    if (connection) {
+      try {
+        await connection.invoke("JoinGroup", groupName);
+        console.log(`Joined group: ${groupName}`);
+      } catch (error) {
+        console.error("Failed to join group:", error);
+      }
+    }
+  };
+
   return (
     <div className="groups-container">
       <h1 className="groups-title">Your Groups</h1>
       <div className="groups-list">
         {groups.map((group, index) => (
-          <div className="group-card" key={index}>
+          <div
+            className="group-card"
+            key={index}
+            onClick={() => handleJoinGroup(group)}
+          >
             {group}
           </div>
         ))}

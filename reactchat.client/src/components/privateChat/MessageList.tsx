@@ -1,11 +1,6 @@
 import React from "react";
 import MessageItem from "./MessageItem";
-
-interface Message {
-  sender: string;
-  content: string;
-  type: "sender" | "recipient";
-}
+import { Message } from "../../contexts/ChatContext";
 
 interface MessageListProps {
   messages: Message[];

@@ -18,6 +18,7 @@ import { ToastContainer } from "react-toastify";
 import GoogleCallback from "./components/login/google/GoogleCallback";
 import GroupsPage from "./Sections/PublicSections/js/GroupsPage";
 import NewGroupSection from "./Sections/PublicSections/js/NewGroupSection";
+import GroupChat from "./Sections/PublicSections/js/GroupChat";
 const App: React.FC = () => {
   return (
     <Router>
@@ -70,6 +71,10 @@ const App: React.FC = () => {
         <Route
           path="/new-group"
           element={<ProtectedRoute element={<NewGroupSection />} />}
+        />
+        <Route
+          path="/group-chat/:groupName"
+          element={<ProtectedRoute element={<GroupChat />} />}
         />
       </Routes>
     </Router>
