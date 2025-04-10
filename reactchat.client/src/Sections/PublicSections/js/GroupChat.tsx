@@ -14,24 +14,45 @@ const GroupChat = () => {
   const currentUser: string = Cookies.get("username") ?? "";
 
   useEffect(() => {
-    if (connection) {
-      connection.on("ReceiveMessage", (sender: string, content: string) => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            sender: sender === currentUser ? "You" : sender,
-            content: content,
-            type: sender === currentUser ? "sender" : "recipient",
-          },
-        ]);
-      });
-    }
-    return () => {
-      if (connection) {
-        connection.off("ReceiveMessage");
+    const joinGroup = async () => {
+      if (connection && groupName) {
+        try {
+          await connection.invoke("JoinGroup", groupName);
+          console.log("Joined group:", groupName);
+        } catch (err) {
+          console.error("Failed to join group:", err);
+        }
       }
     };
-  }, [connection, currentUser]);
+
+    if (connection?.state === "Connected") {
+      joinGroup();
+    }
+
+    // Handle rejoining on reconnect
+    connection?.onreconnected(() => {
+      console.log("Reconnected to hub. Rejoining group...");
+      joinGroup();
+    });
+
+    // Listen for messages
+    connection?.on("ReceiveMessage", (sender: string, content: string) => {
+      setMessages((prevMessages) => [
+        {
+          sender: sender === currentUser ? "You" : sender,
+          content: content,
+          type: sender === currentUser ? "sender" : "recipient",
+        },
+        ...prevMessages,
+      ]);
+    });
+
+    // Cleanup
+    return () => {
+      connection?.off("ReceiveMessage");
+      connection?.off("onreconnected");
+    };
+  }, [connection, groupName, currentUser]);
 
   const handleSendMessage = async () => {
     if (connection && newMessage && groupName) {
