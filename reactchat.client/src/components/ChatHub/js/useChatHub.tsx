@@ -3,7 +3,7 @@ import {
   HubConnectionBuilder,
   HubConnectionState,
 } from "@microsoft/signalr";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Cookies from "js-cookie";
 
 let singletonConnection: HubConnection | null = null;
@@ -21,7 +21,7 @@ export const useChatHub = () => {
   );
   const serverURL = import.meta.env.VITE_API_BASE_URL;
 
-  const connect = async () => {
+  const connect = useCallback(async () => {
     if (
       !singletonConnection ||
       singletonConnection.state !== HubConnectionState.Connected
@@ -44,11 +44,11 @@ export const useChatHub = () => {
     } else {
       setConnection(singletonConnection);
     }
-  };
+  }, [serverURL]);
 
   useEffect(() => {
     connect();
-  }, [serverURL]);
+  }, [connect, serverURL]);
 
   return connection;
 };
