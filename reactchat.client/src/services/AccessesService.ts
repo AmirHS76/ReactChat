@@ -3,8 +3,8 @@ import UserRepository from "../Repositories/UserRepository";
 
 const userRepo = new UserRepository();
 const AccessesService = {
-  checkAccess: () => {
-    const accesses = AccessData.fromJson(localStorage.getItem("accesses"));
+  checkAccess: async () => {
+    const accesses = await setUserAccesses();
     if (
       accesses === null ||
       accesses.accesses === null ||
@@ -15,10 +15,7 @@ const AccessesService = {
     return true;
   },
   checkAccesses: async (accesses: string[]) => {
-    let userAccesses = AccessData.fromJson(localStorage.getItem("accesses"));
-    if (userAccesses === null || userAccesses.accesses === null) {
-      userAccesses = await setUserAccesses();
-    }
+    const userAccesses = await setUserAccesses();
     if (userAccesses === null) {
       return false;
     }
@@ -26,12 +23,7 @@ const AccessesService = {
   },
 };
 const setUserAccesses = async (): Promise<AccessData | null> => {
-  const accesses = localStorage.getItem("accesses");
-  if (accesses !== null) {
-    return AccessData.fromJson(accesses);
-  }
   const response = await userRepo.getAccesses();
-  localStorage.setItem("accesses", JSON.stringify(response.data));
   return AccessData.fromJson(JSON.stringify(response.data));
 };
 export default AccessesService;

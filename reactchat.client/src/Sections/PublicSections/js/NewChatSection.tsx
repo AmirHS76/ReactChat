@@ -1,13 +1,19 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/NewChatSection.css";
 import AccessesService from "../../../services/AccessesService";
 
 const NewChatSection = () => {
   const navigate = useNavigate();
-  const [canJoinGroup] = React.useState<boolean>(
-    AccessesService.checkAccesses(["CanJoinGroup"])
-  );
+  const [canJoinGroup, setCanJoinGroup] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchAccess = async () => {
+      const access = await AccessesService.checkAccesses(["CanJoinGroup"]);
+      setCanJoinGroup(access);
+    };
+    fetchAccess();
+  }, []);
 
   const handleStartChat = () => {
     navigate("/users");
