@@ -12,7 +12,7 @@ namespace ReactChat.Infrastructure.Data.Context
         public DbSet<PrivateMessage>? PrivateMessages { get; set; }
         public DbSet<ChatGroup> ChatGroups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
-
+        public DbSet<UserSession> UserSessions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BaseUser>(entity =>

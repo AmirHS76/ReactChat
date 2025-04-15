@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ReactChat.Infrastructure.Repositories
 {
@@ -11,8 +12,10 @@ namespace ReactChat.Infrastructure.Repositories
             return await _dbSet.FindAsync([id], cancellationToken: cancellationToken);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? predicate, CancellationToken cancellationToken)
         {
+            if (predicate != null)
+                return await _dbSet.AsNoTracking().Where(predicate).ToListAsync(cancellationToken);
             return await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
         }
 
