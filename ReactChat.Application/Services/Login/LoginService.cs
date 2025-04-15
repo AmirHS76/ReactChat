@@ -1,6 +1,9 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using ReactChat.Application.Features.User.Queries.GetByUsername;
+using ReactChat.Application.Features.UserSessions.Commands;
+using ReactChat.Application.Features.UserSessions.Queries;
 using ReactChat.Core.Entities.User;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -13,11 +16,13 @@ namespace ReactChat.Application.Services.Login
         private readonly string refreshTokenSecretKey = "UHyuZrvwyjfv9j0dgOGINMXRqiHzSeTlF+uYPsep2Dg=";
         private readonly IMediator _mediator = mediator;
 
-        public async Task<string?> Authenticate(string username, string password, CancellationToken cancellationToken)
+        public async Task<string?> Authenticate(string username, string password, CancellationToken cancellationToken, HttpContext httpContext)
         {
             BaseUser? user = await _mediator.Send(new GetUserByUsernameQuery(username), cancellationToken);
             if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
+                if (!await AddUserSession(user.Id, httpContext, cancellationToken))
+                    return null;
                 var token = GenerateJwtTokenFromUser(user);
                 return token;
             }
@@ -119,6 +124,24 @@ namespace ReactChat.Application.Services.Login
 
             return (jwtToken, refreshToken);
         }
-
+        private async Task<bool> AddUserSession(int userId, HttpContext httpContext, CancellationToken cancellationToken = default)
+        {
+            var userIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+            var currentSession = await _mediator.Send(new GetUserSessionsQuery(userId, userIp), cancellationToken);
+            if (currentSession != null && currentSession.Count > 0)
+            {
+                var userSession = currentSession.FirstOrDefault() ?? throw new NullReferenceException("User session was invalid");
+                userSession.LastActivity = DateTime.Now;
+                userSession.IsRevoked = false;
+                return await _mediator.Send(new UpdateUserSessionCommand(userSession), cancellationToken);
+            }
+            var session = new UserSession
+            {
+                UserId = userId.ToString(),
+                UserAgent = httpContext.Request.Headers["User-Agent"].ToString(),
+                IpAddress = userIp
+            };
+            return await _mediator.Send(new CreateUserSessionCommand(session), cancellationToken);
+        }
     }
 }

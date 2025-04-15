@@ -4,7 +4,7 @@ using ReactChat.Infrastructure.Data.UnitOfWork;
 
 namespace ReactChat.Application.Features.UserGroups.Commands
 {
-    class CreateMultiUserGroupsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateMultiUserGroupsCommand, bool>
+    public class CreateMultiUserGroupsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateMultiUserGroupsCommand, bool>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public async Task<bool> Handle(CreateMultiUserGroupsCommand request, CancellationToken cancellationToken)
