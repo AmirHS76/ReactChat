@@ -9,5 +9,6 @@ namespace ReactChat.Infrastructure.Repositories
         Task AddAsync(T entity, CancellationToken cancellationToken);
         void UpdateAsync(T entity);
         Task DeleteAsync(int id, CancellationToken cancellationToken);
+        IQueryable<T> GetQuery(T filter);
     }
 }

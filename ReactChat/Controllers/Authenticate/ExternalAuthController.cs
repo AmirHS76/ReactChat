@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
-using ReactChat.Application.Services.Login;
+using ReactChat.Application.Services.User.Login;
 
 namespace ReactChat.Presentation.Controllers
 {

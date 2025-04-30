@@ -2,12 +2,11 @@
 using ReactChat.Application.Features.User.Commands.Create;
 using ReactChat.Application.Features.User.Queries.GetByEmail;
 using ReactChat.Application.Features.User.Queries.GetByUsername;
-using ReactChat.Application.Interfaces.Register;
 using ReactChat.Core.Entities.User;
 
-namespace ReactChat.Application.Services.Register
+namespace ReactChat.Application.Services.User.Register
 {
-    public class RegisterService(IMediator mediator) : IRegisterService
+    public class RegisterService(IMediator mediator)
     {
         private readonly IMediator _mediator = mediator;
         public async Task<bool> Register(string username, string password, string email, CancellationToken cancellationToken)

@@ -83,6 +83,12 @@ class UserRepository {
   async getAccesses() {
     return await getRequest("/user/getAccesses");
   }
+  async getSessions() {
+    return await getRequest("api/v1/session");
+  }
+  async revokeSession(id: number) {
+    return await patchRequest(`api/v1/session/${id}`, null);
+  }
 }
 
 export default UserRepository;

@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReactChat.Application.Dtos.User;
-using ReactChat.Application.Interfaces.MessageHistory;
-using ReactChat.Application.Interfaces.User;
+using ReactChat.Application.Services.MessageHistory;
+using ReactChat.Application.Services.User;
 using ReactChat.Core.Entities.User;
 using ReactChat.Presentation.Helpers.Attributes;
 using System.Security.Claims;
@@ -12,11 +12,11 @@ using static ReactChat.Core.Enums.Accesses;
 namespace ReactChat.Presentation.Controllers.User
 {
     [Route("[Controller]/")]
-    public class UserController(IUserService userService, IMapper mapper, IMessageService messageService) : ControllerBase
+    public class UserController(UserService userService, IMapper mapper, MessageService messageService) : ControllerBase
     {
         private readonly IMapper _mapper = mapper;
-        private readonly IUserService _userService = userService;
-        private readonly IMessageService _messageService = messageService;
+        private readonly UserService _userService = userService;
+        private readonly MessageService _messageService = messageService;
 
         [Authorize]
         [HttpGet]
@@ -145,6 +145,5 @@ namespace ReactChat.Presentation.Controllers.User
 
             return Ok(new { messages, hasMore });
         }
-
     }
 }

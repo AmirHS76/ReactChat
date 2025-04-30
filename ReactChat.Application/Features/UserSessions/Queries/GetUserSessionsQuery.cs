@@ -3,6 +3,6 @@ using ReactChat.Core.Entities.User;
 
 namespace ReactChat.Application.Features.UserSessions.Queries
 {
-    public record GetUserSessionsQuery(int UserId, string userIp) : IRequest<List<UserSession>>;
+    public record GetUserSessionsQuery(UserSession UserSession) : IRequest<List<UserSession>>;
 
 }

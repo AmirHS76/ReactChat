@@ -19,6 +19,7 @@ import GoogleCallback from "./components/login/google/GoogleCallback";
 import GroupsPage from "./Sections/PublicSections/js/GroupsPage";
 import NewGroupSection from "./Sections/PublicSections/js/NewGroupSection";
 import GroupChat from "./Sections/PublicSections/js/GroupChat";
+import SessionsSection from "./Sections/PublicSections/js/SessionsSection";
 const App: React.FC = () => {
   return (
     <Router>
@@ -75,6 +76,10 @@ const App: React.FC = () => {
         <Route
           path="/group-chat/:groupName"
           element={<ProtectedRoute element={<GroupChat />} />}
+        />
+        <Route
+          path="/sessions"
+          element={<ProtectedRoute element={<SessionsSection />} />}
         />
       </Routes>
     </Router>

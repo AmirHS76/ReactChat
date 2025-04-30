@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using ReactChat.Core.Entities.User;
 using ReactChat.Infrastructure.Data.UnitOfWork;
+using System.Data.Entity;
 
 namespace ReactChat.Application.Features.UserSessions.Queries
 {
@@ -9,10 +10,7 @@ namespace ReactChat.Application.Features.UserSessions.Queries
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public async Task<List<UserSession>> Handle(GetUserSessionsQuery request, CancellationToken cancellationToken)
         {
-            if (request.userIp != null && request.UserId != 0)
-                return (await _unitOfWork.UserRepository<UserSession>().GetAllAsync(x => x.Id == request.UserId
-                && x.IpAddress == request.userIp, cancellationToken)).ToList();
-            return (await _unitOfWork.UserRepository<UserSession>().GetAllAsync(null, cancellationToken)).ToList();
+            return await Task.FromResult(_unitOfWork.UserRepository<UserSession>().GetQuery(request.UserSession).AsNoTracking().ToList());
         }
     }
 }
