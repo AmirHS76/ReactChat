@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import "../css/ProfileSection.css";
 import UserRepository from "../../../Repositories/UserRepository";
+import { useNavigate } from "react-router-dom";
 const ProfileSection = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string | null>(null);
@@ -8,6 +9,7 @@ const ProfileSection = () => {
   const [newEmail, setNewEmail] = useState<string>("");
   const userRepo = useMemo(() => new UserRepository(), []);
   const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
 
   const updateEmail = async () => {
     await userRepo.updateEmail(newEmail);
@@ -25,6 +27,10 @@ const ProfileSection = () => {
     };
     GetUserData();
   }, [userRepo]);
+
+  const handleGoToSessions = () => {
+    navigate("/sessions");
+  };
 
   return (
     <div className="profile-section">
@@ -55,6 +61,9 @@ const ProfileSection = () => {
               <button onClick={updateEmail}>Save Email</button>
             </div>
           )}
+          <button onClick={handleGoToSessions} className="session-button">
+            View Your Sessions
+          </button>
         </>
       )}
     </div>

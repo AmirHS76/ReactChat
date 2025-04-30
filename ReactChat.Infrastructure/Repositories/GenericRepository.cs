@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ReactChat.Infrastructure.Extensions;
 using System.Linq.Expressions;
 
 namespace ReactChat.Infrastructure.Repositories
@@ -36,6 +37,11 @@ namespace ReactChat.Infrastructure.Repositories
             {
                 _dbSet.Remove(entity);
             }
+        }
+
+        public IQueryable<T> GetQuery(T filter)
+        {
+            return _dbSet.AsQueryable().ApplyFilters<T>(filter);
         }
     }
 }

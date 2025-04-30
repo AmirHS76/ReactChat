@@ -1,11 +1,10 @@
 ﻿using MediatR;
 using ReactChat.Application.Features.Message.Commands;
-using ReactChat.Application.Interfaces.MessageHub;
 using ReactChat.Core.Entities.Chat.Message;
 
 namespace ReactChat.Application.Services.MessageHub
 {
-    public class MessageHubService(IMediator mediator) : IMessageHubService
+    public class MessageHubService(IMediator mediator)
     {
         private readonly IMediator _mediator = mediator;
 

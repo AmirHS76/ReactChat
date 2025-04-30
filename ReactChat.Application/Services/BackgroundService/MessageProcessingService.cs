@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using ReactChat.Application.Interfaces.MessageHub;
+using ReactChat.Application.Services.MessageHub;
 using System.Collections.Concurrent;
 
 namespace ReactChat.Application.Services.BackgroundService
@@ -25,7 +25,7 @@ namespace ReactChat.Application.Services.BackgroundService
         private async Task ProcessMessageAsync(string sender, string recipient, string message)
         {
             using var scope = _serviceProvider.CreateScope();
-            var messageHubService = scope.ServiceProvider.GetRequiredService<IMessageHubService>();
+            var messageHubService = scope.ServiceProvider.GetRequiredService<MessageHubService>();
             await messageHubService.SaveMessageAsync(sender, recipient, message);
         }
     }

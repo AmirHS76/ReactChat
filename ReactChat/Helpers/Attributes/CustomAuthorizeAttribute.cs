@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using ReactChat.Application.Interfaces.User;
+using ReactChat.Application.Services.User;
 using ReactChat.Core.Entities.User;
 using ReactChat.Core.Enums;
 using System.Security.Claims;
@@ -22,7 +22,7 @@ namespace ReactChat.Presentation.Helpers.Attributes
             }
 
             // Resolve UserService from the service provider
-            var userService = context.HttpContext.RequestServices.GetService<IUserService>();
+            var userService = context.HttpContext.RequestServices.GetService<UserService>();
             if (userService == null)
             {
                 context.Result = new ForbidResult();

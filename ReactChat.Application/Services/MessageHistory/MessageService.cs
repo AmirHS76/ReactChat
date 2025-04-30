@@ -2,11 +2,10 @@
 using MediatR;
 using ReactChat.Application.Dtos.MessageDto;
 using ReactChat.Application.Features.Message.Queries;
-using ReactChat.Application.Interfaces.MessageHistory;
 
 namespace ReactChat.Application.Services.MessageHistory
 {
-    public class MessageService(IMediator mediator, IMapper mapper) : IMessageService
+    public class MessageService(IMediator mediator, IMapper mapper)
     {
         private readonly IMediator _mediator = mediator;
         private readonly IMapper _mapper = mapper;

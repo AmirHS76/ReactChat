@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReactChat.Application.Dtos.Authenticate;
-using ReactChat.Application.Services.Login;
+using ReactChat.Application.Services.User.Login;
 
 namespace ReactChat.Presentation.Controllers.Authenticate
 {

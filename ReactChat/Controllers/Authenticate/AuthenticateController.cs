@@ -1,7 +1,7 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ReactChat.Application.Interfaces.User;
+using ReactChat.Application.Services.User;
 using ReactChat.Core.Entities.User;
 using System.Security.Claims;
 
@@ -10,9 +10,9 @@ namespace ReactChat.Presentation.Controllers.Authenticate
     [ApiController]
     [Route("api/v{version:apiVersion}/Authenticate")]
     [ApiVersion("1.0")]
-    public class AuthenticateController(IUserService userService) : ControllerBase
+    public class AuthenticateController(UserService userService) : ControllerBase
     {
-        private readonly IUserService _userService = userService;
+        private readonly UserService _userService = userService;
 
         [HttpGet]
         [Authorize]
@@ -40,7 +40,7 @@ namespace ReactChat.Presentation.Controllers.Authenticate
     [ApiController]
     [Route("api/v{version:apiVersion}/Authenticate")]
     [ApiVersion("2.0")]
-    public class AuthenticateV2Controller(IUserService userService) : ControllerBase
+    public class AuthenticateV2Controller() : ControllerBase
     {
         [HttpGet]
         [Route("test")]

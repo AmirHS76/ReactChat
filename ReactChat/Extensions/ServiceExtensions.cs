@@ -7,18 +7,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ReactChat.Application.Features.User.Queries.GetAll;
 using ReactChat.Application.Interfaces.Cache;
-using ReactChat.Application.Interfaces.MessageHistory;
-using ReactChat.Application.Interfaces.MessageHub;
-using ReactChat.Application.Interfaces.Register;
-using ReactChat.Application.Interfaces.User;
 using ReactChat.Application.Mapping;
 using ReactChat.Application.Services.BackgroundService;
 using ReactChat.Application.Services.Cache;
-using ReactChat.Application.Services.Login;
 using ReactChat.Application.Services.MessageHistory;
 using ReactChat.Application.Services.MessageHub;
-using ReactChat.Application.Services.Register;
 using ReactChat.Application.Services.User;
+using ReactChat.Application.Services.User.Login;
+using ReactChat.Application.Services.User.Register;
+using ReactChat.Application.Services.User.Session;
 using ReactChat.Infrastructure.Data.Context;
 using ReactChat.Infrastructure.Data.UnitOfWork;
 using ReactChat.Infrastructure.Logging.Enrichers;
@@ -148,11 +145,12 @@ public static class ServiceExtensions
         services.AddScoped(typeof(IUserRepository<>), typeof(UserRepository<>));
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IRegisterService, RegisterService>();
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IMessageHubService, MessageHubService>();
+        services.AddScoped<RegisterService>();
+        services.AddScoped<UserService>();
+        services.AddScoped<MessageHubService>();
+        services.AddScoped<MessageService>();
+        services.AddScoped<SessionService>();
         services.AddScoped<IMessageHubHelper, MessageHubHelper>();
-        services.AddScoped<IMessageService, MessageService>();
         services.AddAutoMapper(typeof(MappingProfile));
         services.AddCors(options =>
         {
