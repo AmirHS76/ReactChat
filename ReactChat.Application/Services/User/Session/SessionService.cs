@@ -21,5 +21,12 @@ namespace ReactChat.Application.Services.User.Session
             sessionToRevoke.IsRevoked = true;
             return await _mediator.Send(new UpdateUserSessionCommand(sessionToRevoke), cancellationToken);
         }
+
+        public async Task<UserSession?> GetCurrentUserSession(int userId, string userIp, CancellationToken cancellationToken = default)
+        {
+            var userSession = await _mediator.Send(new GetUserSessionsQuery(new UserSession { UserId = userId.ToString(), IpAddress = userIp }), cancellationToken);
+            return userSession.Where(x => !x.IsRevoked ?? false).FirstOrDefault();
+        }
+
     }
 }

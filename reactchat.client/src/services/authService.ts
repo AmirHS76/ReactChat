@@ -2,9 +2,9 @@ import Cookies from "js-cookie";
 import { LoginRepository } from "../Repositories/LoginRepository";
 import { disconnectChatHub } from "../hooks/useChatConnection";
 import { disconnectHub } from "../components/ChatHub/js/useChatHub";
-const repo = new LoginRepository();
 export const checkAuthToken = async (): Promise<boolean> => {
   try {
+    const repo = new LoginRepository();
     const response = await repo.authenticate();
     return response.status === 200;
   } catch (error) {
@@ -19,4 +19,5 @@ export const handleUnauthenticated = async () => {
   Cookies.remove("token");
   Cookies.remove("refreshToken");
   localStorage.clear();
+  window.location.href = "/login";
 };

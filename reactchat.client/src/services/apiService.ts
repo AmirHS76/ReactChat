@@ -5,6 +5,7 @@ import axios, {
 } from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import { handleUnauthenticated } from "./authService";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -61,10 +62,10 @@ apiClient.interceptors.response.use(
             originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
             return apiClient(originalRequest);
           } else {
-            Cookies.remove("refreshToken");
+            handleUnauthenticated();
           }
         } catch (err) {
-          Cookies.remove("refreshToken");
+          handleUnauthenticated();
           return Promise.reject(err);
         }
       }

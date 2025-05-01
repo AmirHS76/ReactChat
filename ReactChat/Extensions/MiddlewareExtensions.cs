@@ -24,6 +24,7 @@ namespace ReactChat.Presentation.Extensions
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<SessionRevocationMiddleware>();
         }
 
         public static void ConfigureEndpoints(this WebApplication app)
