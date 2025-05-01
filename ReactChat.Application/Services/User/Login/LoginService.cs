@@ -50,8 +50,6 @@ namespace ReactChat.Application.Services.User.Login
                     return GenerateTokensForGoogleUser(principal).token;
                 else
                     return GenerateJwtTokenFromUser(user);
-                return null;
-
             }
             catch (Exception)
             {
@@ -130,16 +128,19 @@ namespace ReactChat.Application.Services.User.Login
             var currentSession = await _mediator.Send(new GetUserSessionsQuery(new UserSession { IpAddress = userIp, UserId = userId.ToString() }), cancellationToken);
             if (currentSession != null && currentSession.Count > 0)
             {
-                var userSession = currentSession.FirstOrDefault() ?? throw new NullReferenceException("User session was invalid");
-                userSession.IsRevoked = true;
-                await _mediator.Send(new UpdateUserSessionCommand(userSession), cancellationToken);
+                foreach (var s in currentSession)
+                {
+                    s.IsRevoked = true;
+                    await _mediator.Send(new UpdateUserSessionCommand(s), cancellationToken);
+                }
             }
             var session = new UserSession
             {
                 UserId = userId.ToString(),
                 UserAgent = httpContext.Request.Headers["User-Agent"].ToString(),
                 IpAddress = userIp,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                IsRevoked = false
             };
             return await _mediator.Send(new CreateUserSessionCommand(session), cancellationToken);
         }

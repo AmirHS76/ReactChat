@@ -6,7 +6,6 @@ using ReactChat.Application.Features.User.Commands.Update;
 using ReactChat.Application.Features.User.Queries.GetAll;
 using ReactChat.Application.Features.User.Queries.GetById;
 using ReactChat.Application.Features.User.Queries.GetByUsername;
-using ReactChat.Application.Features.UserSessions.Queries;
 using ReactChat.Application.Interfaces.Cache;
 using ReactChat.Core.Entities.User;
 using ReactChat.Core.Enums;
@@ -105,12 +104,6 @@ namespace ReactChat.Application.Services.User
         {
             await _mediator.Send(new DeleteUserByIdCommand(id), cancellationToken);
             return true;
-        }
-
-        public async Task<List<UserSession>?> GetUserSession(int userId, CancellationToken cancellationToken)
-        {
-            var userSessions = await _mediator.Send(new GetUserSessionsQuery(new UserSession { UserId = userId.ToString() }), cancellationToken);
-            return userSessions;
         }
     }
 }
