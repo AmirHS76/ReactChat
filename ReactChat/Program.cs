@@ -16,7 +16,12 @@ var configuration = builder.Configuration;
 var connectionString = configuration["ConnectionStrings:DefaultConnection"];
 var hangFireConnectionString = configuration["ConnectionStrings:HangFireConnection"];
 var seqServer = configuration["ConnectionStrings:SeqConnection"];
-
+if (connectionString == null || hangFireConnectionString == null || seqServer == null)
+{
+    connectionString = configuration.GetConnectionString("DefaultConnection");
+    hangFireConnectionString = configuration.GetConnectionString("HangFireConnection");
+    seqServer = configuration.GetConnectionString("SeqConnection");
+}
 // Configure Logging
 builder.ConfigureLogging(connectionString!, seqServer!);
 

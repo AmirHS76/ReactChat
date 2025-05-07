@@ -16,6 +16,7 @@ namespace ReactChat.Presentation.Controllers.Chats
             _chatService = chatService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetGroups()
         {
             return Ok(await _chatService.GetGroupsAsync());
@@ -28,6 +29,7 @@ namespace ReactChat.Presentation.Controllers.Chats
             return Ok(new { message = "Group created successfully" });
         }
 
+        [HttpPost]
         public async Task<IActionResult> JoinGroup([FromBody] string groupName)
         {
             string username = User.Identity?.Name!;
