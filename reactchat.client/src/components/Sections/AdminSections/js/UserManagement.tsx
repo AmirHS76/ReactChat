@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../css/UserManagement.css";
-import UserRepository from "../../../Repositories/UserRepository";
-import userModel from "../../../types/users";
+import UserRepository from "../../../../Repositories/UserRepository";
+import userModel from "../../../../types/users";
 
 const UserManagementPage: React.FC = () => {
   const [users, setUsers] = useState<userModel[]>([]);

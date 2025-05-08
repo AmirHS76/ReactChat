@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using ReactChat.Application.Dtos.Authenticate;
 using ReactChat.Application.Features.User.Queries.GetByUsername;
 using ReactChat.Application.Features.UserSessions.Commands;
 using ReactChat.Application.Features.UserSessions.Queries;
+using ReactChat.Application.Validators;
 using ReactChat.Core.Entities.User;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,15 +13,18 @@ using System.Text;
 
 namespace ReactChat.Application.Services.User.Login
 {
-    public class LoginService(IMediator mediator)
+    public class LoginService(IMediator mediator, CaptchaValidator captchaValidator)
     {
         private readonly string refreshTokenSecretKey = "UHyuZrvwyjfv9j0dgOGINMXRqiHzSeTlF+uYPsep2Dg=";
         private readonly IMediator _mediator = mediator;
-
-        public async Task<string?> Authenticate(string username, string password, CancellationToken cancellationToken, HttpContext httpContext)
+        private readonly CaptchaValidator _captchaValidator = captchaValidator;
+        public async Task<string?> Authenticate(LoginDTO request, CancellationToken cancellationToken, HttpContext httpContext)
         {
-            BaseUser? user = await _mediator.Send(new GetUserByUsernameQuery(username), cancellationToken);
-            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
+            if (!_captchaValidator.Validate(request.Captcha))
+                return null;
+
+            BaseUser? user = await _mediator.Send(new GetUserByUsernameQuery(request.Username), cancellationToken);
+            if (user != null && BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
                 if (!await AddUserSession(user.Id, httpContext, cancellationToken))
                     return null;

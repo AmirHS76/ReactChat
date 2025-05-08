@@ -22,6 +22,7 @@ namespace ReactChat.Presentation.Extensions
             app.UseHttpsRedirection();
             app.UseSerilogRequestLogging();
             app.UseRouting();
+            app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<SessionRevocationMiddleware>();

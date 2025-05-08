@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import "../css/MainPage.css";
-import WelcomeSection from "../../../Sections/RegularUserSections/js/WelcomeSection";
-import AdminSection from "../../../Sections/AdminSections/js/AdminSection";
-import ProfileSection from "../../../Sections/PublicSections/js/ProfileSection";
-import NewChatSection from "../../../Sections/PublicSections/js/NewChatSection";
+import WelcomeSection from "../../../components/Sections/RegularUserSections/js/WelcomeSection";
+import AdminSection from "../../../components/Sections/AdminSections/js/AdminSection";
+import ProfileSection from "../../../components/Sections/PublicSections/js/ProfileSection";
+import NewChatSection from "../../../components/Sections/PublicSections/js/NewChatSection";
 import UserRepository from "../../../Repositories/UserRepository";
 const MainPage = () => {
   const [userRole, setUserRole] = useState<string | null>(null);

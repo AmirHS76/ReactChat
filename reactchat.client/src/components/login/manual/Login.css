@@ -143,3 +143,50 @@ body {
 .google-login-button:hover {
   background-color: #c33d2e;
 }
+
+.captcha-group {
+  margin-bottom: 20px;
+}
+
+.captcha-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.captcha-img {
+  margin-right: 10px;
+  height: 50px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.refresh-captcha-button {
+  height: 40px;
+  padding: 0 12px;
+  background: #a7a7a7;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+  color: #000000;
+}
+
+.refresh-captcha-button:hover {
+  background: #e0e0e0;
+}
+
+.captcha-input-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.captcha-input {
+  margin-top: 4px;
+  width: 210px !important;
+  padding: 8px;
+  font-size: 1rem;
+}

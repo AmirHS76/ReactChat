@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import "../css/ProfileSection.css";
-import UserRepository from "../../../Repositories/UserRepository";
-import Sessions from "../../../types/Sessions";
+import UserRepository from "../../../../Repositories/UserRepository";
+import Sessions from "../../../../types/Sessions";
 
 const SessionsSection = () => {
   const [sessions, setSessions] = useState<Sessions[]>([]);

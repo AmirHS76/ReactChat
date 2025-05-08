@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useChatHub } from "../../../components/ChatHub/js/useChatHub";
+import { useChatHub } from "../../../../components/ChatHub/js/useChatHub";
 import { useNavigate } from "react-router-dom";
 import "../css/GroupsPage.css";
 
