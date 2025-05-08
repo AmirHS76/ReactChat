@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ReactChat.Presentation.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,10 @@ var hangFireConnectionString = configuration["ConnectionStrings:HangFireConnecti
 var seqServer = configuration["ConnectionStrings:SeqConnection"];
 if (connectionString == null || hangFireConnectionString == null || seqServer == null)
 {
+    builder.Configuration.Sources.Clear();
+    builder.Configuration
+    .AddJsonFile(Path.Combine(builder.Environment.ContentRootPath, "appsettings.json"), optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true);
     connectionString = configuration.GetConnectionString("DefaultConnection");
     hangFireConnectionString = configuration.GetConnectionString("HangFireConnection");
     seqServer = configuration.GetConnectionString("SeqConnection");

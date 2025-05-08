@@ -69,39 +69,42 @@ public static class ServiceExtensions
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultSignInScheme = "External";
         })
-            .AddJwtBearer(options =>
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                options.TokenValidationParameters = new TokenValidationParameters
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? ""))
+            };
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["Jwt:Issuer"],
-                    ValidAudience = configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? ""))
-                };
-                options.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = context =>
+                    var accessToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chatHub"))
                     {
-                        var accessToken = context.Request.Query["access_token"];
-                        var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chatHub"))
-                        {
-                            context.Token = accessToken;
-                        }
-                        return Task.CompletedTask;
+                        context.Token = accessToken;
                     }
-                };
-            })
-             .AddCookie("External")
-             .AddGoogle(options =>
-             {
-                 options.ClientId = configuration["Authentication:Google:ClientId"]!;
-                 options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
-             });
-        ;
+                    return Task.CompletedTask;
+                }
+            };
+        });
+
+        if (configuration.GetValue<bool>("UseGoogle"))
+        {
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = configuration["Authentication:Google:ClientId"]!;
+                    options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
+                });
+        }
     }
 
     public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
