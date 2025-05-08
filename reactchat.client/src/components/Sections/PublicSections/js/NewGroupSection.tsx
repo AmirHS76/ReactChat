@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useChatHub } from "../../../components/ChatHub/js/useChatHub";
+import { useChatHub } from "../../../../components/ChatHub/js/useChatHub";
 import "../css/NewGroupSection.css";
 import Cookies from "js-cookie";
-import UserRepository from "../../../Repositories/UserRepository";
-import User from "../../../types/users";
+import UserRepository from "../../../../Repositories/UserRepository";
+import User from "../../../../types/users";
 import { toast } from "react-toastify";
 
 const NewGroupSection = () => {

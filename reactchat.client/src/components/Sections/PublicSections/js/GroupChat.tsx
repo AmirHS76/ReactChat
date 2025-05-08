@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useChatHub } from "../../../components/ChatHub/js/useChatHub";
+import { useChatHub } from "../../../../components/ChatHub/js/useChatHub";
 import "../css/GroupChat.css";
 import Cookies from "js-cookie";
-import MessageList from "../../../components/privateChat/MessageList";
-import { Message } from "../../../contexts/ChatContext";
+import MessageList from "../../../../components/privateChat/MessageList";
+import { Message } from "../../../../contexts/ChatContext";
 
 const GroupChat = () => {
   const { groupName } = useParams<{ groupName: string }>();

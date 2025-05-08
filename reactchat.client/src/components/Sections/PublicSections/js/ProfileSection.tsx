@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import "../css/ProfileSection.css";
-import UserRepository from "../../../Repositories/UserRepository";
+import UserRepository from "../../../../Repositories/UserRepository";
 import { useNavigate } from "react-router-dom";
 const ProfileSection = () => {
   const [username, setUsername] = useState<string>("");

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using ReactChat.Application.Services.User;
 using ReactChat.Core.Entities.User;
 using ReactChat.Core.Enums;

@@ -12,14 +12,14 @@ import ProtectedRoute from "./ProtectedRoute";
 import PrivateChat from "./components/privateChat/PrivateChat";
 import Header from "./Header/Header";
 import UserList from "./components/ChatHub/js/UsersList";
-import UserManagementPage from "./Sections/AdminSections/js/UserManagement";
-import AddNewUserPage from "./Sections/AdminSections/js/AddNewUser";
+import UserManagementPage from "./components/Sections/AdminSections/js/UserManagement";
+import AddNewUserPage from "./components/Sections/AdminSections/js/AddNewUser";
 import { ToastContainer } from "react-toastify";
 import GoogleCallback from "./components/login/google/GoogleCallback";
-import GroupsPage from "./Sections/PublicSections/js/GroupsPage";
-import NewGroupSection from "./Sections/PublicSections/js/NewGroupSection";
-import GroupChat from "./Sections/PublicSections/js/GroupChat";
-import SessionsSection from "./Sections/PublicSections/js/SessionsSection";
+import GroupsPage from "./components/Sections/PublicSections/js/GroupsPage";
+import NewGroupSection from "./components/Sections/PublicSections/js/NewGroupSection";
+import GroupChat from "./components/Sections/PublicSections/js/GroupChat";
+import SessionsSection from "./components/Sections/PublicSections/js/SessionsSection";
 const App: React.FC = () => {
   return (
     <Router>

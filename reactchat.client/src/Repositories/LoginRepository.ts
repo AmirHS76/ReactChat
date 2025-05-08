@@ -1,9 +1,21 @@
 import { getRequest, postRequest } from "../services/apiService";
 import Cookies from "js-cookie";
 export class LoginRepository {
-  login = async (username: string, password: string) => {
+  login = async (
+    username: string,
+    password: string,
+    captcha: string | null
+  ) => {
     try {
-      const response = await postRequest(`login`, { username, password });
+      const response = await postRequest(
+        `login`,
+        {
+          username,
+          password,
+          captcha,
+        },
+        { withCredentials: true }
+      );
       return response;
     } catch (error) {
       console.log(error);
@@ -37,6 +49,17 @@ export class LoginRepository {
   authenticateWithGoogle = async () => {
     try {
       const response = await getRequest(`api/ExternalAuth/google-login`);
+      return response;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+  getCaptchaImage = async () => {
+    try {
+      const response = await getRequest(`api/v1/captcha`, {
+        withCredentials: true,
+      });
       return response;
     } catch (error) {
       console.log(error);

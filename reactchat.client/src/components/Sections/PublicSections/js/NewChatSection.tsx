@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/NewChatSection.css";
-import AccessesService from "../../../services/AccessesService";
+import AccessesService from "../../../../services/AccessesService";
 
 const NewChatSection = () => {
   const navigate = useNavigate();

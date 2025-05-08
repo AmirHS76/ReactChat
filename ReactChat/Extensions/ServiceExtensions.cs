@@ -10,12 +10,14 @@ using ReactChat.Application.Interfaces.Cache;
 using ReactChat.Application.Mapping;
 using ReactChat.Application.Services.BackgroundService;
 using ReactChat.Application.Services.Cache;
+using ReactChat.Application.Services.Captcha;
 using ReactChat.Application.Services.MessageHistory;
 using ReactChat.Application.Services.MessageHub;
 using ReactChat.Application.Services.User;
 using ReactChat.Application.Services.User.Login;
 using ReactChat.Application.Services.User.Register;
 using ReactChat.Application.Services.User.Session;
+using ReactChat.Application.Validators;
 using ReactChat.Infrastructure.Data.Context;
 using ReactChat.Infrastructure.Data.UnitOfWork;
 using ReactChat.Infrastructure.Logging.Enrichers;
@@ -109,8 +111,6 @@ public static class ServiceExtensions
 
     public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
     {
-
-
         services.AddHttpContextAccessor();
         services.AddAuthorization();
         services.AddControllers();
@@ -153,6 +153,9 @@ public static class ServiceExtensions
         services.AddScoped<MessageHubService>();
         services.AddScoped<MessageService>();
         services.AddScoped<SessionService>();
+        services.AddScoped<CaptchaImageService>();
+        services.AddScoped<SessionCaptchaStore>();
+        services.AddScoped<CaptchaValidator>();
         services.AddScoped<IMessageHubHelper, MessageHubHelper>();
         services.AddAutoMapper(typeof(MappingProfile));
         services.AddCors(options =>
@@ -200,6 +203,15 @@ public static class ServiceExtensions
             services.AddMemoryCache();
             services.AddScoped<ICacheService, MemoryCacheService>();
         }
+        services.AddDistributedMemoryCache();
+        services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(30);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+            options.Cookie.SameSite = SameSiteMode.None;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        });
         services.AddHealthChecks()
              .AddCheck("self", () => HealthCheckResult.Healthy())
             .AddSqlServer(configuration.GetConnectionString("DefaultConnection")!, name: "SQLSERVER")
