@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReactChat.Application.Dtos.User;
 using ReactChat.Application.Services.MessageHistory;
 using ReactChat.Application.Services.User;
+using ReactChat.Application.Services.User.Session;
 using ReactChat.Core.Entities.User;
 using ReactChat.Presentation.Helpers.Attributes;
 using System.Security.Claims;
@@ -12,12 +13,12 @@ using static ReactChat.Core.Enums.Accesses;
 namespace ReactChat.Presentation.Controllers.User
 {
     [Route("[Controller]/")]
-    public class UserController(UserService userService, IMapper mapper, MessageService messageService) : ControllerBase
+    public class UserController(UserService userService, IMapper mapper, MessageService messageService, SessionService sessionService) : ControllerBase
     {
         private readonly IMapper _mapper = mapper;
         private readonly UserService _userService = userService;
         private readonly MessageService _messageService = messageService;
-
+        private readonly SessionService _sessionService = sessionService;
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
@@ -102,7 +103,10 @@ namespace ReactChat.Presentation.Controllers.User
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return await _userService.UpdateUserAsync(user.Id ?? 0, user.Username, user.Email, cancellationToken) ? Ok(user) : BadRequest(ModelState);
+            var result = await _userService.UpdateUserAsync(user.Id ?? 0, user.Username, user.Email, cancellationToken);
+            if (result)
+                result = await _sessionService.RevokeCurrentUserSession(user.Id ?? 0, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown", cancellationToken);
+            return result ? Ok(user) : BadRequest("User not found");
         }
 
         [Authorize]

@@ -22,11 +22,16 @@ namespace ReactChat.Application.Services.User.Session
             return await _mediator.Send(new UpdateUserSessionCommand(sessionToRevoke), cancellationToken);
         }
 
+        public async Task<bool> RevokeCurrentUserSession(int userId, string userIp, CancellationToken cancellationToken = default)
+        {
+            var sessionId = await GetCurrentUserSession(userId, userIp, cancellationToken);
+            return await RevokeSession(sessionId?.Id ?? -1, cancellationToken);
+        }
+
         public async Task<UserSession?> GetCurrentUserSession(int userId, string userIp, CancellationToken cancellationToken = default)
         {
             var userSession = await _mediator.Send(new GetUserSessionsQuery(new UserSession { UserId = userId.ToString(), IpAddress = userIp }), cancellationToken);
             return userSession.Where(x => !x.IsRevoked ?? false).FirstOrDefault();
         }
-
     }
 }
