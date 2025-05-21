@@ -118,6 +118,8 @@ public static class ServiceExtensions
         services.AddDbContext<UserContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
             b => b.MigrationsAssembly("ReactChat.Infrastructure")));
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection1")));
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {

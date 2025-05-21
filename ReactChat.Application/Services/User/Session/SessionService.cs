@@ -15,6 +15,8 @@ namespace ReactChat.Application.Services.User.Session
 
         public async Task<bool> RevokeSession(int sessionId, CancellationToken cancellationToken = default)
         {
+            if (sessionId == -1)
+                return true;
             var sessionToRevoke = (await _mediator.Send(new GetUserSessionsQuery(new UserSession { Id = sessionId }), cancellationToken)).FirstOrDefault();
             if (sessionToRevoke == null)
                 return false;

@@ -6,13 +6,18 @@ using ReactChat.Core.Enums;
 
 namespace ReactChat.Infrastructure.Data.Context
 {
-    public class UserContext(DbContextOptions<UserContext> options) : DbContext(options)
+    public class UserContext : ApplicationDbContext
     {
+        public UserContext(DbContextOptions<UserContext> options) : base(options)
+        {
+        }
+
         public DbSet<BaseUser>? Users { get; set; }
         public DbSet<PrivateMessage>? PrivateMessages { get; set; }
         public DbSet<ChatGroup> ChatGroups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<UserSession> UserSessions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BaseUser>(entity =>
@@ -29,10 +34,10 @@ namespace ReactChat.Infrastructure.Data.Context
                 .HasConversion<int>();
 
             modelBuilder.Entity<UserGroup>()
-            .HasOne(ug => ug.Group)
-            .WithMany()
-            .HasForeignKey(ug => ug.GroupId)
-            .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(ug => ug.Group)
+                .WithMany()
+                .HasForeignKey(ug => ug.GroupId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
