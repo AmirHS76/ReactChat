@@ -24,7 +24,7 @@ namespace ReactChat.Application.Services.User.Login
                 return null;
 
             BaseUser? user = await _mediator.Send(new GetUserByUsernameQuery(request.Username), cancellationToken);
-            if (user != null && BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
+            if (user != null && !user.IsDisabled && BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
                 if (!await AddUserSession(user.Id, httpContext, cancellationToken))
                     return null;

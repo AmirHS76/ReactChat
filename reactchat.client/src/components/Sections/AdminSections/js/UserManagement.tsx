@@ -2,19 +2,12 @@ import React, { useState, useEffect } from "react";
 import "../css/UserManagement.css";
 import UserRepository from "../../../../Repositories/UserRepository";
 import userModel from "../../../../types/users";
+import { UpdateUserRequest } from "../../../../contexts/UpdateUserRequest";
 
 const UserManagementPage: React.FC = () => {
   const [users, setUsers] = useState<userModel[]>([]);
   const [editingUser, setEditingUser] = useState<userModel | null>(null);
-  const [newUserData, setNewUserData] = useState<{
-    username: string;
-    email: string;
-    role: string;
-  }>({
-    username: "",
-    email: "",
-    role: "RegularUser",
-  });
+  const [newUserData, setNewUserData] = useState<UpdateUserRequest>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const userRepository = React.useMemo(() => new UserRepository(), []);
@@ -37,19 +30,28 @@ const UserManagementPage: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setNewUserData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setNewUserData((prevData) => {
+      if (!prevData) return prevData;
+      return {
+        ...prevData,
+        [name]: value,
+      };
+    });
   };
 
   const handleSave = async () => {
     if (!editingUser) return;
 
-    const updatedUser = {
+    if (!newUserData?.username || !newUserData?.email) {
+      setError("Username and email are required.");
+      return;
+    }
+
+    const updatedUser: userModel = {
       ...editingUser,
       username: newUserData.username,
       email: newUserData.email,
+      isDisabled: newUserData.isDisabled,
     };
 
     try {
@@ -68,9 +70,11 @@ const UserManagementPage: React.FC = () => {
   const handleEdit = (user: userModel) => {
     setEditingUser(user);
     setNewUserData({
+      id: user.id,
       username: user.username,
       email: user.email,
       role: user.role,
+      isDisabled: user.isDisabled,
     });
   };
 
@@ -97,6 +101,7 @@ const UserManagementPage: React.FC = () => {
               <p>Username: {user.username}</p>
               <p>Email: {user.email}</p>
               <p>Role: {user.role}</p>
+              <p>Is Disabled : {user.isDisabled ? "True" : "False"}</p>
             </div>
             <div className="user-actions">
               <button
@@ -125,7 +130,7 @@ const UserManagementPage: React.FC = () => {
               <input
                 type="text"
                 name="username"
-                value={newUserData.username}
+                value={newUserData?.username}
                 onChange={handleChange}
               />
             </div>
@@ -134,9 +139,26 @@ const UserManagementPage: React.FC = () => {
               <input
                 type="email"
                 name="email"
-                value={newUserData.email}
+                value={newUserData?.email}
                 onChange={handleChange}
               />
+            </div>
+            <div className="form-group">
+              <label>Email:</label>
+              <select
+                name="isDisabled"
+                value={newUserData?.isDisabled ? "true" : "false"}
+                onChange={(e) =>
+                  setNewUserData((prevData) =>
+                    prevData
+                      ? { ...prevData, isDisabled: e.target.value === "true" }
+                      : prevData
+                  )
+                }
+              >
+                <option value="false">false</option>
+                <option value="true">true</option>
+              </select>
             </div>
             <div className="button-group">
               <button className="save-button" onClick={handleSave}>

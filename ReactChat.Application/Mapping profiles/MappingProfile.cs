@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ReactChat.Application.Dtos.MessageDto;
 using ReactChat.Application.Dtos.User;
+using ReactChat.Application.Features.User.Dtos;
 using ReactChat.Core.Entities.Chat.Message;
 using ReactChat.Core.Entities.User;
 
@@ -21,6 +22,9 @@ namespace ReactChat.Application.Mapping
                 .ForMember(dest => dest.Recipient, opt => opt.MapFrom(src => src.ReceiverName))
                 .ForMember(dest => dest.Timestamp, opt => opt.MapFrom(src => src.MessageDateTime))
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Message));
+
+            CreateMap<UpdateUserRequest, BaseUser>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
         }
     }
 }
