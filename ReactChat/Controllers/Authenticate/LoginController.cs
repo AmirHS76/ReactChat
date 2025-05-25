@@ -21,7 +21,7 @@ namespace ReactChat.Presentation.Controllers.Authenticate
             }
             var token = await _loginService.Authenticate(request, cancellationToken, HttpContext);
             if (token == null)
-                return Unauthorized("Invalid username or password");
+                return Unauthorized("Invalid username or password or user is disabled");
             var refreshToken = _loginService.GenerateRefreshToken(request.Username);
             return Ok(new { token, refreshToken });
         }

@@ -10,6 +10,7 @@ namespace ReactChat.Core.Entities.User
         public string? Email { get; set; }
         public UserRole UserRole { get; set; }
         public Accesses Accesses { get; set; } = Accesses.None;
+        public bool IsDisabled { get; set; } = false;
 
         public bool HasAccess(Accesses access)
         {

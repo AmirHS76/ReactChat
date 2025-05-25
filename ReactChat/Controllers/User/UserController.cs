@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReactChat.Application.Dtos.User;
+using ReactChat.Application.Features.User.Dtos;
 using ReactChat.Application.Services.MessageHistory;
 using ReactChat.Application.Services.User;
 using ReactChat.Application.Services.User.Session;
@@ -99,28 +100,14 @@ namespace ReactChat.Presentation.Controllers.User
 
         [CustomAuthorize(CanUpdateUser)]
         [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromBody] UserDTO user, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest user, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _userService.UpdateUserAsync(user.Id ?? 0, user.Username, user.Email, cancellationToken);
+            var result = await _userService.UpdateUserAsync(user, cancellationToken);
             if (result)
-                result = await _sessionService.RevokeCurrentUserSession(user.Id ?? 0, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown", cancellationToken);
+                result = await _sessionService.RevokeCurrentUserSession(user.Id, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown", cancellationToken);
             return result ? Ok(user) : BadRequest("User not found");
-        }
-
-        [Authorize]
-        [HttpPatch]
-        [Route("{email}")]
-        public async Task<IActionResult> UpdateEmail(string email, CancellationToken cancellationToken)
-        {
-            var username = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (username == null)
-                return Unauthorized();
-            var user = await _userService.GetUserByUsernameAsync(username, cancellationToken);
-            if (user == null)
-                return NotFound();
-            return await _userService.UpdateUserAsync(user.Id, username, email, cancellationToken) ? Ok() : BadRequest();
         }
 
         [CustomAuthorize(CanRemoveUser)]

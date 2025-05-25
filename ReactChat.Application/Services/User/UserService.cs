@@ -1,8 +1,10 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using ReactChat.Application.Constants;
 using ReactChat.Application.Features.User.Commands.Create;
 using ReactChat.Application.Features.User.Commands.Delete;
 using ReactChat.Application.Features.User.Commands.Update;
+using ReactChat.Application.Features.User.Dtos;
 using ReactChat.Application.Features.User.Queries.GetAll;
 using ReactChat.Application.Features.User.Queries.GetById;
 using ReactChat.Application.Features.User.Queries.GetByUsername;
@@ -12,11 +14,12 @@ using ReactChat.Core.Enums;
 
 namespace ReactChat.Application.Services.User
 {
-    public class UserService(ICacheService cacheService, IMediator mediator)
+    public class UserService(ICacheService cacheService, IMediator mediator, IMapper mapper)
     {
         private readonly ICacheService _cacheService = cacheService;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(5);
         private readonly IMediator _mediator = mediator;
+        private readonly IMapper _mapper = mapper;
         public async Task<BaseUser?> GetUserByUsernameAsync(string? username, CancellationToken cancellationToken = default)
         {
             if (username == null) return null;
@@ -24,17 +27,16 @@ namespace ReactChat.Application.Services.User
             return user;
         }
 
-        public async Task<bool> UpdateUserAsync(int id, string username, string email, CancellationToken cancellationToken)
+        public async Task<bool> UpdateUserAsync(UpdateUserRequest updateUser, CancellationToken cancellationToken)
         {
             BaseUser? user;
-            if (id == 0)
-                user = await GetUserByUsernameAsync(username, cancellationToken);
+            if (updateUser.Id == 0)
+                user = await GetUserByUsernameAsync(updateUser.Username, cancellationToken);
             else
-                user = await _mediator.Send(new GetUserByIdQuery(id), cancellationToken);
+                user = await _mediator.Send(new GetUserByIdQuery(updateUser.Id), cancellationToken);
             if (user == null)
                 return false;
-            user.Username = username;
-            user.Email = email;
+            _mapper.Map(updateUser, user);
             await _mediator.Send(new UpdateUserCommand(user), cancellationToken);
             await _cacheService.RemoveAsync(CacheKeys.AllUsers);
             return true;
