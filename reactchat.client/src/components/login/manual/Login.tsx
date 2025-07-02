@@ -1,17 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
+import "./Login.css";
 import Cookies from "js-cookie";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LoginRepository } from "../../../Repositories/LoginRepository";
-import "./login.css";
-import {
-  Box,
-  Button,
-  IconButton,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { Refresh } from "@mui/icons-material";
 
 interface LoginResponse {
   token: string;
@@ -101,217 +92,97 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: "#121212",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        p: 2,
-      }}
-    >
-      <Paper
-        elevation={10}
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          alignItems: "center",
-          maxWidth: 800,
-          width: "100%",
-          bgcolor: "#1e1e1e",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
-          color: "#fff",
-        }}
-      >
-        <Box
-          sx={{
-            flex: "1 1 100%",
-            maxWidth: "400px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <img
-            src="src/assets/images.jpg"
-            alt="login"
-            style={{
-              height: "100%",
-              width: "100%",
-              borderTopLeftRadius: "4px",
-              borderBottomLeftRadius: "4px",
-            }}
+    <div className="login-container">
+      {message && <div className="info-message">{message}</div>}
+      {error && <div className="error-message">{error}</div>}
+      <h1 className="login-title">Login</h1>
+      <form className="login-form" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
-        </Box>
-
-        <Box
-          sx={{
-            flex: "1 1 300px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            pt: 6,
-            pb: 6,
-            pr: 4,
-            pl: 2,
-          }}
-        >
-          {message && (
-            <Typography sx={{ color: "#03a9f4", mb: 2 }}>{message}</Typography>
-          )}
-          {error && (
-            <Typography sx={{ color: "#ef5350", mb: 2 }}>{error}</Typography>
-          )}
-          <Typography variant="h4" component="h1" gutterBottom>
-            Login
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate>
-            <TextField
-              fullWidth
-              label="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              margin="normal"
-              required
-              slotProps={{
-                input: {
-                  sx: { color: "#fff" },
-                },
-                inputLabel: {
-                  sx: { color: "#aaa" },
-                },
-              }}
-              sx={{
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#444",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#555",
-                },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#03a9f4",
-                },
-              }}
-            />
-            <TextField
-              fullWidth
-              type="password"
-              label="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              margin="normal"
-              required
-              slotProps={{
-                input: {
-                  sx: { color: "#fff" },
-                },
-                inputLabel: {
-                  sx: { color: "#aaa" },
-                },
-              }}
-              sx={{
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#444",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#555",
-                },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#03a9f4",
-                },
-              }}
-            />
-
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="subtitle1">Captcha</Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  mt: 1,
-                }}
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group captcha-group">
+          <label htmlFor="captcha">Captcha</label>
+          <div className="captcha-row">
+            {captchaImg && (
+              <img
+                className="captcha-img"
+                src={`data:image/png;base64,${captchaImg}`}
+                alt="captcha"
+              />
+            )}
+            <button
+              type="button"
+              className="refresh-captcha-button"
+              onClick={handleRefreshCaptcha}
+              aria-label="Refresh captcha"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                {captchaImg && (
-                  <img
-                    src={`data:image/png;base64,${captchaImg}`}
-                    alt="captcha"
-                    style={{ height: "40px" }}
-                  />
-                )}
-                <IconButton color="primary" onClick={handleRefreshCaptcha}>
-                  <Refresh sx={{ color: "#fff" }} />
-                </IconButton>
-                <TextField
-                  placeholder="Enter captcha"
-                  value={captcha ?? ""}
-                  onChange={(e) => setCaptcha(e.target.value)}
-                  margin="normal"
-                  required
-                  size="small"
-                  slotProps={{
-                    input: {
-                      sx: { color: "#fff" },
-                    },
-                    inputLabel: {
-                      sx: { color: "#aaa" },
-                    },
-                  }}
-                  sx={{
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#444",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#555",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  }}
-                />
-              </Box>
-            </Box>
-
-            <Button
-              fullWidth
-              type="submit"
-              variant="contained"
-              sx={{
-                mt: 2,
-                backgroundColor: "#03a9f4",
-                "&:hover": { backgroundColor: "#0288d1" },
-              }}
-            >
-              Login
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              sx={{
-                mt: 1,
-                borderColor: "#03a9f4",
-                color: "#03a9f4",
-                "&:hover": {
-                  backgroundColor: "rgba(3, 169, 244, 0.1)",
-                  borderColor: "#03a9f4",
-                },
-              }}
-              onClick={handleGoogleLogin}
-            >
-              Continue with Google
-            </Button>
-            <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-              Don't have an account?{" "}
-              <Link to="/register" style={{ color: "#03a9f4" }}>
-                Sign Up
-              </Link>
-            </Typography>
-          </Box>
-        </Box>
-      </Paper>
-    </Box>
+                <path d="M21 2v6h-6" />
+                <path d="M3 12a9 9 0 0 1 15-7.36L21 8" />
+                <path d="M3 22v-6h6" />
+                <path d="M21 12a9 9 0 0 1-15 7.36L3 16" />
+              </svg>
+            </button>
+          </div>
+          <div className="captcha-input-wrapper">
+            <input
+              type="text"
+              id="captcha"
+              value={captcha ?? ""}
+              onChange={(e) => setCaptcha(e.target.value)}
+              required
+              autoComplete="off"
+              placeholder="Enter captcha"
+              className="captcha-input"
+            />
+          </div>
+        </div>
+        <div className="button-container">
+          <button type="submit" className="login-button">
+            Login
+          </button>
+          <button
+            type="button"
+            className="google-login-button"
+            onClick={handleGoogleLogin}
+          >
+            Continue with Google
+          </button>
+        </div>
+        <div className="login-footer">
+          <p>
+            Don't have an account? <a href="/register">Sign Up</a>
+          </p>
+        </div>
+      </form>
+    </div>
   );
 };
 
