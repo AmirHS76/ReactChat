@@ -75,6 +75,7 @@ const GroupChat = () => {
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
           placeholder="Type your message..."
         />
         <button className="send-button" onClick={handleSendMessage}>

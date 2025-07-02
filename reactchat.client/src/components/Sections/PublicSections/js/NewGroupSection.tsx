@@ -25,14 +25,10 @@ const NewGroupSection = () => {
           }
         }
         try {
-          const currentUsername = Cookies.get("username");
-
           const response = await userRepo.getUsers();
 
           const userList: User[] = response as User[];
-          setAllUsers(
-            userList.filter((user) => user.username !== currentUsername)
-          );
+          setAllUsers(userList);
         } catch (error) {
           console.error("Error fetching users:", error);
         }

@@ -144,7 +144,7 @@ const UserManagementPage: React.FC = () => {
               />
             </div>
             <div className="form-group">
-              <label>Email:</label>
+              <label>Is disabled:</label>
               <select
                 name="isDisabled"
                 value={newUserData?.isDisabled ? "true" : "false"}
