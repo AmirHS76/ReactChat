@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Refresh } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 interface LoginResponse {
   token: string;
@@ -21,10 +22,8 @@ interface LoginResponse {
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [message, setMessage] = useState<string | null>(null);
   const [captcha, setCaptcha] = useState<string | null>("");
   const [captchaImg, setCaptchaImg] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const repo = useMemo(() => new LoginRepository(), []);
 
@@ -35,7 +34,7 @@ const Login: React.FC = () => {
         setCaptchaImg(res.data);
       }
     } catch (err) {
-      setError("Failed to load captcha : " + err);
+      toast.error("Failed to load captcha : " + err);
     }
   }, [repo]);
 
@@ -50,8 +49,6 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
-    setMessage(null);
 
     try {
       const response = await repo.login(username, password, captcha);
@@ -77,16 +74,15 @@ const Login: React.FC = () => {
         sameSite: "Strict",
       });
       console.log("Login successful");
-      setMessage("Login successful! Redirecting...");
+      toast.info("Login successful! Redirecting...");
 
       setTimeout(() => {
         navigate("/main");
       }, 500);
     } catch (err) {
       fetchCaptcha();
-      setError("Invalid username or password");
+      toast.error("Invalid username or password.");
       console.log("Error in login: " + err);
-      setTimeout(() => setError(null), 3000);
     }
   };
 
@@ -152,18 +148,9 @@ const Login: React.FC = () => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            pt: 6,
-            pb: 6,
-            pr: 4,
-            pl: 2,
+            p: 3,
           }}
         >
-          {message && (
-            <Typography sx={{ color: "#03a9f4", mb: 2 }}>{message}</Typography>
-          )}
-          {error && (
-            <Typography sx={{ color: "#ef5350", mb: 2 }}>{error}</Typography>
-          )}
           <Typography variant="h4" component="h1" gutterBottom>
             Login
           </Typography>
@@ -193,6 +180,13 @@ const Login: React.FC = () => {
                 "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                   borderColor: "#03a9f4",
                 },
+                "& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus":
+                  {
+                    WebkitBoxShadow:
+                      "0 0 0px 1000pxrgb(119, 119, 119) inset !important",
+                    WebkitTextFillColor: "#fff !important",
+                    transition: "background-color 600000s 0s, color 600000s 0s",
+                  },
               }}
             />
             <TextField
@@ -221,6 +215,13 @@ const Login: React.FC = () => {
                 "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                   borderColor: "#03a9f4",
                 },
+                "& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus":
+                  {
+                    WebkitBoxShadow:
+                      "0 0 0px 1000pxrgb(119, 119, 119) inset !important",
+                    WebkitTextFillColor: "#fff !important",
+                    transition: "background-color 600000s 0s, color 600000s 0s",
+                  },
               }}
             />
 

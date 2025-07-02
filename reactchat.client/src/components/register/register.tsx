@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import "./register.css";
 import RegisterRepository from "../../Repositories/RegisterRepository";
+import { Box, Paper, Stack, TextField, Typography } from "@mui/material";
 const Register: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -45,68 +46,65 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="register-container">
-      {message && <div className="info-message">{message}</div>}
-      {error && (
-        <div className="error-message">
-          {error.split("\n").map((line, index) => (
-            <p key={index}>{line}</p>
-          ))}
-        </div>
-      )}
-      <h1 className="register-title">Register</h1>
-      <form className="register-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="confirmPassword">Confirm Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div className="button-container">
-          <button type="submit" className="register-button">
-            Register
-          </button>
-        </div>
-        <div className="register-footer">
-          <p>
-            Already have an account? <a href="/login">Login</a>
-          </p>
-        </div>
+    <Stack direction="row">
+      <Typography variant="h1" color="primary">
+        Register
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Paper>
+          <Box className="form-group">
+            <TextField></TextField>
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </Box>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="button-container">
+            <button type="submit" className="register-button">
+              Register
+            </button>
+          </div>
+          <div className="register-footer">
+            <p>
+              Already have an account? <a href="/login">Login</a>
+            </p>
+          </div>
+        </Paper>
       </form>
-    </div>
+    </Stack>
   );
 };
 
