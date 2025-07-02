@@ -24,7 +24,7 @@ const GroupsPage = () => {
           console.error("Error with connection:", error);
         }
 
-        connection.on("ReceiveGroupCreated", (groupName: string) => {
+        connection.on("GroupCreated", (groupName: string) => {
           setGroups((prevGroups) => [...prevGroups, groupName]);
         });
       }
@@ -34,7 +34,7 @@ const GroupsPage = () => {
 
     return () => {
       if (connection) {
-        connection.off("ReceiveGroupCreated");
+        connection.off("GroupCreated");
       }
     };
   }, [connection]);
