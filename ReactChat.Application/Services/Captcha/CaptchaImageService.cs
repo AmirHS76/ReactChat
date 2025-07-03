@@ -1,75 +1,64 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Runtime.Versioning;
+﻿using SixLabors.Fonts;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace ReactChat.Application.Services.Captcha
 {
     public class CaptchaImageService
     {
-        [SupportedOSPlatform("windows")]
         public byte[] GenerateCaptchaImage(string text)
         {
             int width = 180;
             int height = 60;
             var random = new Random();
 
-            using var baseBitmap = new Bitmap(width, height);
-            using var graphics = Graphics.FromImage(baseBitmap);
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            graphics.Clear(Color.White);
+            using var image = new Image<Rgba32>(width, height);
 
-            using var font = new Font("Arial", 28, FontStyle.Bold);
-            using var textBrush = new SolidBrush(Color.Black);
-
-            // Draw the full text to a temp bitmap first
-            var tempText = new Bitmap(width, height);
-            using (var g = Graphics.FromImage(tempText))
+            image.Mutate(ctx =>
             {
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-                g.Clear(Color.Transparent);
-                g.DrawString(text, font, textBrush, new PointF(10, 10));
-            }
+                ctx.BackgroundColor(Color.White);
 
-            // Create a new bitmap with warped text
-            var warpedBitmap = new Bitmap(width, height);
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
+                var collection = new FontCollection();
+                var fontFamily = collection.Add("Fonts/OpenSans-VariableFont_wdth,wght.ttf");
+                var font = fontFamily.CreateFont(28, FontStyle.Bold);
+                var eachChar = text.ToCharArray();
+                for (int i = 0; i < eachChar.Length; i++)
                 {
-                    // Wave distortion formula for X and Y
-                    int dx = (int)(5 * Math.Sin(2 * Math.PI * y / random.Next(55, 60)));
-                    int dy = (int)(5 * Math.Cos(2 * Math.PI * x / random.Next(50, 55)));
-
-                    int srcX = x + dx;
-                    int srcY = y + dy;
-
-                    if (srcX >= 0 && srcX < width && srcY >= 0 && srcY < height)
+                    float angle = random.Next(-45, 45);
+                    using var textImage = new Image<Rgba32>(40, 40);
+                    textImage.Mutate(tctx =>
                     {
-                        warpedBitmap.SetPixel(x, y, tempText.GetPixel(srcX, srcY));
-                    }
+                        tctx.BackgroundColor(Color.Transparent);
+
+                        tctx.DrawText(eachChar[i].ToString(), font, Color.Black, new PointF(10, 10));
+                    });
+                    textImage.Mutate(tctx => tctx.Rotate(angle));
+                    ctx.DrawImage(textImage, new Point(30 * i, 0), 1f);
                 }
-            }
+                for (int i = 0; i < 5; i++)
+                {
+                    var penColor = Color.FromRgb((byte)random.Next(256), (byte)random.Next(256), (byte)random.Next(256));
+                    float x1 = random.Next(0, width);
+                    float y1 = random.Next(0, height);
+                    float x2 = random.Next(0, width);
+                    float y2 = random.Next(0, height);
 
-            // Draw background noise
-            for (int i = 0; i < 10; i++)
-            {
-                var pen = new Pen(Color.FromArgb(random.Next(100, 200), random.Next(256), random.Next(256)), 1);
-                graphics.DrawLine(pen, random.Next(width), random.Next(height), random.Next(width), random.Next(height));
-            }
+                    ctx.DrawLine(penColor, 1, new PointF[] { new(x1, y1), new(x2, y2) });
+                }
 
-            // Draw noise dots
-            for (int i = 0; i < 150; i++)
-            {
-                baseBitmap.SetPixel(random.Next(width), random.Next(height),
-                    Color.FromArgb(random.Next(256), random.Next(256), random.Next(256)));
-            }
-
-            // Overlay the warped text onto the base bitmap
-            graphics.DrawImage(warpedBitmap, 0, 0);
+                for (int i = 0; i < 100; i++)
+                {
+                    int x = random.Next(width);
+                    int y = random.Next(height);
+                    var dotColor = Color.FromRgb((byte)random.Next(256), (byte)random.Next(256), (byte)random.Next(256));
+                    ctx.Fill(dotColor, new RectangleF(x, y, 2, 2));
+                }
+            });
 
             using var ms = new MemoryStream();
-            baseBitmap.Save(ms, ImageFormat.Png);
+            image.SaveAsPng(ms);
             return ms.ToArray();
         }
     }

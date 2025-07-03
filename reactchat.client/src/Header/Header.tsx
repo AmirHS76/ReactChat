@@ -10,7 +10,6 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     handleUnauthenticated();
-    navigate("/login");
   };
 
   const handleBack = () => {

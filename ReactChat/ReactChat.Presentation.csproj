@@ -11,6 +11,13 @@
     <ProjectReference Include="..\ReactChat.Infrastructure\ReactChat.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="fonts\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
     <PackageReference Include="AspNetCore.HealthChecks.Hangfire" Version="9.0.0" />
     <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
