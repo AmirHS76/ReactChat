@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReactChat.Application.Helpers.Captcha;
 using ReactChat.Application.Services.Captcha;
-using System.Runtime.Versioning;
 
 namespace ReactChat.Presentation.Controllers.Authenticate
 {
@@ -18,7 +17,6 @@ namespace ReactChat.Presentation.Controllers.Authenticate
         }
 
         [HttpGet]
-        [SupportedOSPlatform("windows")]
         public IActionResult Image()
         {
             var text = CaptchaGenerator.GenerateRandomText(5);

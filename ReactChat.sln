@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactChat.Application", "Re
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactChat.Infrastructure", "ReactChat.Infrastructure\ReactChat.Infrastructure.csproj", "{CA49BA99-220B-449C-8E22-5C27ED63A1ED}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "reactchat.client", "ReactChat.Client\reactchat.client.esproj", "{8D07F623-C64B-4107-B949-657A9D1C296F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactChat.Core", "ReactChat.Core\ReactChat.Core.csproj", "{FF0D3E74-BA82-4947-9896-047152DAC835}"
 EndProject
 Global

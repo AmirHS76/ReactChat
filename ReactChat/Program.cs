@@ -17,7 +17,7 @@ var configuration = builder.Configuration;
 var connectionString = configuration["ConnectionStrings:DefaultConnection"];
 var hangFireConnectionString = configuration["ConnectionStrings:HangFireConnection"];
 var seqServer = configuration["ConnectionStrings:SeqConnection"];
-if (connectionString == null || hangFireConnectionString == null || seqServer == null)
+if (true || connectionString == null || hangFireConnectionString == null || seqServer == null)
 {
     builder.Configuration.Sources.Clear();
     builder.Configuration
@@ -43,4 +43,4 @@ app.ConfigureMiddleware();
 // Configure Endpoints
 app.ConfigureEndpoints();
 
-app.Run();
+app.Run("http://0.0.0.0:7240");

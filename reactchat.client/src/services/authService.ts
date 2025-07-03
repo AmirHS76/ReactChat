@@ -14,10 +14,10 @@ export const checkAuthToken = async (): Promise<boolean> => {
 };
 
 export const handleUnauthenticated = async () => {
-  await disconnectChatHub();
-  await disconnectHub();
   Cookies.remove("token");
   Cookies.remove("refreshToken");
   localStorage.clear();
+  await disconnectChatHub();
+  await disconnectHub();
   window.location.href = "/login";
 };
