@@ -3,17 +3,16 @@ using ReactChat.Core.Entities.Logging;
 
 namespace ReactChat.Infrastructure.Data.Context
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext(DbContextOptions options) : DbContext(options)
     {
         public DbSet<PropertyChangeLog> PropertyChangeLogs { get; set; }
-        public ApplicationDbContext(DbContextOptions options) : base(options) { }
 
         public override int SaveChanges()
         {
             var logs = CollectChangeLogs();
             var result = base.SaveChanges();
 
-            if (logs.Any())
+            if (logs.Count != 0)
             {
                 PropertyChangeLogs.AddRange(logs);
                 base.SaveChanges();
@@ -27,7 +26,7 @@ namespace ReactChat.Infrastructure.Data.Context
             var logs = CollectChangeLogs();
             var result = await base.SaveChangesAsync(cancellationToken);
 
-            if (logs.Any())
+            if (logs.Count != 0)
             {
                 try
                 {
@@ -36,7 +35,7 @@ namespace ReactChat.Infrastructure.Data.Context
                 }
                 catch (Exception ex)
                 {
-                    var a = ex;
+                    Console.WriteLine("An error happened when saving changes : " + ex.Message);
                 }
             }
 

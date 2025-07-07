@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using ReactChat.Application.Dtos.Authenticate;
 using ReactChat.Application.Features.User.Queries.GetByUsername;
@@ -13,11 +14,12 @@ using System.Text;
 
 namespace ReactChat.Application.Services.User.Login
 {
-    public class LoginService(IMediator mediator, CaptchaValidator captchaValidator)
+    public class LoginService(IMediator mediator, CaptchaValidator captchaValidator, ILogger<LoginService> logger)
     {
         private readonly string refreshTokenSecretKey = "UHyuZrvwyjfv9j0dgOGINMXRqiHzSeTlF+uYPsep2Dg=";
         private readonly IMediator _mediator = mediator;
         private readonly CaptchaValidator _captchaValidator = captchaValidator;
+        private readonly ILogger<LoginService> _logger = logger;
         public async Task<string?> Authenticate(LoginDTO request, CancellationToken cancellationToken, HttpContext httpContext)
         {
             if (!_captchaValidator.Validate(request.Captcha))
@@ -56,8 +58,9 @@ namespace ReactChat.Application.Services.User.Login
                 else
                     return GenerateJwtTokenFromUser(user);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Invalid refresh token: {token}", token);
                 return null;
             }
         }
